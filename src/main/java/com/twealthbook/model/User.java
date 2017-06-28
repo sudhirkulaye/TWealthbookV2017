@@ -1,6 +1,6 @@
 package com.twealthbook.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;

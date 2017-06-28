@@ -1,29 +1,23 @@
-(function(){
-    'use strict';
-    angular
-        .module('twealthbookModule')
-        .controller('portfoliosController',portfoliosController);
+var portfolioModule = angular.module('portfolioApp', [ ]);
 
-    portfoliosController.$inject = ['$http'];
 
-    function portfoliosController($http){
-        var vm = this;
-        vm.portfoliosMap = {};
-        vm.getAllPortfolios = getAllPortfolios;
+portfolioModule.controller('portfolioController', function ($scope,$http) {
 
-        init();
+	var urlBase="";
+	$http.defaults.headers.post["Content-Type"] = "application/json";
 
-        function init(){
-            getAllPortfolios();
-        }
-
-        function getAllPortfolios(){
-            var url = "/api/getAllPortfolios/";
-            var portfoliosPromise = $http.get(url);
-            portfoliosPromise.then(function(response){
-                vm.portfoliosMap = response.data;
+    function findAllPortfolios() {
+        //get all tasks and display initially
+        $http.get(urlBase + '/api/getallportfolios').
+            then(function (response) {
+                if (response != undefined) {
+                    $scope.portfolios = response.data;
+                } else {
+                    $scope.portfolios = [];
+                }
             });
-        }
-
     }
-})();
+
+    findAllPortfolios();
+
+});

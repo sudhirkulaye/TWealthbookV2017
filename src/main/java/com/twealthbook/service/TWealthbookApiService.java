@@ -12,9 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class TWealthbookApiService {
@@ -174,15 +172,19 @@ public class TWealthbookApiService {
      * @return
      * @throws UsernameNotFoundException
      */
-    public HashMap<String, Portfolio> getPortfoliosOfClientsOfALoggedInUser(
+    public List<PortfolioViewModel> getPortfoliosOfClientsOfALoggedInUser(
             @AuthenticationPrincipal final UserDetails userDetails)
             throws UsernameNotFoundException{
         User user = getLoggedInUser(userDetails);
-        HashMap portfolios = new HashMap();
+        List<PortfolioViewModel> portfolios = new ArrayList<>();
+
         for (FamilyMember familyMember : user.getFamilyMembers()){
             Client client = clientRepository.findByClientId(familyMember.getClientId());
-            portfolios.put(familyMember.getFamilyRelationship()+ ":"+ client.getClientFirstName(),
-                    portfolioRepository.findAllByPortfolioKeyClientId(familyMember.getClientId()));
+            String relationship = familyMember.getFamilyRelationship()+ ":"+ client.getClientFirstName();
+            for (Portfolio portfolio : portfolioRepository.findAllByPortfolioKeyClientId(familyMember.getClientId())){
+                PortfolioViewModel portfolioViewModel = new PortfolioViewModel(relationship, portfolio);
+                portfolios.add(portfolioViewModel);
+            }
         }
         return portfolios;
     }

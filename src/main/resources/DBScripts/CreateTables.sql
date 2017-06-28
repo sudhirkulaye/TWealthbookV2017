@@ -143,7 +143,3 @@ insert into portfolio
 where a.customer_code in (1006,1015,1018,1,1001,1002,1003,1004,1005,1007,1008,1009,1010,1014,1016,1017) order by a.customer_code);
 
 select * from portfolio;
-
-CREATE TABLE portfolio (
-  client_id int NOT NULL COMMENT 'Client ID for reference unique',
-  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',

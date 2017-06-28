@@ -1,13 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
 <head th:include="fragments/header :: common-header" />
-<body  ng-app="twealthbookModule" ng-controller="portfoliosController as vm">
+<body  ng-app="portfolioApp" ng-controller="portfolioController">
     <!-- googleAnalytics -->
     <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
     <!-- googleAnalytics -->
     <!--Angular JS-->
-    <script src="../static/vendor/angular/angular.min.js" th:src="@{/vendor/angular/angular.min.js}"></script>
-    <script src="../static/js/module.js" th:src="@{/js/module.js}"></script>
+    <script src="../static/js/angular.min.js" th:src="@{/js/angular.min.js}"></script>
     <script src="../static/js/portfoliosController.js" th:src="@{/js/portfoliosController.js}"></script>
     <!--Angular JS-->
 
@@ -32,35 +31,34 @@
                         </div>
                         <div class="panel-body" >
                             <div class="table-responsive">
-                               {{vm.portfoliosMap}}
-                                <!--<table userId="portolios" class="table" data-expand-first="true">-->
-                                    <!--<thead>-->
-                                        <!--<tr>-->
-                                            <!--<th>Family Member</th>-->
-                                            <!--<th>ID</th>-->
-                                            <!--<th>Portfolio Goal</th>-->
-                                            <!--<th>Start Date</th>-->
-                                            <!--<th>End Date</th>-->
-                                            <!--<th>Status</th>-->
-                                            <!--<th>Strategy</th>-->
-                                            <!--<th>Benchmark Type</th>-->
-                                            <!--<th>Benchmark</th>-->
-                                        <!--</tr>-->
-                                    <!--</thead>-->
-                                    <!--<tbody>-->
-                                        <!--<tr ng-repeat="(relationship, portfolio) in portfoliosMap">-->
-                                            <!--<td>{{relationship}}</td>-->
-                                            <!--<td>{{portfolio.portfolioKeyPortfolioId}}</td>-->
-                                            <!--<td>{{portfolio.portfolioGoal}}</td>-->
-                                            <!--<td>{{portfolio.portfolioStartDate}}</td>-->
-                                            <!--<td>{{portfolio.portfolioEndDate}}</td>-->
-                                            <!--<td>{{portfolio.portfolioActiveStatus}}</td>-->
-                                            <!--<td>{{portfolio.portfolioCurrentStrategy}}</td>-->
-                                            <!--<td>{{portfolio.portfolioBenchmarkType}}</td>-->
-                                            <!--<td>{{portfolio.portfolioBenchmark}}</td>-->
-                                        <!--</tr>-->
-                                    <!--</tbody>-->
-                                <!--</table>-->
+                                <table id="portolios-table" class="table" data-expand-first="true">
+                                    <thead>
+                                        <tr>
+                                            <th>Family Member</th>
+                                            <th>ID</th>
+                                            <th>Portfolio Goal</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Status</th>
+                                            <th>Strategy</th>
+                                            <th>Benchmark Type</th>
+                                            <th>Benchmark</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="(relationship, portfolio) in portfolios">
+                                            <td>{{portfolio.relationship}}</td>
+                                            <td>{{portfolio.PortfolioId}}</td>
+                                            <td>{{portfolio.portfolioGoal}}</td>
+                                            <td>{{portfolio.portfolioStartDate}}</td>
+                                            <td>{{portfolio.portfolioEndDate}}</td>
+                                            <td>{{portfolio.portfolioActiveStatus}}</td>
+                                            <td>{{portfolio.portfolioCurrentStrategy}}</td>
+                                            <td>{{portfolio.portfolioBenchmarkType}}</td>
+                                            <td>{{portfolio.portfolioBenchmark}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

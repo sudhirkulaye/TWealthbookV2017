@@ -1,6 +1,5 @@
 package com.twealthbook.controller;
 
-import com.twealthbook.service.TWealthbookApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -65,7 +64,6 @@ public class TWealthbookViewController {
     public String portfolios(Model model, @AuthenticationPrincipal final UserDetails userDetails){
         model.addAttribute("datetime", new Date());
         model.addAttribute("title", "TWealthbook Portfolios");
-        // model.addAttribute("portfolios", apiService.getPortfoliosOfClientsOfALoggedInUser(userDetails));
         return "portfolios";
     }
 
