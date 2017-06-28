@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/header :: common-header" />
+<body ng-app="twealthbookModule">
+<!-- googleAnalytics -->
+<script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
+<!-- googleAnalytics -->
+<!--Angular JS-->
+<script src="../static/vendor/angular/angular.min.js" th:src="@{/vendor/angular/angular.min.js}"></script>
+<script src="../static/js/module.js" th:src="@{/js/module.js}"></script>
+<!--Angular JS-->
+
+<!-- wrapper -->
+<div id="wrapper">
+    <!-- navigation -->
+    <nav th:include="fragments/navigation :: common-navigation" />
+    <!-- navigation -->
+    <!-- page-wrapper -->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" >Timeline</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+        </div>
+        <!-- page-wrapper -->
+    </div>
+    <!-- wrapper -->
+
+    <!-- jQuery -->
+    <script src="../static/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/vendor/sb-admin-2/js/sb-admin-2.min.js" th:src="@{/vendor/sb-admin-2/js/sb-admin-2.min.js}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../static/vendor/metisMenu/metisMenu.min.js" th:src="@{/vendor/metisMenu/metisMenu.min.js}"></script>
+    <!-- Morris Charts JavaScript -->
+    <script src="../static/vendor/raphael/raphael.min.js" th:src="@{/vendor/raphael/raphael.min.js}"></script>
+    <script src="../static/vendor/morrisjs/morris.min.js" th:src="@{/vendor/morrisjs/morris.min.js}"></script>
+    <!-- Add in any FooTable dependencies we may need -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <!-- Footable JavaScript -->
+    <script src="../static/vendor/footable/js/footable.core.min.js" th:src="@{/vendor/footable/js/footable.core.min.js}" type="text/javascript"></script>
+
+</body>
+</html>

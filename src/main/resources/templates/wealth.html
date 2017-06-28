@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/header :: common-header" />
+<body ng-app="twealthbookModule">
+    <!-- googleAnalytics -->
+    <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
+    <!-- googleAnalytics -->
+    <!--Angular JS-->
+    <script src="../static/vendor/angular/angular.min.js" th:src="@{/vendor/angular/angular.min.js}"></script>
+    <script src="../static/js/module.js" th:src="@{/js/module.js}"></script>
+    <!--Angular JS-->
+
+    <div id="wrapper">
+        <!-- navigation -->
+        <nav th:include="fragments/navigation :: common-navigation" />
+        <!-- navigation -->
+        <!-- page-wrapper -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">360&deg; Wealth</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-pie-chart fa-fw"></i> Family Wealth Distribution
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <li>
+                                            <a href="familywealth.html">See Details</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="wealthdistribution-morris-donut-chart"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-pie-chart fa-fw"></i> Family Wealth by Members
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <li>
+                                            <a href="#ByFamilyID">See Details</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="wealthbymembers-morris-donut-chart"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default" userId="ByFamilyID">
+                        <div class="panel-heading">
+                            <strong>Wealth Across Family Members</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>Self</strong>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table userId="faimilywealth1" class="table table-striped" data-expand-first="true">
+                                            <thead>
+                                                <tr>
+                                                    <th>Portfolio Name</th>
+                                                    <th style="text-align:right" data-breakpoints="xs">Amount</th>
+                                                    <th style="text-align:right" data-breakpoints="xs sm">% Within Relation</th>
+                                                    <th style="text-align:right" data-breakpoints="xs sm" data-title="%Total">%Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Portfolio 1: Retirement</td>
+                                                    <td style="text-align:right">920,000</td>
+                                                    <td style="text-align:right">6.69%</td>
+                                                    <td style="text-align:right">5.91%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Portfolio 2: Child Education</td>
+                                                    <td style="text-align:right">581,600</td>
+                                                    <td style="text-align:right">4.23%</td>
+                                                    <td style="text-align:right">3.71%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Portfolio 3: Short Term</td>
+                                                    <td style="text-align:right">260,000</td>
+                                                    <td style="text-align:right">1.89%</td>
+                                                    <td style="text-align:right">1.67%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Portfolio 4: Rest of Investible Assets</td>
+                                                    <td style="text-align:right">12,000,000</td>
+                                                    <td style="text-align:right">87.20%</td>
+                                                    <td style="text-align:right">74.14%</td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td><strong>Total</strong> </td>
+                                                    <td style="text-align:right"><strong>13,761,600</strong></td>
+                                                    <td style="text-align:right"><strong>100.00%</strong></td>
+                                                    <td style="text-align:right"><strong>88.46%</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--/.table-responsive-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>Spouce</strong>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table userId="faimilywealth2" class="table table-striped" data-expand-first="true">
+                                            <thead>
+                                                <tr>
+                                                    <th>Portfolio Name</th>
+                                                    <th style="text-align:right" data-breakpoints="xs">Amount</th>
+                                                    <th style="text-align:right" data-breakpoints="xs sm">% Within Relation</th>
+                                                    <th style="text-align:right" data-breakpoints="xs sm" data-title="%Total">%Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Portfolio 1: Retirement</td>
+                                                    <td style="text-align:right">690,000</td>
+                                                    <td style="text-align:right">55.89%</td>
+                                                    <td style="text-align:right">4.44%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Portfolio 2: Rest of Assets</td>
+                                                    <td style="text-align:right">544,500</td>
+                                                    <td style="text-align:right">44.11%</td>
+                                                    <td style="text-align:right">3.50%</td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td><strong>Total</strong> </td>
+                                                    <td style="text-align:right"><strong>1,234,500</strong></td>
+                                                    <td style="text-align:right"><strong>100.00%</strong></td>
+                                                    <td style="text-align:right"><strong>7.94%</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--/.table-responsive-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>Mother</strong>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table userId="faimilywealth3" class="table table-striped" data-expand-first="true">
+                                            <thead>
+                                                <tr>
+                                                    <th>Portfolio Name</th>
+                                                    <th style="text-align:right" data-breakpoints="xs">Amount</th>
+                                                    <th style="text-align:right" data-breakpoints="xs sm">% Within Relation</th>
+                                                    <th style="text-align:right" data-breakpoints="xs sm" data-title="%Total">%Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Portfolio 1: Pension Account</td>
+                                                    <td style="text-align:right">560,000</td>
+                                                    <td style="text-align:right">100.00%</td>
+                                                    <td style="text-align:right">3.60%</td>
+                                                </tr>
+                                                <tr class="success">
+                                                    <td><strong>Total</strong> </td>
+                                                    <td style="text-align:right"><strong>560,000</strong></td>
+                                                    <td style="text-align:right"><strong>100.00%</strong></td>
+                                                    <td style="text-align:right"><strong>3.60%</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--/.table-responsive-->
+                                </div>
+                            </div>
+                        </div>
+                        <!--/.panel-body-->
+                    </div>
+                    <!--/.panel-->
+                </div>
+                <!--/.col-lg-12-->
+            </div>
+        </div>
+        <!-- page-wrapper -->
+    </div>
+    <!-- wrapper -->
+
+    <!-- jQuery -->
+    <script src="../static/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../static/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/vendor/sb-admin-2/js/sb-admin-2.min.js" th:src="@{/vendor/sb-admin-2/js/sb-admin-2.min.js}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../static/vendor/metisMenu/metisMenu.min.js" th:src="@{/vendor/metisMenu/metisMenu.min.js}"></script>
+    <!-- Morris Charts JavaScript -->
+    <script src="../static/vendor/raphael/raphael.min.js" th:src="@{/vendor/raphael/raphael.min.js}"></script>
+    <script src="../static/vendor/morrisjs/morris.min.js" th:src="@{/vendor/morrisjs/morris.min.js}"></script>
+    <!-- Add in any FooTable dependencies we may need -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <!-- Footable JavaScript -->
+    <script src="../static/vendor/footable/js/footable.core.min.js" th:src="@{/vendor/footable/js/footable.core.min.js}" type="text/javascript"></script>
+
+    <script>
+        jQuery(function ($) {
+            $('#faimilywealth1').footable();
+            $('#faimilywealth2').footable();
+            $('#faimilywealth3').footable();
+
+        });
+    </script>
+
+    <script type="text/javascript">
+        Morris.Donut({
+            element: 'wealthdistribution-morris-donut-chart',
+            data: [{
+                label: "Cash",
+                value: 230000,
+                formatted: '2,30,000/- 1%'
+            }, {
+                label: "Fixed Income(FDs/RDs)",
+                value: 830500,
+                formatted: '8,30,500/- 5%'
+            }, {
+                label: "Diversified Largecap Equity",
+                value: 1210000,
+                formatted: '12,10,000/- 8%'
+            }, {
+                label: "Diversified Smallcap Equity",
+                value: 441000,
+                formatted: '4,41,000/- 3%'
+            }, {
+                label: "Individual Largecap Stocks",
+                value: 140600,
+                formatted: '1,40,600/- 1%'
+            }, {
+                label: "Individual Smallcap Stocks",
+                value: 400000,
+                formatted: '4,00,600/- 3%'
+            }, {
+                label: "Commodity Gold",
+                value: 304000,
+                formatted: '3,04,000/- 2%'
+            }, {
+                label: "Property",
+                value: 12000000,
+                formatted: '1,20,00,000/- 77%'
+            }, ],
+            formatter: function (x, data) { return data.formatted; },
+            resize: true
+        });
+
+        Morris.Donut({
+            element: 'wealthbymembers-morris-donut-chart',
+            data: [
+              { label: "Self", value: 13761600, formatted: '1,37,61,600/- 88%' },
+              { label: "Spouse", value: 1234500, formatted: '12,34,500/- 8%' },
+              { label: "Mother", value: 560000, formatted: '5,60,000/- 4%' },
+            ],
+            formatter: function (x, data) { return data.formatted; },
+            resize: true
+        });
+
+    </script>
+
+</body>
+</html>
