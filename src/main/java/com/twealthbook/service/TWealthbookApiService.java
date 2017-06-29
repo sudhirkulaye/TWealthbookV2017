@@ -176,17 +176,18 @@ public class TWealthbookApiService {
             @AuthenticationPrincipal final UserDetails userDetails)
             throws UsernameNotFoundException{
         User user = getLoggedInUser(userDetails);
-        List<PortfolioViewModel> portfolios = new ArrayList<>();
+        List<PortfolioViewModel> portfolioViewModels = new ArrayList<>();
 
         for (FamilyMember familyMember : user.getFamilyMembers()){
             Client client = clientRepository.findByClientId(familyMember.getClientId());
             String relationship = familyMember.getFamilyRelationship()+ ":"+ client.getClientFirstName();
+
             for (Portfolio portfolio : portfolioRepository.findAllByPortfolioKeyClientId(familyMember.getClientId())){
                 PortfolioViewModel portfolioViewModel = new PortfolioViewModel(relationship, portfolio);
-                portfolios.add(portfolioViewModel);
+                portfolioViewModels.add(portfolioViewModel);
             }
         }
-        return portfolios;
+        return portfolioViewModels;
     }
 
 }

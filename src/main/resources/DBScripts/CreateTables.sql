@@ -1,6 +1,8 @@
 SET SQL_SAFE_UPDATES = 0;
 Commit;
 
+
+drop table if exists portfolio_cashflow;
 drop table if exists portfolio;
 drop table if exists family_member;
 drop table if exists client;
@@ -15,7 +17,7 @@ create table sequence_next_hi_value (id varchar(50), sequence_next_hi_value int,
 CREATE TABLE user (
   user_id INT NOT NULL COMMENT 'User ID unique auto generated',
   user_login_id varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User Login ID unique usually contact no.',
-  user_password varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Encrypted Password',
+  user_password varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Encrypted Password',
   user_active_status int(1) DEFAULT '1' COMMENT '1-Active 2-Inactive Closed',
   user_first_name varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'User Name',
   user_last_name varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Family Name',
@@ -136,10 +138,24 @@ Private Equity : Own Business or investment in private business',
   portfolio_benchmark varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Benchmark Code for performance comparison',
   PRIMARY KEY (client_id, portfolio_id),
   CONSTRAINT c_portfolio_client_id FOREIGN KEY (client_id) REFERENCES client (client_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Portfolio';
 
 insert into portfolio 
 (select customer_code, portfolio_no, 1, portfolio_goal, portfolio_start_date, portfolio_end_date, '', 1, 'NSE:NIFTY' from equityanalysis.portfolio_master a
 where a.customer_code in (1006,1015,1018,1,1001,1002,1003,1004,1005,1007,1008,1009,1010,1014,1016,1017) order by a.customer_code);
 
 select * from portfolio;
+
+CREATE TABLE portfolio_cashflow (
+  client_id int NOT NULL COMMENT 'Client ID unique Auto Generated',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  date date NOT NULL  COMMENT 'Date on which major cahs inflow or outflow happens',
+  amount float NOT NULL COMMENT 'Amount of cahs inflow (negative) or outflow (outflow) happens',
+  PRIMARY KEY (client_id,portfolio_id,date),
+  CONSTRAINT c_portfolio_cashflow_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
+  CONSTRAINT c_portfolio_cashflow_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
+) COMMENT='Portfolio Cashflow';
+
+insert into portfolio_cashflow select * from equityanalysis.portfolio_inflow_outflow_history;
+
+select * from portfolio_cashflow;

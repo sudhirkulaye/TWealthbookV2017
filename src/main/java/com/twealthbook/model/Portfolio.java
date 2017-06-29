@@ -1,14 +1,18 @@
 package com.twealthbook.model;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Cascade;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "portfolio")
-public class Portfolio {
+public class Portfolio implements Serializable{
 
     private PortfolioKey portfolioKey;
     private int portfolioActiveStatus;
@@ -95,4 +99,5 @@ public class Portfolio {
     public void setPortfolioBenchmark(String portfolioBenchmark) {
         this.portfolioBenchmark = portfolioBenchmark;
     }
+
 }

@@ -32,7 +32,7 @@ public class User {
     private BigInteger userContactNoAlternate;
     private Date userLastLoginTime;
     private Set<Role> roles;
-    private List<FamilyMember> familyMembers;
+    private Set<FamilyMember> familyMembers;
 
     public User(){}
     public User(User user){
@@ -207,10 +207,10 @@ public class User {
     @OneToMany(targetEntity = FamilyMember.class, mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference
     @Cascade(org.hibernate.annotations.CascadeType.DELETE)
-    public List<FamilyMember> getFamilyMembers() {
+    public Set<FamilyMember> getFamilyMembers() {
         return familyMembers;
     }
-    public void setFamilyMembers(List<FamilyMember> familyMembers) {
+    public void setFamilyMembers(Set<FamilyMember> familyMembers) {
         this.familyMembers = familyMembers;
     }
 

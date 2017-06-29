@@ -1,12 +1,13 @@
 package com.twealthbook.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Date;
 
 @Entity
 @Table(name = "client")
-public class Client {
+public class Client implements Serializable{
 
     private Long clientId;
     private int clientActiveStatus; //'1-Active Fee Paying 2-Active Non Fee Paying 4-Inactive Closed'
@@ -20,8 +21,6 @@ public class Client {
     private String clientEmailId;
     private String clientPanCardNo;
     private String clientAadharCardNo;
-
-    public Client(){}
 
     @Id
     @TableGenerator(name="SequenceNextHiValue", table = "Sequence_Next_Hi_Value", pkColumnName = "id", pkColumnValue = "client_id", allocationSize = 1)
@@ -121,4 +120,5 @@ public class Client {
     public void setClientAadharCardNo(String clientAadharCardNo) {
         this.clientAadharCardNo = clientAadharCardNo;
     }
+
 }

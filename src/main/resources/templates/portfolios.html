@@ -35,11 +35,11 @@
                                     <thead>
                                         <tr>
                                             <th>Family Member</th>
-                                            <th>ID</th>
+                                            <th ng-hide="true">ID</th>
                                             <th>Portfolio Goal</th>
                                             <th>Start Date</th>
                                             <th>End Date</th>
-                                            <th>Status</th>
+                                            <th ng-hide="true">Status</th>
                                             <th>Strategy</th>
                                             <th>Benchmark Type</th>
                                             <th>Benchmark</th>
@@ -48,13 +48,13 @@
                                     <tbody>
                                         <tr ng-repeat="(relationship, portfolio) in portfolios">
                                             <td>{{portfolio.relationship}}</td>
-                                            <td>{{portfolio.PortfolioId}}</td>
+                                            <td ng-hide="true">{{portfolio.portfolioId}}</td>
                                             <td>{{portfolio.portfolioGoal}}</td>
                                             <td>{{portfolio.portfolioStartDate}}</td>
                                             <td>{{portfolio.portfolioEndDate}}</td>
-                                            <td>{{portfolio.portfolioActiveStatus}}</td>
+                                            <td ng-hide="true">{{portfolio.portfolioActiveStatus}}</td>
                                             <td>{{portfolio.portfolioCurrentStrategy}}</td>
-                                            <td>{{portfolio.portfolioBenchmarkType}}</td>
+                                            <td>{{portfolio.portfolioBenchmarkType  | benchmarkType}}</td>
                                             <td>{{portfolio.portfolioBenchmark}}</td>
                                         </tr>
                                     </tbody>

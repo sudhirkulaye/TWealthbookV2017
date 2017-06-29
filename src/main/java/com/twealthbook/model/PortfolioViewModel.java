@@ -11,6 +11,7 @@ public class PortfolioViewModel implements Serializable {
     private String portfolioGoal;
     private Date portfolioStartDate;
     private Date portfolioEndDate;
+    private int portfolioActiveStatus;
     private String portfolioCurrentStrategy;
     private int portfolioBenchmarkType;
     private String portfolioBenchmark;
@@ -23,6 +24,7 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioGoal = portfolio.getPortfolioGoal();
         this.portfolioStartDate = portfolio.getPortfolioStartDate();
         this.portfolioEndDate = portfolio.getPortfolioEndDate();
+        this.portfolioActiveStatus = portfolio.getPortfolioActiveStatus();
         this.portfolioCurrentStrategy = portfolio.getPortfolioCurrentStrategy();
         this.portfolioBenchmarkType = portfolio.getPortfolioBenchmarkType();
         this.portfolioBenchmark = portfolio.getPortfolioBenchmark();
@@ -76,6 +78,14 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioEndDate = portfolioEndDate;
     }
 
+    public int getPortfolioActiveStatus() {
+        return portfolioActiveStatus;
+    }
+
+    public void setPortfolioActiveStatus(int portfolioActiveStatus) {
+        this.portfolioActiveStatus = portfolioActiveStatus;
+    }
+
     public String getPortfolioCurrentStrategy() {
         return portfolioCurrentStrategy;
     }
@@ -98,5 +108,21 @@ public class PortfolioViewModel implements Serializable {
 
     public void setPortfolioBenchmark(String portfolioBenchmark) {
         this.portfolioBenchmark = portfolioBenchmark;
+    }
+
+    @Override
+    public String toString() {
+        return "PortfolioViewModel{" +
+                "relationship='" + relationship + '\'' +
+                ", clientId=" + clientId +
+                ", portfolioId=" + portfolioId +
+                ", portfolioGoal='" + portfolioGoal + '\'' +
+                ", portfolioStartDate=" + portfolioStartDate +
+                ", portfolioEndDate=" + portfolioEndDate +
+                ", portfolioActiveStatus=" + portfolioActiveStatus +
+                ", portfolioCurrentStrategy='" + portfolioCurrentStrategy + '\'' +
+                ", portfolioBenchmarkType=" + portfolioBenchmarkType +
+                ", portfolioBenchmark='" + portfolioBenchmark + '\'' +
+                '}';
     }
 }

@@ -7,6 +7,7 @@ portfolioModule.controller('portfolioController', function ($scope,$http) {
 	$http.defaults.headers.post["Content-Type"] = "application/json";
 
     function findAllPortfolios() {
+        $scope.portfolios = [];
         //get all tasks and display initially
         $http.get(urlBase + '/api/getallportfolios').
             then(function (response) {
@@ -21,3 +22,12 @@ portfolioModule.controller('portfolioController', function ($scope,$http) {
     findAllPortfolios();
 
 });
+
+portfolioModule.filter("benchmarkType", function () {
+    return function (gender) {
+        switch (gender) {
+            case 1: return "Standard";
+            case 2: return "Customized"
+        }
+    }
+})
