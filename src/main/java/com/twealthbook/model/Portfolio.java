@@ -1,14 +1,8 @@
 package com.twealthbook.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.Set;
 
 @Entity
 @Table(name = "portfolio")
@@ -16,7 +10,7 @@ public class Portfolio implements Serializable{
 
     private PortfolioKey portfolioKey;
     private int portfolioActiveStatus;
-    private String portfolioGoal;
+    private String portfolioDescription;
     private Date portfolioStartDate;
     private Date portfolioEndDate;
     private String portfolioCurrentStrategy;    // Aggressive-1 : Speculative Daily Trading in Equity and F&O ,
@@ -35,6 +29,7 @@ public class Portfolio implements Serializable{
                                                 // Private Equity : Own Business or investment in private business
     private int portfolioBenchmarkType; //1-Standard Index 2-Customized combination of Indices
     private String portfolioBenchmark;
+    private Float portfolioValue;
 
     @EmbeddedId
     public PortfolioKey getPortfolioKey() {
@@ -52,12 +47,12 @@ public class Portfolio implements Serializable{
         this.portfolioActiveStatus = portfolioActiveStatus;
     }
 
-    @Column(name = "portfolio_goal")
-    public String getPortfolioGoal() {
-        return portfolioGoal;
+    @Column(name = "portfolio_description")
+    public String getPortfolioDescription() {
+        return portfolioDescription;
     }
-    public void setPortfolioGoal(String portfolioGoal) {
-        this.portfolioGoal = portfolioGoal;
+    public void setPortfolioDescription(String portfolioDescription) {
+        this.portfolioDescription = portfolioDescription;
     }
 
     @Column(name = "portfolio_start_date")
@@ -100,4 +95,33 @@ public class Portfolio implements Serializable{
         this.portfolioBenchmark = portfolioBenchmark;
     }
 
+    @Column(name = "portfolio_value")
+    public Float getPortfolioValue() {
+        return portfolioValue;
+    }
+    public void setPortfolioValue(Float portfolioValue) {
+        this.portfolioValue = portfolioValue;
+    }
+
+    @Embeddable
+    public static class PortfolioKey implements Serializable {
+        private Long clientId;
+        private int portfolioId;
+
+        @Column(name = "client_id")
+        public Long getClientId() {
+            return clientId;
+        }
+        public void setClientId(Long clientId) {
+            this.clientId = clientId;
+        }
+
+        @Column(name = "portfolio_id")
+        public int getPortfolioId() {
+            return portfolioId;
+        }
+        public void setPortfolioId(int portfolioId) {
+            this.portfolioId = portfolioId;
+        }
+    }
 }

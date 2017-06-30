@@ -8,7 +8,7 @@ public class PortfolioViewModel implements Serializable {
     private String relationship;
     private Long clientId;
     private int portfolioId;
-    private String portfolioGoal;
+    private String portfolioDescription;
     private Date portfolioStartDate;
     private Date portfolioEndDate;
     private int portfolioActiveStatus;
@@ -21,7 +21,7 @@ public class PortfolioViewModel implements Serializable {
         this.relationship = relationship;
         this.clientId = portfolio.getPortfolioKey().getClientId();
         this.portfolioId = portfolio.getPortfolioKey().getPortfolioId();
-        this.portfolioGoal = portfolio.getPortfolioGoal();
+        this.portfolioDescription = portfolio.getPortfolioDescription();
         this.portfolioStartDate = portfolio.getPortfolioStartDate();
         this.portfolioEndDate = portfolio.getPortfolioEndDate();
         this.portfolioActiveStatus = portfolio.getPortfolioActiveStatus();
@@ -54,12 +54,12 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioId = portfolioId;
     }
 
-    public String getPortfolioGoal() {
-        return portfolioGoal;
+    public String getPortfolioDescription() {
+        return portfolioDescription;
     }
 
-    public void setPortfolioGoal(String portfolioGoal) {
-        this.portfolioGoal = portfolioGoal;
+    public void setPortfolioDescription(String portfolioDescription) {
+        this.portfolioDescription = portfolioDescription;
     }
 
     public Date getPortfolioStartDate() {
@@ -110,19 +110,4 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioBenchmark = portfolioBenchmark;
     }
 
-    @Override
-    public String toString() {
-        return "PortfolioViewModel{" +
-                "relationship='" + relationship + '\'' +
-                ", clientId=" + clientId +
-                ", portfolioId=" + portfolioId +
-                ", portfolioGoal='" + portfolioGoal + '\'' +
-                ", portfolioStartDate=" + portfolioStartDate +
-                ", portfolioEndDate=" + portfolioEndDate +
-                ", portfolioActiveStatus=" + portfolioActiveStatus +
-                ", portfolioCurrentStrategy='" + portfolioCurrentStrategy + '\'' +
-                ", portfolioBenchmarkType=" + portfolioBenchmarkType +
-                ", portfolioBenchmark='" + portfolioBenchmark + '\'' +
-                '}';
-    }
 }

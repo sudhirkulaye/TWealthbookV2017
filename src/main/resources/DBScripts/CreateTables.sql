@@ -2,6 +2,7 @@ SET SQL_SAFE_UPDATES = 0;
 Commit;
 
 
+drop table if exists portfolio_holdings;
 drop table if exists portfolio_cashflow;
 drop table if exists portfolio;
 drop table if exists family_member;
@@ -39,7 +40,7 @@ CREATE TABLE user (
 delete from user; 
 insert into user 
 (select a.customer_code, a.customer_cell_no, 'QUALITY80', 1, a.customer_name, a.customer_last_name, '2017-04-01', a.customer_email_id, a.address_line1, a.address_line2, a.address_line3, a.address_city, a.address_state, a.address_pin, a.customer_cell_no, '', '2017-04-01 00:00:00' from equityanalysis.customer_master a where a.customer_code in (1,1001,1002,1003,1004,1005,1007,1008,1009,1010,1014,1016,1017) order by a.customer_code);
-
+update user set user_password = '$2a$10$ESarR.eSIYmwip0JYr0d1.1S0K92vPiutH.kQH9lyaQGWw8OaXnhO';
 select * from user;
 
 CREATE TABLE role (
@@ -111,12 +112,11 @@ insert into family_member values (1018, 1002, '9987508953', 'SPOUSE');
 select * from family_member order by user_login_id;
 select * from user where user_login_id = '9833539299';
 
-
 CREATE TABLE portfolio (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
   portfolio_active_status int(1) DEFAULT '1' COMMENT '1-Active 2-Inactive 3-Inactive and Closed',
-  portfolio_goal varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Goal of the portfolio',
+  portfolio_description varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Description of the portfolio',
   portfolio_start_date date DEFAULT NULL COMMENT 'Portfolio Start Date',
   portfolio_end_date date DEFAULT NULL COMMENT 'Portfolio Expected End Date',
   portfolio_current_strategy varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 
@@ -136,6 +136,7 @@ Commodity : Gold, Silver etc.
 Private Equity : Own Business or investment in private business',
   portfolio_benchmark_type int(1) DEFAULT 1 COMMENT 'Benchmark Type 1-Standard Index 2-Customized combination of Indices',
   portfolio_benchmark varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Benchmark Code for performance comparison',
+  portfolio_value float COMMENT 'Market value of the portfolio',
   PRIMARY KEY (client_id, portfolio_id),
   CONSTRAINT c_portfolio_client_id FOREIGN KEY (client_id) REFERENCES client (client_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Portfolio';
@@ -149,8 +150,8 @@ select * from portfolio;
 CREATE TABLE portfolio_cashflow (
   client_id int NOT NULL COMMENT 'Client ID unique Auto Generated',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
-  date date NOT NULL  COMMENT 'Date on which major cahs inflow or outflow happens',
-  amount float NOT NULL COMMENT 'Amount of cahs inflow (negative) or outflow (outflow) happens',
+  date date NOT NULL  COMMENT 'Date on which major cash inflow or outflow happens',
+  amount float NOT NULL COMMENT 'Amount of cash inflow (negative) or outflow (outflow) happens',
   PRIMARY KEY (client_id,portfolio_id,date),
   CONSTRAINT c_portfolio_cashflow_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
   CONSTRAINT c_portfolio_cashflow_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
@@ -159,3 +160,39 @@ CREATE TABLE portfolio_cashflow (
 insert into portfolio_cashflow select * from equityanalysis.portfolio_inflow_outflow_history;
 
 select * from portfolio_cashflow;
+
+CREATE TABLE portfolio_holdings (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  security_id varchar(70) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Id',
+  security_buy_date date NOT NULL COMMENT 'Security Buy Date',
+  security_name varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Security Name',
+  security_asset_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Class',
+  security_asset_sub_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Sub Class',
+  security_sector_name varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Security Sector Name',
+  security_industry_name varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Security Industry Name',
+  security_quantity float COMMENT 'Security Quantity',
+  security_buy_rate float COMMENT 'Security Buy Rate per Quantity',
+  security_brokerage float COMMENT 'Security Total Brokerage',
+  security_tax float COMMENT 'Security Total Tax',
+  security_total_cost float COMMENT 'Security Total Cost (Buy Rate*Quantity) + Brokerage + Tax',
+  security_cost_rate float COMMENT 'Security effective cost per quantity i.e. Total Cost/Quantity',
+  security_cmp float COMMENT 'Security Current Market Price',
+  security_holding_period float  COMMENT 'Security holding period in years',
+  security_market_value float COMMENT 'Security market value (CMP*Quanity)',
+  security_net_profit float COMMENT 'Net Profit = Market Value - Total Cost',
+  security_annualized_return float COMMENT 'Security annualized return',
+  security_absolute_return float COMMENT 'Security absolute return',
+  security_maturity_value float COMMENT 'Security Maturity Value especially for FDs',
+  security_maturity_date date default '1900-01-01' COMMENT 'Security Maturity Value especially for FDs',
+  PRIMARY KEY (client_id,portfolio_id,security_id,security_buy_date),
+  CONSTRAINT c_portfolio_holdings_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
+  CONSTRAINT c_portfolio_holdings_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
+) COMMENT='Portfolio Cashflow';
+
+
+insert into portfolio_holdings 
+select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name, a.asset_class, a.sub_class, a.sector_name, a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.cmp, a.holding_period, a.market_value, a.net_profit, a.cagr_return, a.absolute_return, a.maturity_value, a.maturity_date from equityanalysis.portfolio_current_status a;
+
+select count(1) from portfolio_holdings; 
+

@@ -1,10 +1,7 @@
 package com.twealthbook.service;
 
 import com.twealthbook.model.*;
-import com.twealthbook.repository.ClientRepository;
-import com.twealthbook.repository.FamilyMemebrRepository;
-import com.twealthbook.repository.PortfolioRepository;
-import com.twealthbook.repository.UserRepository;
+import com.twealthbook.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,14 +18,19 @@ public class TWealthbookApiService {
     private UserRepository userRepository;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private FamilyMemberRepository familyMemberRepository;
 
     @Autowired
-    private FamilyMemebrRepository familyMemebrRepository;
+    private ClientRepository clientRepository;
 
     @Autowired
     private PortfolioRepository portfolioRepository;
 
+    @Autowired
+    private PortfolioCashflowRepository portfolioCashflowRepository;
+
+    @Autowired
+    private PortfolioHoldingsRepository portfolioHoldingsRepository;
 
     /**
      * Return true if Roles contains a ADMIN Role
@@ -188,6 +190,27 @@ public class TWealthbookApiService {
             }
         }
         return portfolioViewModels;
+    }
+
+
+    public List<PortfolioCashflow> getPortfolioCashflow
+            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+            throws UsernameNotFoundException{
+        FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
+        if (!familyMember.getUserLoginId().equals(userDetails.getUsername())) {
+            throw new UsernameNotFoundException("Clinet is not a family memebr of user");
+        }
+        return (List<PortfolioCashflow>) portfolioCashflowRepository.findAllByportfolioCashflowKeyClientIdAndPortfolioCashflowKeyPortfolioId(clientId, portfolioId);
+    }
+
+    public List<PortfolioHoldings> getPortfolioHoldings
+            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+            throws UsernameNotFoundException{
+        FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
+        if (!familyMember.getUserLoginId().equals(userDetails.getUsername())) {
+            throw new UsernameNotFoundException("Clinet is not a family memebr of user");
+        }
+        return (List<PortfolioHoldings>) portfolioHoldingsRepository.findAllByPortfolioHoldingsKeyClientIdAndPortfolioHoldingsKeyPortfolioId(clientId, portfolioId);
     }
 
 }

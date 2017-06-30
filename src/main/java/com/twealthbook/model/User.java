@@ -6,7 +6,6 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity

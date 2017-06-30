@@ -36,27 +36,88 @@
                                         <tr>
                                             <th>Family Member</th>
                                             <th ng-hide="true">ID</th>
-                                            <th>Portfolio Goal</th>
+                                            <th>Portfolio Description</th>
                                             <th>Start Date</th>
-                                            <th>End Date</th>
+                                            <th ng-hide="true">End Date</th>
                                             <th ng-hide="true">Status</th>
-                                            <th>Strategy</th>
-                                            <th>Benchmark Type</th>
+                                            <th ng-hide="true">Strategy</th>
+                                            <th ng-hide="true">Benchmark Type</th>
                                             <th>Benchmark</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="(relationship, portfolio) in portfolios">
+                                        <tr ng-repeat="portfolio in portfolios">
                                             <td>{{portfolio.relationship}}</td>
                                             <td ng-hide="true">{{portfolio.portfolioId}}</td>
-                                            <td>{{portfolio.portfolioGoal}}</td>
+                                            <td>{{portfolio.portfolioDescription}}</td>
                                             <td>{{portfolio.portfolioStartDate}}</td>
-                                            <td>{{portfolio.portfolioEndDate}}</td>
+                                            <td ng-hide="true">{{portfolio.portfolioEndDate}}</td>
                                             <td ng-hide="true">{{portfolio.portfolioActiveStatus}}</td>
-                                            <td>{{portfolio.portfolioCurrentStrategy}}</td>
-                                            <td>{{portfolio.portfolioBenchmarkType  | benchmarkType}}</td>
+                                            <td ng-hide="true">{{portfolio.portfolioCurrentStrategy}}</td>
+                                            <td ng-hide="true">{{portfolio.portfolioBenchmarkType  | benchmarkType}}</td>
                                             <td>{{portfolio.portfolioBenchmark}}</td>
+                                            <td><button ng-click="getPortfolioCashflow(portfolio.clientId, portfolio.portfolioId)" class="btn btn-sucess">Cashflow</button></td>
+                                            <td><button ng-click="getPortfolioHoldings(portfolio.clientId, portfolio.portfolioId)" class="btn btn-sucess">Holdings</button></td>
                                         </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-hide="hideCashflow">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>Portfolio Cash Flow</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="cashflow-table" class="table" data-expand-first="true">
+                                    <thead>
+                                        <tr>
+                                            <th>Portfolio Id</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="portfolioCashflow in portfolioCashflows">
+                                            <td>{{portfolioCashflow.portfolioCashflowKey.portfolioId}}</td>
+                                            <td>{{portfolioCashflow.portfolioCashflowKey.date}}</td>
+                                            <td>{{portfolioCashflow.amount | currency:"&#8377;":0}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-hide="hideHoldings">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>Portfolio Holdings</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="holdings-table" class="table" data-expand-first="true">
+                                    <thead>
+                                    <tr>
+                                        <th>Portfolio Id</th>
+                                        <th>Security</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="portfolioHolding in portfolioHoldings">
+                                        <td>{{portfolioHolding.portfolioHoldingsKey.portfolioId}}</td>
+                                        <td>{{portfolioHolding.portfolioHoldingsKey.securityId}}</td>
+                                        <td>{{portfolioHolding.securityMarketValue | currency:"&#8377;":0}}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
