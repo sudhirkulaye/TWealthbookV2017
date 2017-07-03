@@ -42,6 +42,7 @@ public class TWealthbookRESTApiController {
     @RequestMapping(value = "/getportfoliocashflow/{clientId}/{portfolioId}", method = RequestMethod.GET)
     @ApiMethod(description = "Get portfolio's cashflow history upon request from UI")
     public List<PortfolioCashflow> getPortfolioCashflow(@PathVariable Long clientId, @PathVariable int portfolioId){
+        System.out.println("/getPortfolioCashflow/" + clientId + "/" + portfolioId);
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -51,6 +52,7 @@ public class TWealthbookRESTApiController {
     @RequestMapping(value = "/getportfolioholdings/{clientId}/{portfolioId}", method = RequestMethod.GET)
     @ApiMethod(description = "Get portfolio's Holdings upon request from UI")
     public List<PortfolioHoldings> getPortfolioHoldings(@PathVariable Long clientId, @PathVariable int portfolioId) {
+        System.out.println("/getportfolioholdings/" + clientId + "/" + portfolioId);
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

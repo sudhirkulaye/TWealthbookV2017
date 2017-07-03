@@ -9,7 +9,7 @@ import java.sql.Date;
 public class Portfolio implements Serializable{
 
     private PortfolioKey portfolioKey;
-    private int portfolioActiveStatus;
+    private int portfolioActiveStatus; //1-Active 2-Inactive 3-Inactive and Closed
     private String portfolioDescription;
     private Date portfolioStartDate;
     private Date portfolioEndDate;

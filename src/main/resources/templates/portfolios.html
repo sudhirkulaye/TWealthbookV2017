@@ -35,30 +35,35 @@
                                     <thead>
                                         <tr>
                                             <th>Family Member</th>
-                                            <th ng-hide="true">ID</th>
+                                            <!--<th ng-hide="true">ID</th>-->
                                             <th>Portfolio Description</th>
-                                            <th>Start Date</th>
-                                            <th ng-hide="true">End Date</th>
-                                            <th ng-hide="true">Status</th>
-                                            <th ng-hide="true">Strategy</th>
-                                            <th ng-hide="true">Benchmark Type</th>
-                                            <th>Benchmark</th>
+                                            <!--<th ng-hide="true">Start Date</th>-->
+                                            <!--<th ng-hide="true">End Date</th>-->
+                                            <!--<th ng-hide="true">Status</th>-->
+                                            <!--<th ng-hide="true">Strategy</th>-->
+                                            <!--<th ng-hide="true">Benchmark Type</th>-->
+                                            <!--<th ng-hide="true">Benchmark</th>-->
+                                            <th class="text-right">Value</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="portfolio in portfolios">
                                             <td>{{portfolio.relationship}}</td>
-                                            <td ng-hide="true">{{portfolio.portfolioId}}</td>
+                                            <!--<td ng-hide="true">{{portfolio.portfolioId}}</td>-->
                                             <td>{{portfolio.portfolioDescription}}</td>
-                                            <td>{{portfolio.portfolioStartDate}}</td>
-                                            <td ng-hide="true">{{portfolio.portfolioEndDate}}</td>
-                                            <td ng-hide="true">{{portfolio.portfolioActiveStatus}}</td>
-                                            <td ng-hide="true">{{portfolio.portfolioCurrentStrategy}}</td>
-                                            <td ng-hide="true">{{portfolio.portfolioBenchmarkType  | benchmarkType}}</td>
-                                            <td>{{portfolio.portfolioBenchmark}}</td>
-                                            <td><button ng-click="getPortfolioCashflow(portfolio.clientId, portfolio.portfolioId)" class="btn btn-sucess">Cashflow</button></td>
-                                            <td><button ng-click="getPortfolioHoldings(portfolio.clientId, portfolio.portfolioId)" class="btn btn-sucess">Holdings</button></td>
+                                            <!--<td ng-hide="true">{{portfolio.portfolioStartDate}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioEndDate}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioActiveStatus}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioCurrentStrategy}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioBenchmarkType  | benchmarkType}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioBenchmark}}</td>-->
+                                            <td class="text-right">{{portfolio.portfolioValue | currency:"&#8377;":0}}</td>
+                                            <td><button ng-click="getPortfolioCashflow($index)" class="btn btn-primary btn-xs">Cashflow</button></td>
+                                            <td><button ng-click="getPortfolioHoldings($index)" class="btn btn-primary btn-xs">Holdings</button></td>
+                                            <td><button class="btn btn-primary btn-xs">Historical Historical</button></td>
+                                            <td><button class="btn btn-primary btn-xs">Graphs</button></td>
+                                            <td><button class="btn btn-primary btn-xs">Performance</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -74,20 +79,26 @@
                             <strong>Portfolio Cash Flow</strong>
                         </div>
                         <div class="panel-body">
+                            <div th:include="fragments/selectedPortfolioInfo :: selected-portfolio" />
                             <div class="table-responsive">
                                 <table id="cashflow-table" class="table" data-expand-first="true">
                                     <thead>
                                         <tr>
                                             <th>Portfolio Id</th>
                                             <th>Date</th>
-                                            <th>Amount</th>
+                                            <th>Cash In/Cash Out</th>
+                                            <th class="text-right">Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="portfolioCashflow in portfolioCashflows">
-                                            <td>{{portfolioCashflow.portfolioCashflowKey.portfolioId}}</td>
-                                            <td>{{portfolioCashflow.portfolioCashflowKey.date}}</td>
-                                            <td>{{portfolioCashflow.amount | currency:"&#8377;":0}}</td>
+                                        <tr ng-repeat="cashflow in cashflows | orderBy:'portfolioCashflowKey.date':true">
+                                            <td>{{cashflow.portfolioCashflowKey.portfolioId}}</td>
+                                            <td>{{cashflow.portfolioCashflowKey.date}}</td>
+                                            <td>
+                                                <div ng-if="cashflow.amount &lt; 0 ">Cash In</div>
+                                                <div ng-if="cashflow.amount &gt; 0 ">Cash Out</div>
+                                            </td>
+                                            <td class="text-right">{{cashflow.amount | currency:"&#8377;":0}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -101,23 +112,53 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <strong>Portfolio Holdings</strong>
+                            <input type="text" style="float:right" placeholder="Search a security" ng-model="searchSecurityText" />
                         </div>
                         <div class="panel-body">
+                            <div th:include="fragments/selectedPortfolioInfo :: selected-portfolio" />
                             <div class="table-responsive">
-                                <table id="holdings-table" class="table" data-expand-first="true">
+                                <table id="holdings-table" class="table table-striped" data-expand-first="true">
                                     <thead>
-                                    <tr>
-                                        <th>Portfolio Id</th>
-                                        <th>Security</th>
-                                        <th>Amount</th>
-                                    </tr>
+                                        <tr>
+                                            <th>Asset Class</th>
+                                            <th>Sub Class</th>
+                                            <th ng-hide="true">Sector-Industry</th>
+                                            <th>Security Name</th>
+                                            <th>Buy Date</th>
+                                            <th>Quantity</th>
+                                            <th ng-hide="true">Buy Rate</th>
+                                            <th ng-hide="true">Borkerage</th>
+                                            <th ng-hide="true">Tax</th>
+                                            <th>Total Cost</th>
+                                            <th ng-hide="true">Cost Rate</th>
+                                            <th>CMP</th>
+                                            <th class="text-right">Market Value</th>
+                                            <th ng-hide="true">Holding Period <br />(Yrs)</th>
+                                            <th>Unrealized Profit</th>
+                                            <th>Absolute Returns</th>
+                                            <th>Annualized Returns</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="portfolioHolding in portfolioHoldings">
-                                        <td>{{portfolioHolding.portfolioHoldingsKey.portfolioId}}</td>
-                                        <td>{{portfolioHolding.portfolioHoldingsKey.securityId}}</td>
-                                        <td>{{portfolioHolding.securityMarketValue | currency:"&#8377;":0}}</td>
-                                    </tr>
+                                        <tr ng-repeat="holding in holdings | filter:searchSecurity | orderBy:['securityAssetClass', 'securityAssetSubClass', 'securitySectorName', 'securityBuyDate']">
+                                            <td>{{holding.securityAssetClass}}</td>
+                                            <td>{{holding.securityAssetSubClass}}</td>
+                                            <td ng-hide="true">{{holding.securitySectorName + "--" + holding.securityIndustryName}}</td>
+                                            <td>{{holding.securityName}}</td>
+                                            <td>{{holding.portfolioHoldingsKey.securityBuyDate}}</td>
+                                            <td class="text-right">{{holding.securityQuantity | number:2}}</td>
+                                            <td ng-hide="true" class="text-right">{{holding.securityBuyRate | number:2}}</td>
+                                            <td ng-hide="true" class="text-right">{{holding.securityBrokerage | number:2}}</td>
+                                            <td ng-hide="true" class="text-right">{{holding.securityTax | number:2}}</td>
+                                            <td class="text-right">{{holding.securityTotalCost | number:0}}</td>
+                                            <td ng-hide="true" class="text-right">{{holding.securityCostRate | number:2}}</td>
+                                            <td class="text-right">{{holding.securityCmp | number:2}}</td>
+                                            <td class="text-right">{{holding.securityMarketValue | currency:"&#8377;":0}}</td>
+                                            <td ng-hide="true" class="text-right">{{holding.securityHoldingPeriod | number:2}}</td>
+                                            <td class="text-right">{{holding.securityUnrealizedNetProfit}}</td>
+                                            <td class="text-right">{{holding.securityAbsoluteReturn | percentageReturns:2}}</td>
+                                            <td class="text-right">{{holding.securityAnnualizedReturn | percentageReturns:2}}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -129,6 +170,7 @@
         <!-- page-wrapper -->
     </div>
     <!-- wrapper -->
+    <p id="processingDate" ng-model="processingDate"/>
 
     <!-- jQuery -->
     <script src="../static/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
@@ -138,6 +180,7 @@
     <script src="../static/vendor/sb-admin-2/js/sb-admin-2.min.js" th:src="@{/vendor/sb-admin-2/js/sb-admin-2.min.js}"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="../static/vendor/metisMenu/metisMenu.min.js" th:src="@{/vendor/metisMenu/metisMenu.min.js}"></script>
+
     <!-- Morris Charts JavaScript -->
     <script src="../static/vendor/raphael/raphael.min.js" th:src="@{/vendor/raphael/raphael.min.js}"></script>
     <script src="../static/vendor/morrisjs/morris.min.js" th:src="@{/vendor/morrisjs/morris.min.js}"></script>
@@ -145,6 +188,14 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
     <!-- Footable JavaScript -->
     <script src="../static/vendor/footable/js/footable.core.min.js" th:src="@{/vendor/footable/js/footable.core.min.js}" type="text/javascript"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            var processingDate = [[${processingDate}]];
+            processingDate = processingDate.substring(0,10);
+            document.getElementById("processingDate").innerHTML = processingDate;
+        /*]]>*/
+    </script>
 
 </body>
 </html>

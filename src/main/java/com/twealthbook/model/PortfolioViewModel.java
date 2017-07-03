@@ -15,6 +15,7 @@ public class PortfolioViewModel implements Serializable {
     private String portfolioCurrentStrategy;
     private int portfolioBenchmarkType;
     private String portfolioBenchmark;
+    private Float portfolioValue;
 
     public PortfolioViewModel(){}
     public PortfolioViewModel(String relationship, Portfolio portfolio){
@@ -28,6 +29,7 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioCurrentStrategy = portfolio.getPortfolioCurrentStrategy();
         this.portfolioBenchmarkType = portfolio.getPortfolioBenchmarkType();
         this.portfolioBenchmark = portfolio.getPortfolioBenchmark();
+        this.portfolioValue = portfolio.getPortfolioValue();
     }
 
     public String getRelationship() {
@@ -110,4 +112,10 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioBenchmark = portfolioBenchmark;
     }
 
+    public Float getPortfolioValue() {
+        return portfolioValue;
+    }
+    public void setPortfolioValue(Float portfolioValue) {
+        this.portfolioValue = portfolioValue;
+    }
 }

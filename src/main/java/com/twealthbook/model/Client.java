@@ -15,7 +15,8 @@ public class Client implements Serializable{
     private String clientMiddleName;
     private String clientLastName;
     private Date clientBrithDate;
-    private int clientMaritalStatus; //'1-Single, 2-Married, 3-Divorcee, 4-Widow'
+    private int clientGender; //1: Male 2: Female 3: Other
+    private int clientMaritalStatus; //1-Single, 2-Married, 3-Divorcee, 4-Widow
     private Date clientJoiningDate;
     private BigInteger clientCellNo;
     private String clientEmailId;
@@ -71,6 +72,14 @@ public class Client implements Serializable{
     }
     public void setClientBrithDate(Date clientBrithDate) {
         this.clientBrithDate = clientBrithDate;
+    }
+
+    @Column(name = "client_gender")
+    public int getClientGender() {
+        return clientGender;
+    }
+    public void setClientGender(int clientGender) {
+        this.clientGender = clientGender;
     }
 
     @Column(name = "client_marital_status")

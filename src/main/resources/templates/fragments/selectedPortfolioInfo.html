@@ -1,0 +1,29 @@
+<div th:fragment="selected-portfolio" >
+    <table width="100%">
+        <tr>
+            <td><strong>Family Member:</strong></td>
+            <td>{{relationship}}</td>
+            <td><strong>Portfolio Description:</strong></td>
+            <td>{{portfolioDescription}}</td>
+        </tr>
+        <tr>
+            <td><strong>Portfolio Start Date:</strong></td>
+            <td>{{portfolioStartDate}}</td>
+            <td><strong>Portfolio Status:</strong></td>
+            <td>{{portfolioActiveStatus}}</td>
+        </tr>
+        <tr>
+            <td><strong>Portfolio Strategy:</strong></td>
+            <td>{{portfolioCurrentStrategy}}</td>
+            <td><strong>Portfolio Benchmark Type:</strong></td>
+            <td>{{portfolioBenchmarkType}}</td>
+        </tr>
+        <tr>
+            <td><strong>Portfolio Benchmark:</strong></td>
+            <td>{{portfolioBenchmark}}</td>
+            <td><strong>Portfolio Value:</strong></td>
+            <td>{{portfolioValue}}</td>
+        </tr>
+    </table>
+    <br />
+</div>

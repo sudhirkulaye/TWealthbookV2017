@@ -1,7 +1,7 @@
 SET SQL_SAFE_UPDATES = 0;
 Commit;
 
-
+drop table if exists portfolio_historical_holdings;
 drop table if exists portfolio_holdings;
 drop table if exists portfolio_cashflow;
 drop table if exists portfolio;
@@ -11,7 +11,25 @@ drop table if exists user_role;
 drop table if exists role;
 drop table if exists user;
 drop table if exists sequence_next_hi_value;
+drop table if exists setup_dates;
 
+CREATE TABLE setup_dates (
+  date_today date NOT NULL COMMENT 'Today''s trading date',
+  date_last_trading_day date NOT NULL COMMENT 'Last trading date',
+  date_start_current_month date NOT NULL COMMENT 'Current month begining date',
+  date_start_current_quarter date NOT NULL COMMENT 'Current quarter begining date',
+  date_start_current_fin_year date NOT NULL COMMENT 'Current FIN year begining date',
+  date_start_1_quarter date NOT NULL COMMENT 'Same as date_start_current_quarter i.e. begining date of current quarter',
+  date_start_2_quarter date NOT NULL COMMENT 'Begining date of last quarter',
+  date_start_3_quarter date NOT NULL COMMENT 'Begining date of last to last quarters before',
+  date_start_4_quarter date NOT NULL COMMENT 'Begining date of quarter started 3 quarters before',
+  date_start_next_fin_year date NOT NULL COMMENT 'Next Year date start',
+  current_fin_year int(4) NOT NULL COMMENT 'Current FIN Year',
+  current_quarter int(1) NOT NULL COMMENT 'Current Quarter'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+delete from setup_dates;
+insert into setup_Dates (select * from equityanalysis.setup_dates); 
 
 create table sequence_next_hi_value (id varchar(50), sequence_next_hi_value int, primary key (id));
 
@@ -71,6 +89,7 @@ CREATE TABLE client (
   client_middle_name varchar(50) COLLATE utf8_unicode_ci NULL COMMENT 'Client Middle Name',
   client_last_name varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Client Last Name',
   client_birth_date date NULL COMMENT 'Client Birth Date',
+  client_gender int(1) NULL COMMENT 'Client Gender 1: Male 2: Female 3: Other',
   client_marital_status int(1) DEFAULT '0' COMMENT '1-Single, 2-Married, 3-Divorcee, 4-Widow',
   client_joining_date date NULL COMMENT 'Client Joining Date',
   client_cell_no BIGINT NULL COMMENT 'Client Cell Phone NO',
@@ -178,21 +197,64 @@ CREATE TABLE portfolio_holdings (
   security_total_cost float COMMENT 'Security Total Cost (Buy Rate*Quantity) + Brokerage + Tax',
   security_cost_rate float COMMENT 'Security effective cost per quantity i.e. Total Cost/Quantity',
   security_cmp float COMMENT 'Security Current Market Price',
-  security_holding_period float  COMMENT 'Security holding period in years',
-  security_market_value float COMMENT 'Security market value (CMP*Quanity)',
-  security_net_profit float COMMENT 'Net Profit = Market Value - Total Cost',
-  security_annualized_return float COMMENT 'Security annualized return',
-  security_absolute_return float COMMENT 'Security absolute return',
+  security_market_value float COMMENT 'Security market value (CMP*Quantity)',
+  security_holding_period float  COMMENT 'Security holding period in years i.e. Buy date to till date ',
+  security_unrealized_net_profit float COMMENT 'Unrealized Net Profit = Market Value - Total Cost',
+  security_absolute_return float COMMENT 'Unrealized absolute return',
+  security_annualized_return float COMMENT 'Unrealized annualized return',
   security_maturity_value float COMMENT 'Security Maturity Value especially for FDs',
   security_maturity_date date default '1900-01-01' COMMENT 'Security Maturity Value especially for FDs',
   PRIMARY KEY (client_id,portfolio_id,security_id,security_buy_date),
   CONSTRAINT c_portfolio_holdings_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
   CONSTRAINT c_portfolio_holdings_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
-) COMMENT='Portfolio Cashflow';
+) COMMENT='Portfolio Current Holdings';
 
+delete from portfolio_holdings;
 
 insert into portfolio_holdings 
-select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name, a.asset_class, a.sub_class, a.sector_name, a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.cmp, a.holding_period, a.market_value, a.net_profit, a.cagr_return, a.absolute_return, a.maturity_value, a.maturity_date from equityanalysis.portfolio_current_status a;
+select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name, a.asset_class, a.sub_class, a.sector_name, 
+a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.cmp, a.market_value, a.holding_period, 
+a.net_profit, a.absolute_return, a.cagr_return, a.maturity_value, a.maturity_date from equityanalysis.portfolio_current_status a;
 
-select count(1) from portfolio_holdings; 
+update portfolio_holdings a set a.security_maturity_date = '1900-01-01' where security_maturity_date is null or security_maturity_date = '0000-00-00';
+
+select * from portfolio_holdings a where a.client_id not in (select client_id from client); 
+
+CREATE TABLE portfolio_historical_holdings (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  security_id varchar(70) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Id',
+  security_buy_date date NOT NULL COMMENT 'Security Buy Date',
+  security_name varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Security Name',
+  security_asset_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Class',
+  security_asset_sub_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Sub Class',
+  security_sector_name varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Security Sector Name',
+  security_industry_name varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Security Industry Name',
+  security_quantity float COMMENT 'Security Quantity',
+  security_buy_rate float COMMENT 'Security Buy Rate per Quantity',
+  security_brokerage float COMMENT 'Brokerage for buy',
+  security_tax float COMMENT 'Tax for buy',
+  security_total_cost float COMMENT 'Security Total Cost (Buy Rate*Quantity) + Brokerage + Tax',
+  security_cost_rate float COMMENT 'Security effective cost per quantity i.e. Total Cost/Quantity',
+  security_sell_date date NOT NULL COMMENT 'Security Sell Date',
+  security_sell_rate float COMMENT 'Security Sell Rate per Quantity',
+  security_brokerage_sell float COMMENT 'Brokerage for sell',
+  security_tax_sell float COMMENT 'Tax for sell',
+  security_net_sell float COMMENT 'Security Total Sell (Sell Rate*Quantity) - Brokerage - Tax',
+  security_net_sell_rate float COMMENT 'Security effective sell per quantity i.e. Net Sell/Quantity',
+  security_holding_period float  COMMENT 'Security holding period in years i.e. Buy date to till date ',
+  security_realized_net_profit float COMMENT 'Realized Net Profit = Market Value - Total Cost',
+  security_absolute_return float COMMENT 'Realized absolute return',
+  security_annualized_return float COMMENT 'Realized annualized return',
+  fin_year varchar(9) COLLATE utf8_unicode_ci NOT NULL COMMENT 'FIN Year when security was sold',
+  PRIMARY KEY (client_id, portfolio_id, security_id, security_buy_date, security_sell_date)
+) COMMENT='Portfolio Historical Holdings';
+
+insert into portfolio_historical_holdings 
+select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name, a.asset_class, a.sub_class, a.sector_name, 
+a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.sell_date, a.sell_rate, a.brokerage_sell,
+a.tax_sell, a.total_sell, a.sell_per_unit, a.holding_period, a.net_profit, a.absolute_return, a.cagr_return, a.fin_year from equityanalysis.portfolio_realized_gain a;
+
+
+
 

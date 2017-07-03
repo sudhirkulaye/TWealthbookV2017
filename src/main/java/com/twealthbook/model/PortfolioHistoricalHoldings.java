@@ -5,10 +5,10 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
-@Table(name = "portfolio_holdings")
-public class PortfolioHoldings implements Serializable {
+@Table(name = "portfolio_historical_holdings")
+public class PortfolioHistoricalHoldings implements Serializable {
 
-    PortfolioHoldingsKey portfolioHoldingsKey;
+    PortfolioHistoricalHoldingsKey portfolioHistoricalHoldingsKey;
     private String securityName;
     private String securityAssetClass;
     private String securityAssetSubClass;
@@ -20,21 +20,22 @@ public class PortfolioHoldings implements Serializable {
     private Float securityTax;
     private Float securityTotalCost;
     private Float securityCostRate;
-    private Float securityCmp;
-    private Float securityMarketValue;
+    private Float securitySellRate;
+    private Float securityBrokerageSell;
+    private Float securityTaxSell;
+    private Float securityNetSell;
+    private Float securityNetSellRate;
     private Float securityHoldingPeriod;
-    private Float securityUnrealizedNetProfit;
+    private Float securityRealizedNetProfit;
     private Float securityAbsoluteReturn;
     private Float securityAnnualizedReturn;
-    private Float securityMaturityValue;
-    private Date securityMaturityDate;
 
     @EmbeddedId
-    public PortfolioHoldingsKey getPortfolioHoldingsKey() {
-        return portfolioHoldingsKey;
+    public PortfolioHistoricalHoldingsKey getPortfolioHistoricalHoldingsKey() {
+        return portfolioHistoricalHoldingsKey;
     }
-    public void setPortfolioHoldingsKey(PortfolioHoldingsKey portfolioHoldingsKey) {
-        this.portfolioHoldingsKey = portfolioHoldingsKey;
+    public void setPortfolioHistoricalHoldingsKey(PortfolioHistoricalHoldingsKey portfolioHistoricalHoldingsKey) {
+        this.portfolioHistoricalHoldingsKey = portfolioHistoricalHoldingsKey;
     }
 
     @Column(name = "security_name")
@@ -125,20 +126,44 @@ public class PortfolioHoldings implements Serializable {
         this.securityCostRate = securityCostRate;
     }
 
-    @Column(name = "security_cmp")
-    public Float getSecurityCmp() {
-        return securityCmp;
+    @Column(name = "security_sell_rate")
+    public Float getSecuritySellRate() {
+        return securitySellRate;
     }
-    public void setSecurityCmp(Float securityCmp) {
-        this.securityCmp = securityCmp;
+    public void setSecuritySellRate(Float securitySellRate) {
+        this.securitySellRate = securitySellRate;
     }
 
-    @Column(name = "security_market_value")
-    public Float getSecurityMarketValue() {
-        return securityMarketValue;
+    @Column(name = "security_brokerage_sell")
+    public Float getSecurityBrokerageSell() {
+        return securityBrokerageSell;
     }
-    public void setSecurityMarketValue(Float securityMarketValue) {
-        this.securityMarketValue = securityMarketValue;
+    public void setSecurityBrokerageSell(Float securityBrokerageSell) {
+        this.securityBrokerageSell = securityBrokerageSell;
+    }
+
+    @Column(name = "security_tax_sell")
+    public Float getSecurityTaxSell() {
+        return securityTaxSell;
+    }
+    public void setSecurityTaxSell(Float securityTaxSell) {
+        this.securityTaxSell = securityTaxSell;
+    }
+
+    @Column(name = "security_net_sell")
+    public Float getSecurityNetSell() {
+        return securityNetSell;
+    }
+    public void setSecurityNetSell(Float securityNetSell) {
+        this.securityNetSell = securityNetSell;
+    }
+
+    @Column(name = "security_net_sell_rate")
+    public Float getSecurityNetSellRate() {
+        return securityNetSellRate;
+    }
+    public void setSecurityNetSellRate(Float securityNetSellRate) {
+        this.securityNetSellRate = securityNetSellRate;
     }
 
     @Column(name = "security_holding_period")
@@ -149,12 +174,12 @@ public class PortfolioHoldings implements Serializable {
         this.securityHoldingPeriod = securityHoldingPeriod;
     }
 
-    @Column(name = "security_unrealized_net_profit")
-    public Float getSecurityUnrealizedNetProfit() {
-        return securityUnrealizedNetProfit;
+    @Column(name = "security_realized_net_profit")
+    public Float getSecurityRealizedNetProfit() {
+        return securityRealizedNetProfit;
     }
-    public void setSecurityUnrealizedNetProfit(Float securityUnrealizedNetProfit) {
-        this.securityUnrealizedNetProfit = securityUnrealizedNetProfit;
+    public void setSecurityRealizedNetProfit(Float securityRealizedNetProfit) {
+        this.securityRealizedNetProfit = securityRealizedNetProfit;
     }
 
     @Column(name = "security_absolute_return")
@@ -173,28 +198,13 @@ public class PortfolioHoldings implements Serializable {
         this.securityAnnualizedReturn = securityAnnualizedReturn;
     }
 
-    @Column(name = "security_maturity_value")
-    public Float getSecurityMaturityValue() {
-        return securityMaturityValue;
-    }
-    public void setSecurityMaturityValue(Float securityMaturityValue) {
-        this.securityMaturityValue = securityMaturityValue;
-    }
-
-    @Column(name = "security_maturity_date")
-    public Date getSecurityMaturityDate() {
-        return securityMaturityDate;
-    }
-    public void setSecurityMaturityDate(Date securityMaturityDate) {
-        this.securityMaturityDate = securityMaturityDate;
-    }
-
     @Embeddable
-    public static class PortfolioHoldingsKey implements Serializable {
+    public static class PortfolioHistoricalHoldingsKey implements Serializable {
         private Long clientId;
         private int portfolioId;
         private String securityId;
         private Date securityBuyDate;
+        private Date securitySellDate;
 
         @Column(name = "client_id")
         public Long getClientId() {
@@ -226,6 +236,14 @@ public class PortfolioHoldings implements Serializable {
         }
         public void setSecurityBuyDate(Date securityBuyDate) {
             this.securityBuyDate = securityBuyDate;
+        }
+
+        @Column(name = "security_sell_date")
+        public Date getSecuritySellDate() {
+            return securitySellDate;
+        }
+        public void setSecuritySellDate(Date securitySellDate) {
+            this.securitySellDate = securitySellDate;
         }
     }
 

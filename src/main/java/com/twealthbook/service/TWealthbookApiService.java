@@ -52,7 +52,7 @@ public class TWealthbookApiService {
      * @return
      * @throws UsernameNotFoundException
      */
-    private User getLoggedInUser(UserDetails userDetails) throws  UsernameNotFoundException {
+    public User getLoggedInUser(UserDetails userDetails) throws  UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByUserLoginId(userDetails.getUsername());
 
         optionalUser
