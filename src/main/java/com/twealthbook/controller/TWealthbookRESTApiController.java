@@ -1,15 +1,14 @@
 package com.twealthbook.controller;
 
-import com.twealthbook.model.PortfolioCashflow;
-import com.twealthbook.model.PortfolioHoldings;
-import com.twealthbook.model.PortfolioViewModel;
-import com.twealthbook.repository.PortfolioCashflowRepository;
+import com.twealthbook.model.*;
+import com.twealthbook.repository.SetupDatesRepository;
 import com.twealthbook.service.TWealthbookApiService;
 import org.jsondoc.core.annotation.Api;
 import org.jsondoc.core.annotation.ApiMethod;
 import org.jsondoc.core.annotation.ApiPathParam;
 import org.jsondoc.core.pojo.ApiStage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +23,28 @@ import java.util.List;
 @Api(name = "TWealthbook REST APIs",
         description =  "TWealthbook REST APIs",
         stage= ApiStage.RC)
+@EnableCaching
 public class TWealthbookRESTApiController {
 
     @Autowired
     TWealthbookApiService apiService;
     @Autowired
-    PortfolioCashflowRepository portfolioCashflowRepository;
+    public SetupDatesRepository setupDatesRepository;
+
+    public SetupDates setupDates;
+
+    @RequestMapping(value = "/getsetupdates", method = RequestMethod.GET)
+    @ApiMethod(description = "Get system dates")
+    public SetupDates getSetupDates(){
+        if (setupDates == null) {
+            List<SetupDates> setupDatesList = setupDatesRepository.findAll();
+            //TODO check only one object in the list
+            for(SetupDates setupDatesListObject : setupDatesList) {
+                setupDates = setupDatesListObject;
+            }
+        }
+        return  setupDates;
+    }
 
     @RequestMapping(value = "/getallportfolios", method = RequestMethod.GET)
     @ApiMethod(description = "Get all portfolios of logged in client's family members")
@@ -57,7 +72,16 @@ public class TWealthbookRESTApiController {
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return apiService.getPortfolioHoldings(userDetails, clientId, portfolioId);
+    }
 
+    @RequestMapping(value = "/getportfoliohistoricalholdings/{clientId}/{portfolioId}", method = RequestMethod.GET)
+    @ApiMethod(description = "Get portfolio's Holdings upon request from UI")
+    public List<PortfolioHistoricalHoldings> getPortfolioHistoricalHoldings(@PathVariable Long clientId, @PathVariable int portfolioId) {
+        System.out.println("/getportfoliohistoricalholdings/" + clientId + "/" + portfolioId);
+        UserDetails userDetails =
+                (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return apiService.getPortfolioHistoricalHoldings(userDetails, clientId, portfolioId);
     }
 
 }

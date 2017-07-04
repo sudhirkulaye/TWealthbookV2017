@@ -5,6 +5,7 @@ import com.twealthbook.model.CustomUserDetails;
 import com.twealthbook.model.User;
 import com.twealthbook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@EnableCaching
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired

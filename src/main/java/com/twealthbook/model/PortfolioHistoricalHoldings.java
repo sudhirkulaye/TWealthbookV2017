@@ -25,8 +25,8 @@ public class PortfolioHistoricalHoldings implements Serializable {
     private Float securityTaxSell;
     private Float securityNetSell;
     private Float securityNetSellRate;
-    private Float securityHoldingPeriod;
     private Float securityRealizedNetProfit;
+    private Float securityHoldingPeriod;
     private Float securityAbsoluteReturn;
     private Float securityAnnualizedReturn;
 
@@ -166,20 +166,20 @@ public class PortfolioHistoricalHoldings implements Serializable {
         this.securityNetSellRate = securityNetSellRate;
     }
 
-    @Column(name = "security_holding_period")
-    public Float getSecurityHoldingPeriod() {
-        return securityHoldingPeriod;
-    }
-    public void setSecurityHoldingPeriod(Float securityHoldingPeriod) {
-        this.securityHoldingPeriod = securityHoldingPeriod;
-    }
-
     @Column(name = "security_realized_net_profit")
     public Float getSecurityRealizedNetProfit() {
         return securityRealizedNetProfit;
     }
     public void setSecurityRealizedNetProfit(Float securityRealizedNetProfit) {
         this.securityRealizedNetProfit = securityRealizedNetProfit;
+    }
+
+    @Column(name = "security_holding_period")
+    public Float getSecurityHoldingPeriod() {
+        return securityHoldingPeriod;
+    }
+    public void setSecurityHoldingPeriod(Float securityHoldingPeriod) {
+        this.securityHoldingPeriod = securityHoldingPeriod;
     }
 
     @Column(name = "security_absolute_return")

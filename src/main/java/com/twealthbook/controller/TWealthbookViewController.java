@@ -4,6 +4,7 @@ import com.twealthbook.model.SetupDates;
 import com.twealthbook.repository.SetupDatesRepository;
 import com.twealthbook.service.TWealthbookApiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Date;
 
 @Controller
+@EnableCaching
 public class TWealthbookViewController {
 
     @Autowired

@@ -1,21 +1,30 @@
-var portfolioModule = angular.module('portfolioApp', [ ]);
+var portfolioModule = angular.module('portfolioApp', ['angularUtils.directives.dirPagination']);
 
+portfolioModule.controller('OtherController', function ($scope) {
+        $scope.pageChangeHandler = function(num) {
+        console.log('going to page ' + num);
+    };
+});
 
 portfolioModule.controller('portfolioController', function ($scope, $http, $filter) {
 
 	var urlBase="/api";
 	$http.defaults.headers.post["Content-Type"] = "application/json";
-	$scope.getPortfolioCashflow = getPortfolioCashflow;
-	$scope.getPortfolioHoldings = getPortfolioHoldings;
-	$scope.hideCashflow = true;
-	$scope.hideHoldings = true;
+	$scope.showDetails = showDetails;
+	$scope.hideTabs = true;
+
 	$scope.cashflowArray = [];
+
 	$scope.holdingsArray = [];
-	$scope.historicalHoldingsArray = []
+    $scope.currentPage = 1;
+    $scope.pageSize = 10;
+
+	$scope.historicalHoldingsArray = [];
 
 	findAllPortfolios();
 
     function findAllPortfolios() {
+        getSetupDates();
         $scope.portfolios = new Array;
         var url = "/getallportfolios";
         var totalPortfolios = 0;
@@ -37,6 +46,18 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
             });
     }
 
+    function getSetupDates(){
+        var url = "/getsetupdates";
+        $http.get(urlBase + url).
+            then(function (response) {
+                if (response != undefined) {
+                    $scope.dateLastTradingDay = response.data["dateLastTradingDay"];
+                } else {
+                    $scope.dateLastTradingDay = undefined;
+                }
+            });
+    }
+
     function setPortfolioSelection(index){
         $scope.relationship = $scope.portfolios[index].relationship;
         $scope.portfolioDescription = $scope.portfolios[index].portfolioDescription;
@@ -48,9 +69,16 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         $scope.portfolioValue = $filter('currency')($scope.portfolios[index].portfolioValue, "₹", 0);
     }
 
+    function showDetails(index){
+        $scope.hideTabs = false;
+        setPortfolioSelection(index);
+        getPortfolioCashflow(index);
+        getPortfolioHoldings(index);
+        getPortfolioHistoricalHoldings(index);
+    }
+
     function getPortfolioCashflow(index){
-        $scope.hideCashflow = false;
-        $scope.hideHoldings = true;
+
         if ($scope.cashflowArray[index][0] != undefined) {
             $scope.cashflows = $scope.cashflowArray[index][0];
         } else {
@@ -61,17 +89,15 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                         $scope.cashflowArray[index][0] = response.data;
                         $scope.cashflows = response.data;
                     } else {
-                        $scope.cashflowArray[i] = [];
+                        $scope.cashflowArray[index] = [];
                         $scope.cashflows = [];
                     }
                 });
         }
-        setPortfolioSelection(index);
     }
 
     function getPortfolioHoldings(index){
-        $scope.hideHoldings = false;
-        $scope.hideCashflow = true;
+
         if ($scope.holdingsArray[index][0] != undefined) {
             $scope.holdings = $scope.holdingsArray[index][0];
         } else {
@@ -82,23 +108,56 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                         $scope.holdingsArray[index][0] = response.data;
                         $scope.holdings = response.data;
                     } else {
-                        $scope.holdingsArray[i] = [];
+                        $scope.holdingsArray[index] = [];
                         $scope.holdings = [];
                     }
                 });
         }
-        setPortfolioSelection(index);
+    }
+
+    function getPortfolioHistoricalHoldings(index){
+
+        if ($scope.historicalHoldingsArray[index][0] != undefined) {
+            $scope.historicalHoldings = $scope.historicalHoldingsArray[index][0];
+        } else {
+            url = "/getportfoliohistoricalholdings/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
+            $http.get(urlBase + url).
+                then(function(response){
+                    if (response != undefined) {
+                        $scope.historicalHoldingsArray[index][0] = response.data;
+                        $scope.historicalHoldings = response.data;
+                    } else {
+                        $scope.historicalHoldingsArray[index] = [];
+                        $scope.historicalHoldings = [];
+                    }
+                });
+        }
     }
 
     $scope.searchSecurity = function (holding) {
         if ($scope.searchSecurityText == undefined) {
             return true;
         } else {
-            if (holding.portfolioHoldingsKey.securityId.toLowerCase().indexOf($scope.searchSecurityText.toLowerCase()) != -1 ) {
+            if (holding.securityName.toLowerCase().indexOf($scope.searchSecurityText.toLowerCase()) != -1 ) {
                 return true;
             }
         }
         return false;
+    }
+
+    $scope.searchHistoricalSecurity = function (holding) {
+            if ($scope.searchHistoricalSecurityText == undefined) {
+                return true;
+            } else {
+                if (historicalHolding.securityName.toLowerCase().indexOf($scope.searchHistoricalSecurityText.toLowerCase()) != -1 ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    $scope.pageChangeHandler = function(num) {
+        console.log('page changed to ' + num);
     }
 
 });
