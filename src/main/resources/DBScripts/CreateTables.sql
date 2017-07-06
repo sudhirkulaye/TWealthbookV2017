@@ -255,6 +255,13 @@ select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name
 a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.sell_date, a.sell_rate, a.brokerage_sell,
 a.tax_sell, a.total_sell, a.sell_per_unit, a.holding_period, a.net_profit, a.absolute_return, a.cagr_return, a.fin_year from equityanalysis.portfolio_realized_gain a;
 
-
-
+CREATE TABLE portfolio_asset_allocation (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  allocation_date date NOT NULL COMMENT 'Date of asset allocation',
+  allocation_asset_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Class',
+  allocation_asset_sub_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Sub Class',
+  allocation_market_value float COMMENT 'Market Value of Asset sub class',
+PRIMARY KEY (client_id, portfolio_id, security_id, security_buy_date, security_sell_date)
+) COMMENT='Portfolio Asset Allocation';
 

@@ -1,12 +1,12 @@
-var portfolioModule = angular.module('portfolioApp', ['angularUtils.directives.dirPagination']);
+var portfolioModule = angular.module('portfolioApp', ['angular.filter', 'angularUtils.directives.dirPagination', 'chart.js']);
 
 portfolioModule.controller('OtherController', function ($scope) {
         $scope.pageChangeHandler = function(num) {
-        console.log('going to page ' + num);
+        //console.log('going to page ' + num);
     };
 });
 
-portfolioModule.controller('portfolioController', function ($scope, $http, $filter) {
+portfolioModule.controller('portfolioController', function ($scope, $http, $filter, $locale) {
 
 	var urlBase="/api";
 	$http.defaults.headers.post["Content-Type"] = "application/json";
@@ -67,6 +67,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         $scope.portfolioBenchmarkType = $filter('benchmarkType')($scope.portfolios[index].portfolioBenchmarkType);
         $scope.portfolioBenchmark = $scope.portfolios[index].portfolioBenchmark;
         $scope.portfolioValue = $filter('currency')($scope.portfolios[index].portfolioValue, "₹", 0);
+        $scope.portfolioValueNumber = $scope.portfolios[index].portfolioValue;
     }
 
     function showDetails(index){
@@ -100,6 +101,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
 
         if ($scope.holdingsArray[index][0] != undefined) {
             $scope.holdings = $scope.holdingsArray[index][0];
+            setChartData(index);
         } else {
             url = "/getportfolioholdings/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
             $http.get(urlBase + url).
@@ -107,12 +109,37 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     if (response != undefined) {
                         $scope.holdingsArray[index][0] = response.data;
                         $scope.holdings = response.data;
+                        setChartData(index);
                     } else {
                         $scope.holdingsArray[index] = [];
                         $scope.holdings = [];
                     }
                 });
         }
+    }
+
+    function setChartData(index){
+        var sortedHoldings = $filter('orderBy')($scope.holdings,'securityAssetClass');
+        var map = $filter('groupBy')(sortedHoldings, 'securityAssetClass');
+        $scope.assetClass = [];
+        $scope.assetClassData = [];
+        $locale.NUMBER_FORMATS.GROUP_SEP = '';
+        for(var assetClass in map){
+           $scope.assetClass.push(assetClass);
+           $scope.assetClassData.push($filter('number')($scope.getMarketValue(map[assetClass]),0));
+        }
+        sortedHoldings = [];
+        map = {};
+        sortedHoldings = $filter('orderBy')($scope.holdings,['securityAssetClass','securityAssetSubClass']);
+        map = $filter('groupBy')(sortedHoldings, 'securityAssetSubClass');
+        $scope.assetSubClass = [];
+        $scope.assetSubClassData = [];
+        for(var assetSubClass in map){
+           $scope.assetSubClass.push(map[assetSubClass][0].securityAssetClass + "-"+ assetSubClass);
+           $scope.assetSubClassData.push($filter('number')($scope.getMarketValue(map[assetSubClass]),0));
+        }
+
+        $locale.NUMBER_FORMATS.GROUP_SEP = ',';
     }
 
     function getPortfolioHistoricalHoldings(index){
@@ -145,22 +172,56 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         return false;
     }
 
-    $scope.searchHistoricalSecurity = function (holding) {
-            if ($scope.searchHistoricalSecurityText == undefined) {
+    $scope.searchHistoricalSecurity = function (historicalHolding) {
+        if ($scope.searchHistoricalSecurityText == undefined) {
+            return true;
+        } else {
+            if (historicalHolding.securityName.toLowerCase().indexOf($scope.searchHistoricalSecurityText.toLowerCase()) != -1 ) {
                 return true;
-            } else {
-                if (historicalHolding.securityName.toLowerCase().indexOf($scope.searchHistoricalSecurityText.toLowerCase()) != -1 ) {
-                    return true;
-                }
             }
-            return false;
         }
-
-    $scope.pageChangeHandler = function(num) {
-        console.log('page changed to ' + num);
+        return false;
     }
 
+    //$scope.sortColumnHolding = "['securityAssetClass', 'securityAssetSubClass', 'securityName', 'securityBuyDate']";
+    $scope.sortColumnHolding = "securityAssetClass";
+    $scope.reverseSortHolding = false;
+    $scope.sortDataHolding = function (column) {
+        $scope.reverseSortHolding = ($scope.sortColumnHolding == column) ? !$scope.reverseSortHolding : false;
+        $scope.sortColumnHolding = column;
+    }
+    $scope.getSortClassHolding = function (column) {
+        if ($scope.sortColumnHolding == column) {
+            return $scope.reverseSortHolding ? 'fa fa-sort-up fa-fw' : 'fa fa-sort-down fa-fw'
+        }
+        return '';
+    }
+
+    $scope.sortColumnHistoricalHolding = "portfolioHistoricalHoldingsKey.securitySellDate";
+    $scope.reverseSortHistoricalHolding = true;
+    $scope.sortDataHistoricalHolding = function (column) {
+        $scope.reverseSortHistoricalHolding = ($scope.sortColumnHistoricalHolding == column) ? !$scope.reverseSortHistoricalHolding : false;
+        $scope.sortColumnHistoricalHolding = column;
+    }
+    $scope.getSortClassHistoricalHolding = function (column) {
+        if ($scope.sortColumnHistoricalHolding == column) {
+            return $scope.reverseSortHistoricalHolding ? 'fa fa-sort-up fa-fw' : 'fa fa-sort-down fa-fw'
+        }
+        return '';
+    }
+
+    $scope.getMarketValue = function(holdings) {
+        return holdings
+        .map(function(x) { return x.securityMarketValue; })
+        .reduce(function(a, b) { return a + b; });
+    }
+
+    $scope.pageChangeHandler = function(num) {
+        //console.log('page changed to ' + num);
+    }
 });
+
+
 
 portfolioModule.filter("benchmarkType", function () {
     return function (benchmarkType) {
