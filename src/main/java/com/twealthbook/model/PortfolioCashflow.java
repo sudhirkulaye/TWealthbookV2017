@@ -9,7 +9,7 @@ import java.sql.Date;
 public class PortfolioCashflow implements Serializable {
 
     private PortfolioCashflowKey portfolioCashflowKey;
-    private Float amount;
+    private Float cashflowAmount;
 
     @EmbeddedId
     public PortfolioCashflowKey getPortfolioCashflowKey() {
@@ -19,19 +19,19 @@ public class PortfolioCashflow implements Serializable {
         this.portfolioCashflowKey = portfolioCashflowKey;
     }
 
-    @Column(name = "amount")
-    public Float getAmount() {
-        return amount;
+    @Column(name = "cashflow_amount")
+    public Float getCashflowAmount() {
+        return cashflowAmount;
     }
-    public void setAmount(Float amount) {
-        this.amount = amount;
+    public void setCashflowAmount(Float cashflowAmount) {
+        this.cashflowAmount = cashflowAmount;
     }
 
     @Embeddable
     public static class PortfolioCashflowKey implements Serializable {
         private Long clientId;
         private int portfolioId;
-        private Date date;
+        private Date cashflowDate;
 
         @Column(name = "client_id")
         public Long getClientId() {
@@ -49,12 +49,12 @@ public class PortfolioCashflow implements Serializable {
             this.portfolioId = portfolioId;
         }
 
-        @Column(name = "date")
-        public Date getDate() {
-            return date;
+        @Column(name = "cashflow_date")
+        public Date getCashflowDate() {
+            return cashflowDate;
         }
-        public void setDate(Date date) {
-            this.date = date;
+        public void setCashflowDate(Date cashflowDate) {
+            this.cashflowDate = cashflowDate;
         }
     }
 }

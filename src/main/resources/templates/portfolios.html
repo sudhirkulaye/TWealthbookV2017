@@ -1,6 +1,36 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/header :: common-header" />
+<!--<head th:include="fragments/header :: common-header" />-->
+<head th:fragment="common-header">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+    <meta name="MobileOptimized" content="width" />
+    <meta name="description" content="TWealthbook App helps tracking, assessing and managing wealth of entire family. TWealthbook App incorporates Goal Based Portfolio Management Approach. TWealthbook App considers timing of portfolios cash inflows and outflows and thus gives you better picture of performance, helps to assess your investment decisions. And any point in time it tells Strategic Asset Allocation and Tactical Asset Allocation Decision." />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="generator" content="Bootstrap Admin Theme (https://startbootstrap.com), Spring Boot (http://start.spring.io/), Angular JS (https://angularjs.org/), MySQL (https://www.mysql.com/)" />
+    <meta name="keywords" content="Family Wealth Management App, Family Asset Management App, App for Goal Based Investment Approach, Portfolio Management App with Cash flows" />
+    <meta name="author" content="Sudhir Kulaye" />
+    <title th:text="${title}">TWealthbook</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <!-- MetisMenu CSS -->
+    <link href="../../css/metisMenu.min.css" th:href="@{/css/metisMenu.min.css}" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link href="../../css/sb-admin-2.min.css" th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet" />
+    <!-- Morris Chart CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" />
+
+    <!-- Custom Fonts -->
+    <link href="../../static/vendor/font-awesome/css/font-awesome.min.css" th:href="@{/vendor/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css" />
+
+    <!-- jQuery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+</head>
 <body  ng-app="portfolioApp" ng-controller="portfolioController">
     <!-- googleAnalytics -->
     <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
@@ -26,7 +56,6 @@
                 <div class="col-lg-12">
                     <h1 class="page-header" >Portfolios</h1>
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
             <div class="row">
                 <div class="col-lg-12">
@@ -86,11 +115,12 @@
                                 <li class="active"><a href="#cashflow-pills" data-toggle="tab">Cashflow</a></li>
                                 <li><a href="#holdings-pills" data-toggle="tab">Holdings</a></li>
                                 <li><a href="#historical-holdings-pills" data-toggle="tab">Historical Holdings</a></li>
-                                <li><a href="#charts-pills" data-toggle="tab">Distribution</a></li>
+                                <li><a href="#distribution-pills" data-toggle="tab">Distribution</a></li>
                                 <li><a href="#performance-pills" data-toggle="tab">Performance</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="cashflow-pills">
+                                    <br /><br />
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="panel panel-default">
@@ -109,14 +139,14 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr ng-repeat="cashflow in cashflows | orderBy:'portfolioCashflowKey.date':true">
+                                                                <tr ng-repeat="cashflow in cashflows | orderBy:'portfolioCashflowKey.cashflowDate':true">
                                                                     <td>{{cashflow.portfolioCashflowKey.portfolioId}}</td>
-                                                                    <td>{{cashflow.portfolioCashflowKey.date}}</td>
+                                                                    <td>{{cashflow.portfolioCashflowKey.cashflowDate}}</td>
                                                                     <td>
-                                                                        <div ng-if="cashflow.amount &lt; 0 ">Cash In</div>
-                                                                        <div ng-if="cashflow.amount &gt; 0 ">Cash Out</div>
+                                                                        <div ng-if="cashflow.cashflowAmount &lt; 0 ">Cash In</div>
+                                                                        <div ng-if="cashflow.cashflowAmount &gt; 0 ">Cash Out</div>
                                                                     </td>
-                                                                    <td class="text-right">{{cashflow.amount | currency:"&#8377;":0}}</td>
+                                                                    <td class="text-right">{{cashflow.cashflowAmount | currency:"&#8377;":0}}</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -127,6 +157,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="holdings-pills">
+                                    <br /><br />
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="panel panel-default">
@@ -193,6 +224,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="historical-holdings-pills">
+                                    <br /><br />
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="panel panel-default">
@@ -266,43 +298,76 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="charts-pills">
-
+                                <div class="tab-pane fade" id="distribution-pills">
+                                    <br /><br />
                                     <div class="row">
-                                        <div class="col-lg-6" >
-                                            <h4>Asset Class Wise Distribution</h4>
-                                            <ul>
-                                                <li ng-repeat="(key, holding) in holdings | orderBy:'securityAssetClass' | groupBy: 'securityAssetClass'">
-                                                    <strong>{{key}}:</strong>  {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
-                                                </li>
-                                            </ul>
-                                            <br /><br /><br />
-                                            <h4>Asset Sub Class Wise Distribution</h4>
-                                            <ul>
-                                                <li ng-repeat="(key, holding) in holdings | orderBy:['securityAssetClass','securityAssetSubClass'] | groupBy: 'securityAssetSubClass'">
-                                                    <strong>{{holding[0].securityAssetClass}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-6" >
+                                        <div class="col-lg-4" >
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    <i class="fa fa-pie-chart fa-fw"></i> Asset Classwise Distribution
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Asset Class wise Distribution
                                                 </div>
                                                 <div class="panel-body">
                                                     <canvas id="AssetClassHolding" class="chart chart-doughnut"
                                                             chart-data="assetClassData" chart-labels="assetClass">
                                                     </canvas>
+                                                    <br /><br />
+                                                    <div>
+                                                        <ul>
+                                                            <li ng-repeat="(key, holding) in holdings | orderBy:'securityAssetClass' | groupBy: 'securityAssetClass'">
+                                                                <strong>{{key}}:</strong>  {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4" >
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Asset Sub-Class wise Distribution
+                                                </div>
+                                                <div class="panel-body">
                                                     <canvas id="AssetSubClassHolding" class="chart chart-doughnut"
                                                             chart-data="assetSubClassData" chart-labels="assetSubClass">
                                                     </canvas>
+                                                    <br /><br />
                                                     <!--<div class="chart chart-md" id="donut-example"></div>-->
+                                                    <div>
+                                                        <ul>
+                                                            <li ng-repeat="(key, holding) in holdings | orderBy:['securityAssetClass','securityAssetSubClass'] | groupBy: 'securityAssetSubClass'">
+                                                                <strong>{{holding[0].securityAssetClass}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4" >
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Sector-Industry wise Distribution
+                                                </div>
+                                                <div class="panel-body">
+                                                    <!--<div class="chart chart-md" id="donut-example1"></div>-->
+                                                    <!--<script src="../js/data.js" th:src="@{/js/data.js}"></script>-->
+                                                    <canvas id="SectorHolding" class="chart chart-doughnut"
+                                                            chart-data="sectorIndustryData" chart-labels="sectorIndustry">
+                                                    </canvas>
+                                                    <br /><br />
+                                                    <div>
+                                                        <ul>
+                                                            <li ng-repeat="(key, holding) in holdings | orderBy:['securitySectorName','securityIndustryName'] | groupBy: 'securityIndustryName'">
+                                                                <strong>{{holding[0].securitySectorName}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="performance-pills">
+                                    <br /><br />
                                     <h4>Performace</h4>
 
                                 </div>
@@ -316,21 +381,14 @@
     </div>
     <!-- wrapper -->
 
-    <!--&lt;!&ndash; jQuery &ndash;&gt;-->
-    <!--<script src="../static/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>-->
-    <!-- jQuery, rapheal and morris -->
-    <script src="../../static/js/raphael-min.js" th:src="@{/js/raphael-min.js}"></script>
-    <script src="../../static/js/jquery-1.12.4.min.js" th:src="@{/js/jquery.min.js}"></script>
-    <script src="../../static/js/morris-0.4.1.min.js" th:src="@{/js/morris.min.js}"></script>
+
 
     <!-- Bootstrap Core JavaScript -->
     <script src="../static/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="../static/vendor/sb-admin-2/js/sb-admin-2.min.js" th:src="@{/vendor/sb-admin-2/js/sb-admin-2.min.js}"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="../static/vendor/metisMenu/metisMenu.min.js" th:src="@{/vendor/metisMenu/metisMenu.min.js}"></script>
 
-    <!-- Custom Theme JavaScript -->
-    <script src="../static/vendor/sb-admin-2/js/sb-admin-2.min.js" th:src="@{/vendor/sb-admin-2/js/sb-admin-2.min.js}"></script>
-
-    <!--<script src="../js/data.js" th:src="@{/js/data.js}"></script>-->
 </body>
 </html>

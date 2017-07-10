@@ -1,6 +1,5 @@
 package com.twealthbook.config;
 
-
 import com.twealthbook.repository.UserRepository;
 import com.twealthbook.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -27,26 +27,40 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                //.antMatchers("/userlogin").permitAll()
-                .antMatchers("/about").permitAll()
-                .antMatchers("/content/*").permitAll()
-                //.antMatchers("/jsondoc-ui.html/**").hasAuthority("ROLE_ADMIN")
-                .anyRequest()
-                .authenticated().and().csrf().disable().formLogin()//.loginPage("/userlogin")
-                .defaultSuccessUrl("/dashboard")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .and().logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/").and().exceptionHandling()
+        http
+                .authorizeRequests()
+                    .antMatchers("/").permitAll()
+                    .antMatchers("/userlogin").permitAll()
+                    .antMatchers("/about").permitAll()
+                    .antMatchers("/content/*").permitAll()
+                    //.antMatchers("/jsondoc-ui.html/**").hasAuthority("ROLE_ADMIN")
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                .csrf().disable()
+                .formLogin()
+                    .loginPage("/userlogin")
+                    .defaultSuccessUrl("/dashboard", true)
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .and()
+                .logout()
+                    .permitAll()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/")
+                    .and()
+                .exceptionHandling()
                 .accessDeniedPage("/access-denied");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
     }
 
     @Bean
@@ -69,4 +83,5 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter{
                 .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
                         "/resources/js/**");
     }
+
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,17 +46,23 @@ public class TWealthbookViewController {
         return "index";
     }
 
-    /*
-    @RequestMapping(value = "/userlogin")
-    public ModelAndView login(Model model){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("userlogin");
+    @RequestMapping(value = "/userlogin", method = RequestMethod.GET)
+    public String  login(Model model, String error, String logout){
         model.addAttribute("datetime", new Date());
         model.addAttribute("title", "TWealthbook Login");
-        //return "userlogin";
-        return modelAndView;
+        if (error != null)
+            model.addAttribute("error", "Your username and password is invalid.");
+
+        if (logout != null)
+            model.addAttribute("message", "You have been logged out successfully.");
+
+        return "userlogin";
     }
-    */
+
+//    @RequestMapping(value = "/access-denied")
+//    public String accessDenied(Model model){
+//        return "access-denied";
+//    }
 
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String dashboard(Model model, @AuthenticationPrincipal final UserDetails userDetails){

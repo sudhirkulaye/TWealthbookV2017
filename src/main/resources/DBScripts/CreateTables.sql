@@ -1,6 +1,9 @@
 SET SQL_SAFE_UPDATES = 0;
 Commit;
 
+drop table if exists portfolio_returns;
+drop table if exists portfolio_returns_calculation_support;
+drop table if exists portfolio_asset_allocation;
 drop table if exists portfolio_historical_holdings;
 drop table if exists portfolio_holdings;
 drop table if exists portfolio_cashflow;
@@ -12,6 +15,12 @@ drop table if exists role;
 drop table if exists user;
 drop table if exists sequence_next_hi_value;
 drop table if exists setup_dates;
+drop table if exists log_table;
+
+CREATE TABLE log_table (
+  timestamp datetime DEFAULT NULL COMMENT 'timestamp',
+  log_query varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Log Query'
+) COMMENT='Debug log table  	Debugging	Debugging';
 
 CREATE TABLE setup_dates (
   date_today date NOT NULL COMMENT 'Today''s trading date',
@@ -30,6 +39,7 @@ CREATE TABLE setup_dates (
 
 delete from setup_dates;
 insert into setup_Dates (select * from equityanalysis.setup_dates); 
+select * from setup_dates;
 
 create table sequence_next_hi_value (id varchar(50), sequence_next_hi_value int, primary key (id));
 
@@ -81,6 +91,7 @@ CREATE TABLE user_role (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Role and User Mapping';
 
 insert into user_role (select user_id, 2 from user);
+select * from user_role;
 
 CREATE TABLE client (
   client_id int NOT NULL COMMENT 'Client ID unique Auto Generated',
@@ -160,22 +171,25 @@ Private Equity : Own Business or investment in private business',
   CONSTRAINT c_portfolio_client_id FOREIGN KEY (client_id) REFERENCES client (client_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Portfolio';
 
+delete from portfolio; 
 insert into portfolio 
-(select customer_code, portfolio_no, 1, portfolio_goal, portfolio_start_date, portfolio_end_date, '', 1, 'NSE:NIFTY' from equityanalysis.portfolio_master a
-where a.customer_code in (1006,1015,1018,1,1001,1002,1003,1004,1005,1007,1008,1009,1010,1014,1016,1017) order by a.customer_code);
+(select customer_code, portfolio_no, 1, portfolio_goal, portfolio_start_date, portfolio_end_date, '', 1, 'NSE:NIFTY', 0.00 from equityanalysis.portfolio_master a
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019) order by a.customer_code);
 
-select * from portfolio;
+select * from portfolio a;
 
 CREATE TABLE portfolio_cashflow (
   client_id int NOT NULL COMMENT 'Client ID unique Auto Generated',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
-  date date NOT NULL  COMMENT 'Date on which major cash inflow or outflow happens',
-  amount float NOT NULL COMMENT 'Amount of cash inflow (negative) or outflow (outflow) happens',
-  PRIMARY KEY (client_id,portfolio_id,date),
-  CONSTRAINT c_portfolio_cashflow_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
-  CONSTRAINT c_portfolio_cashflow_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
+  cashflow_date date NOT NULL  COMMENT 'Date on which major cash inflow or outflow happens',
+  cashflow_amount float NOT NULL COMMENT 'Amount of cash inflow (negative) or outflow (outflow) happens',
+  PRIMARY KEY (client_id,portfolio_id,cashflow_date)
+--  CONSTRAINT c_portfolio_cashflow_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
+--  CONSTRAINT c_portfolio_cashflow_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
 ) COMMENT='Portfolio Cashflow';
 
+
+delete from portfolio_cashflow;
 insert into portfolio_cashflow select * from equityanalysis.portfolio_inflow_outflow_history;
 
 select * from portfolio_cashflow;
@@ -204,17 +218,18 @@ CREATE TABLE portfolio_holdings (
   security_annualized_return float COMMENT 'Unrealized annualized return',
   security_maturity_value float COMMENT 'Security Maturity Value especially for FDs',
   security_maturity_date date default '1900-01-01' COMMENT 'Security Maturity Value especially for FDs',
-  PRIMARY KEY (client_id,portfolio_id,security_id,security_buy_date),
-  CONSTRAINT c_portfolio_holdings_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
-  CONSTRAINT c_portfolio_holdings_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
+  PRIMARY KEY (client_id,portfolio_id,security_id,security_buy_date)
+  -- CONSTRAINT c_portfolio_holdings_client_id FOREIGN KEY (client_id) REFERENCES client (client_id),
+  -- CONSTRAINT c_portfolio_holdings_portfolio_id FOREIGN KEY (portfolio_id) REFERENCES portfolio (portfolio_id)
 ) COMMENT='Portfolio Current Holdings';
 
 delete from portfolio_holdings;
-
 insert into portfolio_holdings 
 select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name, a.asset_class, a.sub_class, a.sector_name, 
 a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.cmp, a.market_value, a.holding_period, 
-a.net_profit, a.absolute_return, a.cagr_return, a.maturity_value, a.maturity_date from equityanalysis.portfolio_current_status a;
+a.net_profit, a.absolute_return, a.cagr_return, a.maturity_value, a.maturity_date 
+from equityanalysis.portfolio_current_status a 
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019) ;
 
 update portfolio_holdings a set a.security_maturity_date = '1900-01-01' where security_maturity_date is null or security_maturity_date = '0000-00-00';
 
@@ -250,10 +265,25 @@ CREATE TABLE portfolio_historical_holdings (
   PRIMARY KEY (client_id, portfolio_id, security_id, security_buy_date, security_sell_date)
 ) COMMENT='Portfolio Historical Holdings';
 
+delete from portfolio_historical_holdings;
 insert into portfolio_historical_holdings 
 select a.customer_code, a.portfolio_no, a.script_code, a.buy_date, a.script_name, a.asset_class, a.sub_class, a.sector_name, 
 a.industry_name, a.quantity, a.buy_rate, a.brokerage, a.tax, a.total_cost, a.price_per_unit, a.sell_date, a.sell_rate, a.brokerage_sell,
-a.tax_sell, a.total_sell, a.sell_per_unit, a.holding_period, a.net_profit, a.absolute_return, a.cagr_return, a.fin_year from equityanalysis.portfolio_realized_gain a;
+a.tax_sell, a.total_sell, a.sell_per_unit, a.holding_period, a.net_profit, a.absolute_return, a.cagr_return, a.fin_year 
+from equityanalysis.portfolio_realized_gain a 
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+
+CREATE TABLE portfolio_value_history (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  portfolio_value_date date NOT NULL  COMMENT 'Date ',
+  portfolio_market_value float COMMENT 'Portfolio market value related to date',
+  PRIMARY KEY (client_id,portfolio_id,portfolio_value_date)
+) COMMENT='Portfolio Historical Value';
+
+delete from portfolio_value_history;
+insert into portfolio_value_history select * from equityanalysis.portfolio_value_history a 
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
 
 CREATE TABLE portfolio_asset_allocation (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
@@ -262,6 +292,78 @@ CREATE TABLE portfolio_asset_allocation (
   allocation_asset_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Class',
   allocation_asset_sub_class varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Asset Sub Class',
   allocation_market_value float COMMENT 'Market Value of Asset sub class',
-PRIMARY KEY (client_id, portfolio_id, security_id, security_buy_date, security_sell_date)
+  allocation_market_value_percent float COMMENT '%(Market Value) of Asset class',
+PRIMARY KEY (client_id, portfolio_id, allocation_date, allocation_asset_class, allocation_asset_sub_class)
 ) COMMENT='Portfolio Asset Allocation';
 
+delete from portfolio_asset_allocation;
+insert into portfolio_asset_allocation 
+select * from equityanalysis.portfolio_asset_allocation a 
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+select * from portfolio_asset_allocation order by client_id, portfolio_id, allocation_date, allocation_asset_class, allocation_asset_sub_class;
+
+
+CREATE TABLE portfolio_returns_calculation_support (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  calculation_date date NOT NULL COMMENT 'Date either cashflow date or end month',
+  calculation_cashflow float COMMENT 'Cashflow amount Cash-in is negative, Cash-out is positive',
+  calculation_market_value float COMMENT 'Market Value of the portfolio',
+PRIMARY KEY (client_id, portfolio_id, calculation_date)
+) COMMENT='Portfolio returns calculation support data';
+
+delete from portfolio_returns_calculation_support;
+insert into portfolio_returns_calculation_support
+select a.customer_code, a.portfolio_no, a.date, a.cashflow, a.market_value from equityanalysis.portfolio_returns_calculation_support a
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+
+drop table portfolio_returns;
+CREATE TABLE portfolio_returns (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  year int(4) NOT NULL COMMENT 'returns for year',
+  returns_calendar_year float COMMENT 'Returns for calendar year',
+  returns_fin_year float COMMENT 'Returns for FIN year',
+  returns_mar_ending_quarter float COMMENT 'Returns for Jan to Mar',
+  returns_jun_ending_quarter float COMMENT 'Returns for Apr to Jun',
+  returns_sep_ending_quarter float COMMENT 'Returns for Jul to Sep',
+  returns_dec_ending_quarter float COMMENT 'Returns for Oct to Dec',
+  returns_jan float COMMENT 'Returns for Jan',
+  returns_feb float COMMENT 'Returns for Feb',
+  returns_mar float COMMENT 'Returns for Mar',
+  returns_apr float COMMENT 'Returns for Apr',
+  returns_may float COMMENT 'Returns for May',
+  returns_jun float COMMENT 'Returns for Jun',
+  returns_jul float COMMENT 'Returns for Jul',
+  returns_aug float COMMENT 'Returns for Aug',
+  returns_sep float COMMENT 'Returns for Sep',
+  returns_oct float COMMENT 'Returns for Oct',
+  returns_nov float COMMENT 'Returns for Nov',
+  returns_dec float COMMENT 'Returns for Dec',
+PRIMARY KEY (client_id, portfolio_id, year)
+) COMMENT='Portfolio returns';
+
+delete from portfolio_returns;
+insert into portfolio_returns 
+select * from equityanalysis.portfolio_returns a 
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+
+
+CREATE TABLE portfolio_return_summary (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  returns_TWRR_since_inception float COMMENT 'TWRR Returns since inception',
+  returns_TWRR_last_full_month float COMMENT 'TWRR Returns of last full month',
+  returns_TWRR_last_full_quarter float COMMENT 'TWRR Returns of last full quarter',
+  returns_TWRR_last_full_two_quarter float COMMENT 'TWRR Returns of last full 2 quarters',
+  returns_TWRR_last_full_three_quarter float COMMENT 'TWRR Returns of last full 3 quarters',
+  returns_TWRR_last_full_four_quarter float COMMENT 'TWRR Returns of last full 4 quarters',
+  
+  returns_XIRR_since_inception float COMMENT 'XIRR Returns since inception',
+  returns_XIRR_last_full_month float COMMENT 'XIRR Returns of last full month',
+  returns_XIRR_last_full_quarter float COMMENT 'TWRR Returns of last full quarter',
+  returns_XIRR_last_full_two_quarter float COMMENT 'TWRR Returns of last full 2 quarters',
+  returns_XIRR_last_full_three_quarter float COMMENT 'TWRR Returns of last full 3 quarters',
+  returns_XIRR_last_full_four_quarter float COMMENT 'TWRR Returns of last full 4 quarters',
+  PRIMARY KEY (client_id, portfolio_id)
+) COMMENT='Portfolio returns summary';

@@ -138,6 +138,16 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
            $scope.assetSubClass.push(map[assetSubClass][0].securityAssetClass + "-"+ assetSubClass);
            $scope.assetSubClassData.push($filter('number')($scope.getMarketValue(map[assetSubClass]),0));
         }
+        sortedHoldings = [];
+        map = {};
+        sortedHoldings = $filter('orderBy')($scope.holdings,['securitySectorName','securityIndustryName']);
+        map = $filter('groupBy')(sortedHoldings, 'securityIndustryName');
+        $scope.sectorIndustry = [];
+        $scope.sectorIndustryData = [];
+        for(var sectorIndustry in map){
+           $scope.sectorIndustry.push(map[sectorIndustry][0].securitySectorName + "-"+ sectorIndustry);
+           $scope.sectorIndustryData.push($filter('number')($scope.getMarketValue(map[sectorIndustry]),0));
+        }
 
         $locale.NUMBER_FORMATS.GROUP_SEP = ',';
     }

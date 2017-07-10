@@ -1,12 +1,4 @@
 ﻿$(document).ready(function () {
-        Morris.Donut({
-          element: 'donut-example',
-          data: [
-            {label: "Download Sales", value: 12},
-            {label: "In-Store Sales", value: 30},
-            {label: "Mail-Order Sales", value: 20}
-          ]
-        });
 		Morris.Donut.prototype.resizeHandler = function () {
             this.timeoutId = null;
             if (this.el && this.el.width() > 0 && this.el.height() > 0) {
@@ -33,4 +25,13 @@
             }
             else return null;
         };
+
+        Morris.Donut({
+          element: 'donut-example1',
+          data: [
+            {label: "Download Sales", value: 12},
+            {label: "In-Store Sales", value: 30},
+            {label: "Mail-Order Sales", value: 20}
+          ]
+        });
 });

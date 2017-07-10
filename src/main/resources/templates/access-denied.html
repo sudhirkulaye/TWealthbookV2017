@@ -1,5 +1,6 @@
-<head th:fragment="common-header">
-
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
@@ -10,8 +11,7 @@
     <meta name="generator" content="Bootstrap Admin Theme (https://startbootstrap.com), Spring Boot (http://start.spring.io/), Angular JS (https://angularjs.org/), MySQL (https://www.mysql.com/)" />
     <meta name="keywords" content="Family Wealth Management App, Family Asset Management App, App for Goal Based Investment Approach, Portfolio Management App with Cash flows" />
     <meta name="author" content="Sudhir Kulaye" />
-
-    <title th:text="${title}">TWealthbook</title>
+    <title>TWealthbook</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="../../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
@@ -19,18 +19,28 @@
     <link href="../../css/metisMenu.min.css" th:href="@{/css/metisMenu.min.css}" rel="stylesheet" />
     <!-- Custom CSS -->
     <link href="../../css/sb-admin-2.min.css" th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet" />
-    <!-- Pagination css -->
-    <link href="../../css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
-
-    <!-- Morris Charts CSS -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" />
     <!-- Custom Fonts -->
     <link href="../../static/vendor/font-awesome/css/font-awesome.min.css" th:href="@{/vendor/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css" />
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="error-template">
+                    <h1>
+                        Oops!</h1>
+                    <h2>
+                        404 Not Found</h2>
+                    <div class="error-details">
+                        Sorry, an error has occured, Requested page not found!
+                    </div>
+                    <div class="error-actions">
+                        <a href="http://www.twealthbook.com" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                            Take Me Home </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
