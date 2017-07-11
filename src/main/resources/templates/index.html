@@ -1,27 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" >
-<head th:fragment="common-header">
-
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
-    <meta name="MobileOptimized" content="width" />
-    <meta name="description" content="TWealthbook App helps tracking, assessing and managing wealth of entire family. TWealthbook App incorporates Goal Based Portfolio Management Approach. TWealthbook App considers timing of portfolios cash inflows and outflows and thus gives you better picture of performance, helps to assess your investment decisions. And any point in time it tells Strategic Asset Allocation and Tactical Asset Allocation Decision." />
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="generator" content="Bootstrap Admin Theme (https://startbootstrap.com), Spring Boot (http://start.spring.io/), Angular JS (https://angularjs.org/), MySQL (https://www.mysql.com/)" />
-    <meta name="keywords" content="Family Wealth Management App, Family Asset Management App, App for Goal Based Investment Approach, Portfolio Management App with Cash flows" />
-    <meta name="author" content="Sudhir Kulaye" />
-
-    <title>TWealthbook</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-    <!-- MetisMenu CSS -->
-    <link href="../../static/css/metisMenu.min.css" th:href="@{/css/metisMenu.min.css}" rel="stylesheet" />
-    <!-- Custom CSS -->
-    <link href="../../static/css/sb-admin-2.min.css" th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet" />
-</head>
+<head th:include="fragments/header :: common-header" />
 <body>
     <!-- googleAnalytics -->
     <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>

@@ -1,55 +1,88 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
-<!--<head th:include="fragments/header :: common-header" />-->
-<head th:fragment="common-header">
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
-    <meta name="MobileOptimized" content="width" />
-    <meta name="description" content="TWealthbook App helps tracking, assessing and managing wealth of entire family. TWealthbook App incorporates Goal Based Portfolio Management Approach. TWealthbook App considers timing of portfolios cash inflows and outflows and thus gives you better picture of performance, helps to assess your investment decisions. And any point in time it tells Strategic Asset Allocation and Tactical Asset Allocation Decision." />
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="generator" content="Bootstrap Admin Theme (https://startbootstrap.com), Spring Boot (http://start.spring.io/), Angular JS (https://angularjs.org/), MySQL (https://www.mysql.com/)" />
-    <meta name="keywords" content="Family Wealth Management App, Family Asset Management App, App for Goal Based Investment Approach, Portfolio Management App with Cash flows" />
-    <meta name="author" content="Sudhir Kulaye" />
-    <title th:text="${title}">TWealthbook</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="../../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-    <!-- MetisMenu CSS -->
-    <link href="../../css/metisMenu.min.css" th:href="@{/css/metisMenu.min.css}" rel="stylesheet" />
-    <!-- Custom CSS -->
-    <link href="../../css/sb-admin-2.min.css" th:href="@{/css/sb-admin-2.min.css}" rel="stylesheet" />
-    <!-- Morris Chart CSS -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" />
-
-    <!-- Custom Fonts -->
-    <link href="../../static/vendor/font-awesome/css/font-awesome.min.css" th:href="@{/vendor/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css" />
-
-    <!-- jQuery -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-</head>
+<head th:include="fragments/header :: common-header" />
 <body  ng-app="portfolioApp" ng-controller="portfolioController">
     <!-- googleAnalytics -->
     <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
-    <!-- googleAnalytics -->
     <!--Angular JS-->
     <script src="../static/js/angular.min.js" th:src="@{/js/angular.min.js}"></script>
     <script src="../static/js/portfoliosController.js" th:src="@{/js/portfoliosController.js}"></script>
-    <script src="../static/js/dirPagination.js" th:src="@{/js/dirPagination.js}"></script>"
+    <!--Angular pagination JS-->
+    <script src="../static/js/pagination.js" th:src="@{/js/pagination.js}"></script>
+    <!--Angular custom filter (for group by) JS-->
     <script src="../static/js/angular-filter.js" th:src="@{/js/angular-filter.js}"></script>
+    <!--Angular Chart JS-->
     <script src="../static/js/Chart.bundle.js" th:src="@{/js/Chart.bundle.js}"></script>
     <script src="../static/js/angular-chart.min.js" th:src="@{/js/angular-chart.min.js}"></script>
 
-    <!--Angular JS-->
-
     <!-- wrapper -->
     <div id="wrapper">
-        <!-- navigation -->
-        <nav th:include="fragments/navigation :: common-navigation" />
-        <!-- navigation -->
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/dashboard"><strong>TWealthbook</strong> </a>
+            </div>
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw" ></i> <span th:text="${welcomeMessage}"></span>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a href="#" ><i class="fa fa-user fa-fw"></i> Profile</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" userId="side-menu">
+                        <li>
+                            <a href="dashboard.html" th:href="dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="wealth.html" th:href="wealth"><i class="fa fa-money fa-fw"></i> 360&deg; Wealth</a>
+                        </li>
+                        <li>
+                            <a href="incomesavingsexpenses.html" th:href="incomesavingsexpenses"><i class="fa fa-money fa-fw"></i> Income, Investments/Savings, Taxes &amp; Implied Expenses </a>
+                        </li>
+                        <li>
+                            <a href="portfolios.html" th:href="portfolios"><i class="fa fa-money fa-fw"></i> Portfolios</a>
+                        </li>
+                        <li>
+                            <a href="loans.html" th:href="loans"><i class="fa fa-credit-card-alt fa-fw"></i> Loans</a>
+                        </li>
+                        <li>
+                            <a href="insurances.html" th:href="insurances"><i class="fa fa-money fa-fw"></i> Insurances</a>
+                        </li>
+                        <li>
+                            <a href="timeline.html" th:href="timeline"><i class="fa fa-clock-o fa-fw"></i>Timeline</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+        <!-- Navigation -->
         <!-- page-wrapper -->
         <div id="page-wrapper">
             <div class="row">
@@ -215,7 +248,7 @@
                                                     </div>
                                                     <div ng-controller="OtherController" class="other-controller small">
                                                         <div class="text-center">
-                                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" pagination-id="holdings"  th:href="dirPagination.tpl.html"></dir-pagination-controls>
+                                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" pagination-id="holdings"  th:href="pagination.tpl.html"></dir-pagination-controls>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -290,7 +323,7 @@
                                                     </div>
                                                     <div ng-controller="OtherController" class="other-controller small">
                                                         <div class="text-center">
-                                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" pagination-id="historicalHoldings" th:href="dirPagination.tpl.html"></dir-pagination-controls>
+                                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" pagination-id="historicalHoldings" th:href="pagination.tpl.html"></dir-pagination-controls>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -380,15 +413,5 @@
         <!-- page-wrapper -->
     </div>
     <!-- wrapper -->
-
-
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="../static/vendor/bootstrap/js/bootstrap.min.js" th:src="@{/vendor/bootstrap/js/bootstrap.min.js}"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="../static/vendor/sb-admin-2/js/sb-admin-2.min.js" th:src="@{/vendor/sb-admin-2/js/sb-admin-2.min.js}"></script>
-    <!-- Metis Menu Plugin JavaScript -->
-    <script src="../static/vendor/metisMenu/metisMenu.min.js" th:src="@{/vendor/metisMenu/metisMenu.min.js}"></script>
-
 </body>
 </html>

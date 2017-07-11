@@ -109,6 +109,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     if (response != undefined) {
                         $scope.holdingsArray[index][0] = response.data;
                         $scope.holdings = response.data;
+                        $scope.holdings = $filter('orderBy')($scope.holdings,['securityAssetClass', 'securityAssetSubClass', 'securityName', 'securityBuyDate']);
                         setChartData(index);
                     } else {
                         $scope.holdingsArray[index] = [];
@@ -194,7 +195,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
     }
 
     //$scope.sortColumnHolding = "['securityAssetClass', 'securityAssetSubClass', 'securityName', 'securityBuyDate']";
-    $scope.sortColumnHolding = "securityAssetClass";
+    //$scope.sortColumnHolding = "securityAssetClass";
     $scope.reverseSortHolding = false;
     $scope.sortDataHolding = function (column) {
         $scope.reverseSortHolding = ($scope.sortColumnHolding == column) ? !$scope.reverseSortHolding : false;

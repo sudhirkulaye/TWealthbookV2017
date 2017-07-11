@@ -190,7 +190,9 @@ CREATE TABLE portfolio_cashflow (
 
 
 delete from portfolio_cashflow;
-insert into portfolio_cashflow select * from equityanalysis.portfolio_inflow_outflow_history;
+insert into portfolio_cashflow select * from equityanalysis.portfolio_inflow_outflow_history a 
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019) ;
+
 
 select * from portfolio_cashflow;
 
@@ -233,7 +235,7 @@ where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,10
 
 update portfolio_holdings a set a.security_maturity_date = '1900-01-01' where security_maturity_date is null or security_maturity_date = '0000-00-00';
 
-select * from portfolio_holdings a where a.client_id not in (select client_id from client); 
+select * from portfolio_holdings a; 
 
 CREATE TABLE portfolio_historical_holdings (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
@@ -273,6 +275,8 @@ a.tax_sell, a.total_sell, a.sell_per_unit, a.holding_period, a.net_profit, a.abs
 from equityanalysis.portfolio_realized_gain a 
 where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
 
+select * from portfolio_historical_holdings;
+
 CREATE TABLE portfolio_value_history (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
@@ -283,7 +287,8 @@ CREATE TABLE portfolio_value_history (
 
 delete from portfolio_value_history;
 insert into portfolio_value_history select * from equityanalysis.portfolio_value_history a 
-where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019) and date = (select date_today from setup_dates);
+select * from portfolio_value_history a where a.portfolio_value_date = (select date_today from setup_dates);
 
 CREATE TABLE portfolio_asset_allocation (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
@@ -353,17 +358,18 @@ CREATE TABLE portfolio_return_summary (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
   returns_TWRR_since_inception float COMMENT 'TWRR Returns since inception',
-  returns_TWRR_last_full_month float COMMENT 'TWRR Returns of last full month',
+  returns_TWRR_since_current_month float COMMENT 'TWRR Returns from current month',
+  returns_TWRR_since_current_quarter float COMMENT 'TWRR Returns from current quarter',  
   returns_TWRR_last_full_quarter float COMMENT 'TWRR Returns of last full quarter',
   returns_TWRR_last_full_two_quarter float COMMENT 'TWRR Returns of last full 2 quarters',
   returns_TWRR_last_full_three_quarter float COMMENT 'TWRR Returns of last full 3 quarters',
   returns_TWRR_last_full_four_quarter float COMMENT 'TWRR Returns of last full 4 quarters',
-  
   returns_XIRR_since_inception float COMMENT 'XIRR Returns since inception',
-  returns_XIRR_last_full_month float COMMENT 'XIRR Returns of last full month',
-  returns_XIRR_last_full_quarter float COMMENT 'TWRR Returns of last full quarter',
-  returns_XIRR_last_full_two_quarter float COMMENT 'TWRR Returns of last full 2 quarters',
-  returns_XIRR_last_full_three_quarter float COMMENT 'TWRR Returns of last full 3 quarters',
-  returns_XIRR_last_full_four_quarter float COMMENT 'TWRR Returns of last full 4 quarters',
+  returns_XIRR_since_current_month float COMMENT 'XIRR Returns from current month',
+  returns_XIRR_since_current_quarter float COMMENT 'XIRR Returns from current quarter',  
+  returns_XIRR_last_full_quarter float COMMENT 'XIRR Returns of last full quarter',
+  returns_XIRR_last_full_two_quarter float COMMENT 'XIRR Returns of last full 2 quarters',
+  returns_XIRR_last_full_three_quarter float COMMENT 'XIRR Returns of last full 3 quarters',
+  returns_XIRR_last_full_four_quarter float COMMENT 'XIRR Returns of last full 4 quarters',
   PRIMARY KEY (client_id, portfolio_id)
 ) COMMENT='Portfolio returns summary';
