@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<!--<head th:include="fragments/header :: common-header" />-->
+<head th:include="fragments/header :: common-header" />
+<body ng-app="">
+    <!-- googleAnalytics -->
+    <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
+    <!--Angular JS-->
+    <script src="../static/js/angular.min.js" th:src="@{/js/angular.min.js}"></script>
+
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav th:include="user/navigation :: common-navigation" />
+
+        <!-- page-wrapper -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">360&deg; Wealth</h1>
+                    <lable style="float: right;"><i>Valuation as of: <p th:text="${processingDate}" /></i></lable>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>Wealth</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div id="donut-example"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

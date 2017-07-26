@@ -2,6 +2,7 @@ package com.twealthbook.model;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 public class PortfolioViewModel implements Serializable {
@@ -15,7 +16,7 @@ public class PortfolioViewModel implements Serializable {
     private String portfolioCurrentStrategy;
     private int portfolioBenchmarkType;
     private String portfolioBenchmark;
-    private Float portfolioValue;
+    private BigDecimal portfolioValue;
 
     public PortfolioViewModel(){}
     public PortfolioViewModel(String relationship, Portfolio portfolio){
@@ -112,10 +113,10 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioBenchmark = portfolioBenchmark;
     }
 
-    public Float getPortfolioValue() {
+    public BigDecimal getPortfolioValue() {
         return portfolioValue;
     }
-    public void setPortfolioValue(Float portfolioValue) {
+    public void setPortfolioValue(BigDecimal portfolioValue) {
         this.portfolioValue = portfolioValue;
     }
 }

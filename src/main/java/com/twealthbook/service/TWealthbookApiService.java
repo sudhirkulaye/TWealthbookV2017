@@ -2,6 +2,8 @@ package com.twealthbook.service;
 
 import com.twealthbook.model.*;
 import com.twealthbook.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -10,7 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 @Service
 @EnableCaching
@@ -36,6 +42,28 @@ public class TWealthbookApiService {
 
     @Autowired
     private PortfolioHistoricalHoldingsRepository portfolioHistoricalHoldingsRepository;
+
+    @Autowired
+    public SetupDatesRepository setupDatesRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(TWealthbookApiService.class);
+
+    private SetupDates setupDates;
+
+    /**
+     * Return single record in SetupDates
+     * @return SeupDates
+     */
+    public SetupDates getSetupDates(){
+        if (setupDates == null) {
+            List<SetupDates> setupDatesList = setupDatesRepository.findAll();
+            //TODO check only one object in the list
+            for(SetupDates setupDatesListObject : setupDatesList) {
+                setupDates = setupDatesListObject;
+            }
+        }
+        return  setupDates;
+    }
 
     /**
      * Return true if Roles contains a ADMIN Role
@@ -232,4 +260,47 @@ public class TWealthbookApiService {
                         (clientId, portfolioId);
     }
 
+    public XIRRReturns getPortfolioXIRRReturns
+            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+            throws UsernameNotFoundException{
+
+        List<PortfolioCashflow> portfolioCashflows = getPortfolioCashflow(userDetails,clientId,portfolioId);
+
+        XIRRReturns xirrReturns = new XIRRReturns();
+        double[] payments = new double[portfolioCashflows.size()+1];
+        Date[] days = new Date[portfolioCashflows.size()+1];
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        XIRRCalculation xirrCalculation = new XIRRCalculation();
+
+        for (int i = 0; i < portfolioCashflows.size(); i++) {
+            PortfolioCashflow portfolioCashflow = portfolioCashflows.get(i);
+            java.sql.Date date = portfolioCashflow.getPortfolioCashflowKey().getCashflowDate();
+            try {
+                days[i] = simpleDateFormat.parse(date.toString());
+                payments[i] = portfolioCashflow.getCashflowAmount().doubleValue();
+            } catch (ParseException e) {
+                logger.error(String.format("Error in parsing date for /getportfolioxirrreturns/%s/%s", clientId, portfolioId));
+                e.printStackTrace();
+                return null;
+            }
+        }
+        try {
+            if (setupDates == null) getSetupDates();
+            days[portfolioCashflows.size()] = simpleDateFormat.parse(setupDates.getDateToday().toString());
+            Portfolio.PortfolioKey portfoliokey = new Portfolio.PortfolioKey();
+            portfoliokey.setClientId(clientId);
+            portfoliokey.setPortfolioId(portfolioId);
+            payments[portfolioCashflows.size()] = portfolioRepository.findOne(portfoliokey).getPortfolioValue().doubleValue();
+        } catch (ParseException e) {
+            logger.error(String.format("Error in parsing dateToday for /getportfolioxirrreturns/%s/%s", clientId, portfolioId));
+            e.printStackTrace();
+            return  null;
+        }
+
+        BigDecimal returnsSinceIncpetion = new BigDecimal(XIRRCalculation.Newtons_method(0.1,payments,days));
+        System.out.println("returnsSinceIncpetion: "+ returnsSinceIncpetion);
+        xirrReturns.setReturnsSinceInception(returnsSinceIncpetion);
+        return  xirrReturns;
+
+    }
 }

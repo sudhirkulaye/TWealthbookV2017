@@ -29,8 +29,6 @@ public class TWealthbookRESTApiController {
 
     @Autowired
     TWealthbookApiService apiService;
-    @Autowired
-    public SetupDatesRepository setupDatesRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TWealthbookRESTApiController.class);
 
@@ -39,14 +37,7 @@ public class TWealthbookRESTApiController {
     @RequestMapping(value = "/getsetupdates", method = RequestMethod.GET)
     @ApiMethod(description = "Get system dates")
     public SetupDates getSetupDates(){
-        if (setupDates == null) {
-            List<SetupDates> setupDatesList = setupDatesRepository.findAll();
-            //TODO check only one object in the list
-            for(SetupDates setupDatesListObject : setupDatesList) {
-                setupDates = setupDatesListObject;
-            }
-        }
-        return  setupDates;
+        return  apiService.getSetupDates();
     }
 
     @RequestMapping(value = "/getallportfolios", method = RequestMethod.GET)
@@ -62,7 +53,7 @@ public class TWealthbookRESTApiController {
     @RequestMapping(value = "/getportfoliocashflow/{clientId}/{portfolioId}", method = RequestMethod.GET)
     @ApiMethod(description = "Get portfolio's cashflow history upon request from UI")
     public List<PortfolioCashflow> getPortfolioCashflow(@PathVariable Long clientId, @PathVariable int portfolioId){
-        System.out.println("/getPortfolioCashflow/" + clientId + "/" + portfolioId);
+
         logger.debug(String.format("/getPortfolioCashflow/%s/%s", clientId, portfolioId));
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -73,7 +64,7 @@ public class TWealthbookRESTApiController {
     @RequestMapping(value = "/getportfolioholdings/{clientId}/{portfolioId}", method = RequestMethod.GET)
     @ApiMethod(description = "Get portfolio's Holdings upon request from UI")
     public List<PortfolioHoldings> getPortfolioHoldings(@PathVariable Long clientId, @PathVariable int portfolioId) {
-        System.out.println("/getportfolioholdings/" + clientId + "/" + portfolioId);
+
         logger.debug(String.format("/getportfolioholdings/%s/%s", clientId, portfolioId));
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -84,13 +75,24 @@ public class TWealthbookRESTApiController {
     @RequestMapping(value = "/getportfoliohistoricalholdings/{clientId}/{portfolioId}", method = RequestMethod.GET)
     @ApiMethod(description = "Get portfolio's Holdings upon request from UI")
     public List<PortfolioHistoricalHoldings> getPortfolioHistoricalHoldings(@PathVariable Long clientId, @PathVariable int portfolioId) {
-        System.out.println("/getportfoliohistoricalholdings/" + clientId + "/" + portfolioId);
+
         logger.debug(String.format("/getportfoliohistoricalholdings/%s/%s", clientId, portfolioId));
 
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return apiService.getPortfolioHistoricalHoldings(userDetails, clientId, portfolioId);
+    }
+
+    @RequestMapping(value = "/getportfolioxirrreturns/{clientId}/{portfolioId}", method = RequestMethod.GET)
+    @ApiMethod(description = "Get portfolio's cashflow history upon request from UI")
+    public XIRRReturns getPortfolioXIRRReturns(@PathVariable Long clientId, @PathVariable int portfolioId){
+
+        logger.debug(String.format("/getportfolioxirrreturns/%s/%s", clientId, portfolioId));
+        UserDetails userDetails =
+                (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return apiService.getPortfolioXIRRReturns(userDetails, clientId, portfolioId);
     }
 
 }

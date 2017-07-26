@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/header :: common-header" />
+<body ng-app="">
+    <!-- googleAnalytics -->
+    <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
+    <!--Angular JS-->
+    <script src="../static/js/angular.min.js" th:src="@{/js/angular.min.js}"></script>
+
+    <!-- wrapper -->
+    <div id="wrapper" ng-controler="">
+        <!-- Navigation -->
+        <nav th:include="user/navigation :: common-navigation" />
+
+        <!--page-wrapper-->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Dashboard</h1>
+                    <lable style="float: right;"><i>Valuation as of: <p th:text="${processingDate}" /></i></lable>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

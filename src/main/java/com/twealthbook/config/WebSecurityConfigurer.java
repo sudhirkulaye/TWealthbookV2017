@@ -30,17 +30,21 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter{
         http
                 .authorizeRequests()
                     .antMatchers("/").permitAll()
+                    .antMatchers("/public/**").permitAll()
                     .antMatchers("/userlogin").permitAll()
                     .antMatchers("/about").permitAll()
-                    .antMatchers("/content/*").permitAll()
-                    //.antMatchers("/jsondoc-ui.html/**").hasAuthority("ROLE_ADMIN")
+                    .antMatchers("/content/**").permitAll()
+//                    .antMatchers("/user/**").hasRole("END_USER")
+//                    .antMatchers("/api/**").hasRole("END_USER")
+//                    .antMatchers("/admin/**").hasRole("ADMIN")
+//                    .antMatchers("/jsondoc-ui.html/**").hasAuthority("ROLE_ADMIN")
                     .anyRequest()
-                    .authenticated()
+                    .authenticated() //.and().exceptionHandling().accessDeniedPage("/error/403")
                     .and()
                 .csrf().disable()
                 .formLogin()
                     .loginPage("/userlogin")
-                    .defaultSuccessUrl("/dashboard", true)
+                    .defaultSuccessUrl("/default", true)
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .and()
@@ -80,8 +84,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter{
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
-                        "/resources/js/**");
+                .antMatchers("/resources/**", "/static/**", "/static/fonts/*.*", "/static/less", "/static/scss/**", "/css/**", "/js/**", "/images/**",
+                        "/static/css/**");
     }
 
 }

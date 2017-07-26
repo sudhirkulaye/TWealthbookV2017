@@ -2,6 +2,7 @@ package com.twealthbook.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
@@ -10,23 +11,23 @@ public class PortfolioHoldings implements Serializable {
 
     PortfolioHoldingsKey portfolioHoldingsKey;
     private String securityName;
-    private String securityAssetClass;
-    private String securityAssetSubClass;
+    private Integer securityAssetClassId;
+    private Integer securityAssetSubClassId;
     private String securitySectorName;
     private String securityIndustryName;
-    private Float securityQuantity;
-    private Float securityBuyRate;
-    private Float securityBrokerage;
-    private Float securityTax;
-    private Float securityTotalCost;
-    private Float securityCostRate;
-    private Float securityCmp;
-    private Float securityMarketValue;
-    private Float securityHoldingPeriod;
-    private Float securityUnrealizedNetProfit;
-    private Float securityAbsoluteReturn;
-    private Float securityAnnualizedReturn;
-    private Float securityMaturityValue;
+    private BigDecimal securityQuantity;
+    private BigDecimal securityBuyRate;
+    private BigDecimal securityBrokerage;
+    private BigDecimal securityTax;
+    private BigDecimal securityTotalCost;
+    private BigDecimal securityCostRate;
+    private BigDecimal securityCmp;
+    private BigDecimal securityMarketValue;
+    private BigDecimal securityHoldingPeriod;
+    private BigDecimal securityUnrealizedNetProfit;
+    private BigDecimal securityAbsoluteReturn;
+    private BigDecimal securityAnnualizedReturn;
+    private BigDecimal securityMaturityValue;
     private Date securityMaturityDate;
 
     @EmbeddedId
@@ -45,20 +46,20 @@ public class PortfolioHoldings implements Serializable {
         this.securityName = securityName;
     }
 
-    @Column(name = "security_asset_class")
-    public String getSecurityAssetClass() {
-        return securityAssetClass;
+    @Column(name = "security_asset_class_id")
+    public Integer getSecurityAssetClassId() {
+        return securityAssetClassId;
     }
-    public void setSecurityAssetClass(String securityAssetClass) {
-        this.securityAssetClass = securityAssetClass;
+    public void setSecurityAssetClassId(Integer securityAssetClassId) {
+        this.securityAssetClassId = securityAssetClassId;
     }
 
-    @Column(name = "security_asset_sub_class")
-    public String getSecurityAssetSubClass() {
-        return securityAssetSubClass;
+    @Column(name = "security_asset_subclass_id")
+    public Integer getSecurityAssetSubClassId() {
+        return securityAssetSubClassId;
     }
-    public void setSecurityAssetSubClass(String securityAssetSubClass) {
-        this.securityAssetSubClass = securityAssetSubClass;
+    public void setSecurityAssetSubClassId(Integer securityAssetSubClassId) {
+        this.securityAssetSubClassId = securityAssetSubClassId;
     }
 
     @Column(name = "security_sector_name")
@@ -78,106 +79,106 @@ public class PortfolioHoldings implements Serializable {
     }
 
     @Column(name = "security_quantity")
-    public Float getSecurityQuantity() {
+    public BigDecimal getSecurityQuantity() {
         return securityQuantity;
     }
-    public void setSecurityQuantity(Float securityQuantity) {
+    public void setSecurityQuantity(BigDecimal securityQuantity) {
         this.securityQuantity = securityQuantity;
     }
 
     @Column(name = "security_buy_rate")
-    public Float getSecurityBuyRate() {
+    public BigDecimal getSecurityBuyRate() {
         return securityBuyRate;
     }
-    public void setSecurityBuyRate(Float securityBuyRate) {
+    public void setSecurityBuyRate(BigDecimal securityBuyRate) {
         this.securityBuyRate = securityBuyRate;
     }
 
     @Column(name = "security_brokerage")
-    public Float getSecurityBrokerage() {
+    public BigDecimal getSecurityBrokerage() {
         return securityBrokerage;
     }
-    public void setSecurityBrokerage(Float securityBrokerage) {
+    public void setSecurityBrokerage(BigDecimal securityBrokerage) {
         this.securityBrokerage = securityBrokerage;
     }
 
     @Column(name = "security_tax")
-    public Float getSecurityTax() {
+    public BigDecimal getSecurityTax() {
         return securityTax;
     }
-    public void setSecurityTax(Float securityTax) {
+    public void setSecurityTax(BigDecimal securityTax) {
         this.securityTax = securityTax;
     }
 
     @Column(name = "security_total_cost")
-    public Float getSecurityTotalCost() {
+    public BigDecimal getSecurityTotalCost() {
         return securityTotalCost;
     }
-    public void setSecurityTotalCost(Float securityTotalCost) {
+    public void setSecurityTotalCost(BigDecimal securityTotalCost) {
         this.securityTotalCost = securityTotalCost;
     }
 
     @Column(name = "security_cost_rate")
-    public Float getSecurityCostRate() {
+    public BigDecimal getSecurityCostRate() {
         return securityCostRate;
     }
-    public void setSecurityCostRate(Float securityCostRate) {
+    public void setSecurityCostRate(BigDecimal securityCostRate) {
         this.securityCostRate = securityCostRate;
     }
 
     @Column(name = "security_cmp")
-    public Float getSecurityCmp() {
+    public BigDecimal getSecurityCmp() {
         return securityCmp;
     }
-    public void setSecurityCmp(Float securityCmp) {
+    public void setSecurityCmp(BigDecimal securityCmp) {
         this.securityCmp = securityCmp;
     }
 
     @Column(name = "security_market_value")
-    public Float getSecurityMarketValue() {
+    public BigDecimal getSecurityMarketValue() {
         return securityMarketValue;
     }
-    public void setSecurityMarketValue(Float securityMarketValue) {
+    public void setSecurityMarketValue(BigDecimal securityMarketValue) {
         this.securityMarketValue = securityMarketValue;
     }
 
     @Column(name = "security_holding_period")
-    public Float getSecurityHoldingPeriod() {
+    public BigDecimal getSecurityHoldingPeriod() {
         return securityHoldingPeriod;
     }
-    public void setSecurityHoldingPeriod(Float securityHoldingPeriod) {
+    public void setSecurityHoldingPeriod(BigDecimal securityHoldingPeriod) {
         this.securityHoldingPeriod = securityHoldingPeriod;
     }
 
     @Column(name = "security_unrealized_net_profit")
-    public Float getSecurityUnrealizedNetProfit() {
+    public BigDecimal getSecurityUnrealizedNetProfit() {
         return securityUnrealizedNetProfit;
     }
-    public void setSecurityUnrealizedNetProfit(Float securityUnrealizedNetProfit) {
+    public void setSecurityUnrealizedNetProfit(BigDecimal securityUnrealizedNetProfit) {
         this.securityUnrealizedNetProfit = securityUnrealizedNetProfit;
     }
 
     @Column(name = "security_absolute_return")
-    public Float getSecurityAbsoluteReturn() {
+    public BigDecimal getSecurityAbsoluteReturn() {
         return securityAbsoluteReturn;
     }
-    public void setSecurityAbsoluteReturn(Float securityAbsoluteReturn) {
+    public void setSecurityAbsoluteReturn(BigDecimal securityAbsoluteReturn) {
         this.securityAbsoluteReturn = securityAbsoluteReturn;
     }
 
     @Column(name = "security_annualized_return")
-    public Float getSecurityAnnualizedReturn() {
+    public BigDecimal getSecurityAnnualizedReturn() {
         return securityAnnualizedReturn;
     }
-    public void setSecurityAnnualizedReturn(Float securityAnnualizedReturn) {
+    public void setSecurityAnnualizedReturn(BigDecimal securityAnnualizedReturn) {
         this.securityAnnualizedReturn = securityAnnualizedReturn;
     }
 
     @Column(name = "security_maturity_value")
-    public Float getSecurityMaturityValue() {
+    public BigDecimal getSecurityMaturityValue() {
         return securityMaturityValue;
     }
-    public void setSecurityMaturityValue(Float securityMaturityValue) {
+    public void setSecurityMaturityValue(BigDecimal securityMaturityValue) {
         this.securityMaturityValue = securityMaturityValue;
     }
 

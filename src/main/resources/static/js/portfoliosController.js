@@ -14,12 +14,12 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
 	$scope.hideTabs = true;
 
 	$scope.cashflowArray = [];
-
 	$scope.holdingsArray = [];
+	$scope.historicalHoldingsArray = [];
+	$scope.xiirReturnsArray = [];
+
     $scope.currentPage = 1;
     $scope.pageSize = 10;
-
-	$scope.historicalHoldingsArray = [];
 
 	findAllPortfolios();
 
@@ -35,10 +35,12 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     $scope.cashflowArray = new Array($scope.portfolios.length, 1);
                     $scope.holdingsArray = new Array($scope.portfolios.length, 1);
                     $scope.historicalHoldingsArray = new Array($scope.portfolios.length, 1);
+                    $scope.xiirReturnsArray = new Array($scope.portfolios.length, 1);
                     for (var i=0; i<$scope.portfolios.length; i++){
                         $scope.cashflowArray[i] = [];
                         $scope.holdingsArray[i] = [];
                         $scope.historicalHoldingsArray[i] = [];
+                        $scope.xiirReturnsArray[i] = [];
                     }
                 } else {
                     $scope.portfolios = [];
@@ -47,15 +49,17 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
     }
 
     function getSetupDates(){
-        var url = "/getsetupdates";
-        $http.get(urlBase + url).
-            then(function (response) {
-                if (response != undefined) {
-                    $scope.dateLastTradingDay = response.data["dateLastTradingDay"];
-                } else {
-                    $scope.dateLastTradingDay = undefined;
-                }
-            });
+        if ($scope.dateLastTradingDay == undefined) {
+            var url = "/getsetupdates";
+            $http.get(urlBase + url).
+                then(function (response) {
+                    if (response != undefined) {
+                        $scope.dateLastTradingDay = response.data["dateToday"];
+                    } else {
+                        $scope.dateLastTradingDay = undefined;
+                    }
+                });
+        }
     }
 
     function setPortfolioSelection(index){
@@ -76,6 +80,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         getPortfolioCashflow(index);
         getPortfolioHoldings(index);
         getPortfolioHistoricalHoldings(index);
+        getPortfolioXIRRReturns(index);
     }
 
     function getPortfolioCashflow(index){
@@ -109,7 +114,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     if (response != undefined) {
                         $scope.holdingsArray[index][0] = response.data;
                         $scope.holdings = response.data;
-                        $scope.holdings = $filter('orderBy')($scope.holdings,['securityAssetClass', 'securityAssetSubClass', 'securityName', 'securityBuyDate']);
+                        $scope.holdings = $filter('orderBy')($scope.holdings,['securityAssetClassId', 'securityAssetSubClassId', 'securityName', 'securityBuyDate']);
                         setChartData(index);
                     } else {
                         $scope.holdingsArray[index] = [];
@@ -120,8 +125,8 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
     }
 
     function setChartData(index){
-        var sortedHoldings = $filter('orderBy')($scope.holdings,'securityAssetClass');
-        var map = $filter('groupBy')(sortedHoldings, 'securityAssetClass');
+        var sortedHoldings = $filter('orderBy')($scope.holdings,'securityAssetClassId');
+        var map = $filter('groupBy')(sortedHoldings, 'securityAssetClassId');
         $scope.assetClass = [];
         $scope.assetClassData = [];
         $locale.NUMBER_FORMATS.GROUP_SEP = '';
@@ -172,6 +177,24 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         }
     }
 
+    function getPortfolioXIRRReturns(index){
+        if ($scope.xiirReturnsArray[index][0] != undefined) {
+            $scope.xiirReturns = $scope.xiirReturnsArray[index][0];
+        } else {
+            url = "/getportfolioxirrreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
+            $http.get(urlBase + url).
+                then(function(response){
+                    if (response != undefined) {
+                        $scope.xiirReturnsArray[index][0] = response.data;
+                        $scope.xiirReturns = response.data;
+                    } else {
+                        $scope.xiirReturnsArray[index] = [];
+                        $scope.xiirReturns = [];
+                    }
+                });
+        }
+    }
+
     $scope.searchSecurity = function (holding) {
         if ($scope.searchSecurityText == undefined) {
             return true;
@@ -194,8 +217,8 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         return false;
     }
 
-    //$scope.sortColumnHolding = "['securityAssetClass', 'securityAssetSubClass', 'securityName', 'securityBuyDate']";
-    //$scope.sortColumnHolding = "securityAssetClass";
+    //$scope.sortColumnHolding = "['securityAssetClassId', 'securityAssetSubClassId', 'securityName', 'securityBuyDate']";
+    //$scope.sortColumnHolding = "securityAssetClassId";
     $scope.reverseSortHolding = false;
     $scope.sortDataHolding = function (column) {
         $scope.reverseSortHolding = ($scope.sortColumnHolding == column) ? !$scope.reverseSortHolding : false;
@@ -253,8 +276,97 @@ portfolioModule.filter("portfolioActiveStatus", function () {
     }
 })
 
+portfolioModule.filter("formatAnnualizedReturns", ['$filter', function ($filter) {
+return function (returns, decimals) {
+        if (returns < 9) {
+            return $filter('number')((returns-1) * 100, decimals) + '%';
+        } else {
+            return "> 100%"
+        }
+    };
+}])
+
 portfolioModule.filter('percentageReturns', ['$filter', function ($filter) {
-  return function (input, decimals) {
-    return $filter('number')((input-1) * 100, decimals) + '%';
+  return function (returns, decimals) {
+    return $filter('number')((returns-1) * 100, decimals) + '%';
   };
 }])
+
+portfolioModule.filter("securityAssetClass", function () {
+    return function (securityAssetClass) {
+        switch (portfolioActiveStatus) {
+            case 10: return "Cash";
+            case 20: return "Fixed Income";
+            case 30: return "Fixed Inc and Equity";
+            case 40: return "Equity";
+            case 50: return "Commodity";
+            case 60: return "Real Estate";
+            case 70: return "Alternative Investments";
+        }
+    }
+})
+
+portfolioModule.filter("securityAssetSubClass", function () {
+    return function (securityAssetSubClass) {
+        switch (securityAssetSubClass) {
+            case 101010: return "Cash";
+            case 101020: return "Cash";
+            case 201010: return "Fixed Income - Short Term";
+            case 201020: return "Fixed Income - Short Term";
+            case 202010: return "Fixed Income - Mid Term";
+            case 202020: return "Fixed Income - Mid Term";
+            case 203010: return "Fixed Income - Long Term";
+            case 201020: return "Fixed Income - Long Term";
+            case 201030: return "Fixed Income - Long Term";
+            case 201040: return "Fixed Income - Long Term";
+            case 201050: return "Fixed Income - Long Term";
+            case 301010: return "Fixed Income And Equity";
+            case 301020: return "Fixed Income And Equity";
+            case 301030: return "Fixed Income And Equity";
+            case 401010: return "Equity - Diversified - Large Cap";
+            case 401020: return "Equity - Diversified - Large Cap";
+            case 401030: return "Equity - Diversified - Large Cap";
+            case 401040: return "Equity - Diversified - Large Cap";
+            case 401050: return "Equity - Diversified - Large Cap";
+            case 401060: return "Equity - Diversified - Large Cap";
+            case 401070: return "Equity - Diversified - Large Cap";
+            case 401080: return "Equity - Diversified - Large Cap";
+            case 402010: return "Equity - Diversified - Mid Cap";
+            case 402020: return "Equity - Diversified - Mid Cap";
+            case 402030: return "Equity - Diversified - Mid Cap";
+            case 402040: return "Equity - Diversified - Mid Cap";
+            case 403010: return "Equity - Diversified - Multi Cap";
+            case 403020: return "Equity - Diversified - Multi Cap";
+            case 403030: return "Equity - Diversified - Multi Cap";
+            case 403040: return "Equity - Diversified - Multi Cap";
+            case 404010: return "Equity - Diversified - Small Cap";
+            case 404020: return "Equity - Diversified - Small Cap";
+            case 404030: return "Equity - Diversified - Small Cap";
+            case 404040: return "Equity - Diversified - Small Cap";
+            case 405010: return "Foreign Equity - Developed Market";
+            case 405020: return "Foreign Equity - Developed Market";
+            case 405030: return "Foreign Equity - Emerging Market";
+            case 405040: return "Foreign Equity - Emerging Market";
+            case 406010: return "Individual Equity";
+            case 406020: return "Individual Equity";
+            case 406030: return "Individual Equity";
+            case 406040: return "Individual Equity";
+            case 501010: return "Diversified Commodity";
+            case 502010: return "Individual Commodity";
+            case 502020: return "Individual Commodity";
+            case 502030: return "Individual Commodity";
+            case 601010: return "Real Estate Direct";
+            case 601020: return "Real Estate Direct";
+            case 601030: return "Real Estate Direct";
+            case 601040: return "Real Estate Direct";
+            case 602010: return "Real Estate Indirect";
+            case 701010: return "Alternative Investments";
+            case 701020: return "Alternative Investments";
+            case 701030: return "Alternative Investments";
+            case 701040: return "Alternative Investments";
+            case 701050: return "Alternative Investments";
+            case 701060: return "Alternative Investments";
+            case 701070: return "Alternative Investments";
+        }
+    }
+})

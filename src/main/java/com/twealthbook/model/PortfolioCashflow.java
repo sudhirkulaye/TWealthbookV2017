@@ -2,6 +2,7 @@ package com.twealthbook.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
@@ -9,7 +10,7 @@ import java.sql.Date;
 public class PortfolioCashflow implements Serializable {
 
     private PortfolioCashflowKey portfolioCashflowKey;
-    private Float cashflowAmount;
+    private BigDecimal cashflowAmount;
 
     @EmbeddedId
     public PortfolioCashflowKey getPortfolioCashflowKey() {
@@ -20,10 +21,10 @@ public class PortfolioCashflow implements Serializable {
     }
 
     @Column(name = "cashflow_amount")
-    public Float getCashflowAmount() {
+    public BigDecimal getCashflowAmount() {
         return cashflowAmount;
     }
-    public void setCashflowAmount(Float cashflowAmount) {
+    public void setCashflowAmount(BigDecimal cashflowAmount) {
         this.cashflowAmount = cashflowAmount;
     }
 

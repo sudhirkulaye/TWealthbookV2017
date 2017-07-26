@@ -2,6 +2,7 @@ package com.twealthbook.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
@@ -29,7 +30,7 @@ public class Portfolio implements Serializable{
                                                 // Private Equity : Own Business or investment in private business
     private int portfolioBenchmarkType; //1-Standard Index 2-Customized combination of Indices
     private String portfolioBenchmark;
-    private Float portfolioValue;
+    private BigDecimal portfolioValue;
 
     @EmbeddedId
     public PortfolioKey getPortfolioKey() {
@@ -96,10 +97,10 @@ public class Portfolio implements Serializable{
     }
 
     @Column(name = "portfolio_value")
-    public Float getPortfolioValue() {
+    public BigDecimal getPortfolioValue() {
         return portfolioValue;
     }
-    public void setPortfolioValue(Float portfolioValue) {
+    public void setPortfolioValue(BigDecimal portfolioValue) {
         this.portfolioValue = portfolioValue;
     }
 

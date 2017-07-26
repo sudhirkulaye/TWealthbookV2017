@@ -48,6 +48,10 @@ public class XIRRCalculation {
         double x0 = guess;
         double x1 = 0.0;
         double err = 1e+100;
+        for (int i =0; i < payments.length; i++){
+            System.out.println(payments[i]);
+            System.out.println(days[i].toString());
+        }
 
         while (err > tol) {
             x1 = x0 - total_f_xirr(payments, days, x0) / total_df_xirr(payments, days, x0);

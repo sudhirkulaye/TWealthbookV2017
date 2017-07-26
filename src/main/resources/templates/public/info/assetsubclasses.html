@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org" >
+<head th:include="fragments/header :: common-header" />
+<body>
+    <!-- googleAnalytics -->
+    <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
+
+    <!-- navigation -->
+    <nav th:include="publicnavigation :: public-navigation" />
+
+    <!-- page-wrapper -->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header"> TWealthbook Asset Sub Classes </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>Asset Sub Classes</strong>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table" data-expand-first="true">
+                                <thead>
+                                    <tr>
+                                        <th>Asset Class</th>
+                                        <th>Asset Sub Class</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Cash</td>
+                                    <td>Cash Without Interest</td>
+                                    <td>Cash without interest</td>
+                                </tr>
+                                <tr>
+                                    <td>Cash</td>
+                                    <td>Bank Account</td>
+                                    <td>Saving/Current Bank Acct, very high liquidity</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Short Term</td>
+                                    <td>FD (&lt;6M)</td>
+                                    <td>Bank FD (up to ~ 6M)</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Short Term</td>
+                                    <td>Debt MF Low Risk</td>
+                                    <td>Liquid Debt MFs having High Credit Quality And Low Int. Rate Sensitivity</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Mid Term</td>
+                                    <td>FD(~ 6M-3Y)</td>
+                                    <td>Bank or Corporate FD (~ 6M-3Y)</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Mid Term</td>
+                                    <td>Debt MF Medium Risk</td>
+                                    <td>Debt MFs having High to Medium Credit Quality, Low-Medium Int. Rate Sensitivity</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Long Term</td>
+                                    <td>FD(&gt;3Yrs)</td>
+                                    <td>Corporate or Bank FD with Maturity &gt; 5 Yrs</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Long Term</td>
+                                    <td>PPF-NSE</td>
+                                    <td>Govt. Tax Saving-Post Office</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Long Term</td>
+                                    <td>Bonds Debentures Preferred Stocks</td>
+                                    <td>Corporate or Govt. Bonds or Debentures or Preferred Stocks</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Long Term</td>
+                                    <td>Debt MF High Risk</td>
+                                    <td>Debt MFs having Medium To Low Credit Quality, Medium to High Int. Rate Sensitivity</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income - Long Term</td>
+                                    <td>Insurance</td>
+                                    <td>Endowment Insurance</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income And Equity</td>
+                                    <td>Debt Oriented Hybrid MF</td>
+                                    <td>Debt Oriented Hybrid Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income And Equity</td>
+                                    <td>Equity Oriented Hybrid MF</td>
+                                    <td>Equity Oriented Hybrid Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Fixed Income And Equity</td>
+                                    <td>ULIP-Pension Funds</td>
+                                    <td>Products where clients select ratio of Debt And Equity</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>ETF Or Index - Nifty</td>
+                                    <td>NIFTY 50 Index ETF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>ETF Or Index - Bank</td>
+                                    <td>Banking Sector Index ETF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>ETF Or Index - Junior</td>
+                                    <td>NIFTY Next 50 ETF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>ETF Or Index - Other</td>
+                                    <td>Other Large Cap Index ETF or Index MF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>Value Oriented MF</td>
+                                    <td>Large Cap Value Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>Growth Oriented MF</td>
+                                    <td>Large Cap Growth Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>Value And Growth MF</td>
+                                    <td>Large Cap Value And Growth Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Large Cap</td>
+                                    <td>ELSS Mutual Funds</td>
+                                    <td>Tax Saving Equity MF, 3 Ys locking period</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Mid Cap</td>
+                                    <td>ETF Or Index</td>
+                                    <td>Mid Cap ETF or Index MF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Mid Cap</td>
+                                    <td>Value Oriented MF</td>
+                                    <td>Mid Cap Value Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Mid Cap</td>
+                                    <td>Growth Oriented MF</td>
+                                    <td>Mid Cap Growth Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Mid Cap</td>
+                                    <td>Value And Growth MF</td>
+                                    <td>Mid Cap Value And Growth Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Multi Cap</td>
+                                    <td>ETF Or Index</td>
+                                    <td>Multi Cap ETF or Index MF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Multi Cap</td>
+                                    <td>Value Oriented MF</td>
+                                    <td>Multi Cap Value Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Multi Cap</td>
+                                    <td>Growth Oriented MF</td>
+                                    <td>Multi Cap Growth Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Multi Cap</td>
+                                    <td>Value And Growth MF</td>
+                                    <td>Multi Cap Value And Growth Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Small Cap</td>
+                                    <td>ETF Or Index</td>
+                                    <td>Small Cap ETF or Index MF</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Small Cap</td>
+                                    <td>Value Oriented MF</td>
+                                    <td>Small Cap Value Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Small Cap</td>
+                                    <td>Growth Oriented MF</td>
+                                    <td>Small Cap Growth Oriented Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Diversified - Small Cap</td>
+                                    <td>Value And Growth MF</td>
+                                    <td>Small Cap Value And Growth Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Foreign Equity - Developed Market</td>
+                                    <td>Diversified Large Cap</td>
+                                    <td>Developed Market Large Cap Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Foreign Equity - Developed Market</td>
+                                    <td>Diversified Small Cap</td>
+                                    <td>Developed Market Small Cap Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Foreign Equity - Emerging Market</td>
+                                    <td>Diversified Large Cap</td>
+                                    <td>Emerging Market Large Cap Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Foreign Equity - Emerging Market</td>
+                                    <td>Diversified Small Cap</td>
+                                    <td>Emerging Market Small Cap Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Individual</td>
+                                    <td>Large Cap Stock</td>
+                                    <td>Stocks included in BSE/NSE 100</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Individual</td>
+                                    <td>Mid Cap Stock</td>
+                                    <td>Stocks included in BSE/NSE 200 but not in BSE/NSE 100</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Individual</td>
+                                    <td>Small Cap Stock</td>
+                                    <td>Stocks included in BSE/NSE 500 but not in BSE/NSE 200</td>
+                                </tr>
+                                <tr>
+                                    <td>Equity - Individual</td>
+                                    <td>Micro Cap Stock</td>
+                                    <td>Stocks not listed in BSE/NSE 500</td>
+                                </tr>
+                                <tr>
+                                    <td>Commodity - Diversified </td>
+                                    <td>Diversified Commodity MF</td>
+                                    <td>Diversified Commodity Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Commodity - Individual</td>
+                                    <td>Gold</td>
+                                    <td>Gold ETF, Coins, Bonds</td>
+                                </tr>
+                                <tr>
+                                    <td>Commodity - Individual</td>
+                                    <td>Silver</td>
+                                    <td>Silver Coins</td>
+                                </tr>
+                                <tr>
+                                    <td>Commodity - Individual</td>
+                                    <td>Other Commodity</td>
+                                    <td>Commodity other than Gold, Silver</td>
+                                </tr>
+                                <tr>
+                                    <td>Real Estate Direct</td>
+                                    <td>Residential Rental</td>
+                                    <td>Residential Rental Property</td>
+                                </tr>
+                                <tr>
+                                    <td>Real Estate Direct</td>
+                                    <td>Commercial Rental</td>
+                                    <td>Commercial Rental Property</td>
+                                </tr>
+                                <tr>
+                                    <td>Real Estate Direct</td>
+                                    <td>Agricultural Land</td>
+                                    <td>Agricultural Land</td>
+                                </tr>
+                                <tr>
+                                    <td>Real Estate Direct</td>
+                                    <td>Non-Agricultural Land</td>
+                                    <td>Non Agricultural Land</td>
+                                </tr>
+                                <tr>
+                                    <td>Real Estate Indirect</td>
+                                    <td>REIT MF</td>
+                                    <td>Real Estate Investment Trust Mutual Fund</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Hedge Fund or PMS</td>
+                                    <td>Hedge Fund or PMS (Individual Equity or Long-Short Equity Strategy)</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Trading Portfolio, Managed Futures</td>
+                                    <td>Trading in Stocks, FnO of Equity, Currency and Commodity</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Private Equity</td>
+                                    <td>Own Business or Investment in Pvt. Co.</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Venture Capital</td>
+                                    <td>Investment in Pvt. Co. via Venture Capitalist Company</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Distressed Securities</td>
+                                    <td>Distressed Securities</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Artifacts Or Coins</td>
+                                    <td>Antique Artifacts, Coins etc.</td>
+                                </tr>
+                                <tr>
+                                    <td>Alternative Investments</td>
+                                    <td>Any other Investment</td>
+                                    <td>Any Other Investment</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

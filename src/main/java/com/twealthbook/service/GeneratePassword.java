@@ -6,7 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class GeneratePassword {
     public static void main(String[] arg){
-        System.out.println("9930174850/Madhavi1985 :"+ passwordEncoder().encode("Madhavi1985"));
+        System.out.println("Admin/Admin703 :"+ passwordEncoder().encode("Admin703"));
+        /*System.out.println("9930174850/Madhavi1985 :"+ passwordEncoder().encode("Madhavi1985"));
         System.out.println("9987508953/Rohini0304 :"+ passwordEncoder().encode("Rohini0304"));
         System.out.println("9819156287/Yatin218 :"+ passwordEncoder().encode("Yatin218"));
         System.out.println("9967020963/Yogesh1980 :"+ passwordEncoder().encode("Yogesh1980"));
@@ -16,10 +17,10 @@ public class GeneratePassword {
         System.out.println("9820518100/Sachin504 :"+ passwordEncoder().encode("Sachin504"));
         System.out.println("9820116406/Girish1110 :"+ passwordEncoder().encode("Girish1110"));
         System.out.println("9821312266/NishaAneeket123 :"+ passwordEncoder().encode("NishaAneeket123"));
-        System.out.println("9823433623/JayeshManu111 :"+ passwordEncoder().encode("JayeshManu111"));
+        System.out.println("9823433623/JayeshManu111 :"+ passwordEncoder().encode("JayeshManu111"));*/
 
         /*
-
+        Admin/Admin703 :$2a$10$yLrtIAznr3IwyyGv4Wj2yO2rm67gn3MchuK0Fs.UuIQdWowkemxiS
         9930174850/Madhavi1985 :$2a$10$Nuz9Mn4SovtiHMwsRiqD3eW5DHncbQIjop2vBeJA9dKDdDdImuK6C
         9987508953/Rohini0304 :$2a$10$ZDtcgbzTbieQdqX5E.0qDuob5G8cYmYokFxQVGHwXmT7OV9mqzs92
         9819156287/Yatin218 :$2a$10$T2.zn.raKEGFqchMr.2zLusIa/V65CBxesC52cN7bMcrRmY/ca3me

@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"  xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/header :: common-header" />
+<body  ng-app="portfolioApp" ng-controller="portfolioController">
+    <!-- googleAnalytics -->
+    <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
+    <!--Angular JS-->
+    <script src="../static/js/angular.min.js" th:src="@{/js/angular.min.js}"></script>
+    <script src="../static/js/portfoliosController.js" th:src="@{/js/portfoliosController.js}"></script>
+    <!--Angular pagination JS-->
+    <script src="../static/js/pagination.js" th:src="@{/js/pagination.js}"></script>
+    <!--Angular custom filter (for group by) JS-->
+    <script src="../static/js/angular-filter.js" th:src="@{/js/angular-filter.js}"></script>
+    <!--Angular Chart JS-->
+    <script src="../static/js/Chart.bundle.js" th:src="@{/js/Chart.bundle.js}"></script>
+    <script src="../static/js/angular-chart.min.js" th:src="@{/js/angular-chart.min.js}"></script>
+
+    <!-- wrapper -->
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav th:include="user/navigation :: common-navigation" />
+        <!-- page-wrapper -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" >Portfolios</h1>
+                    <lable style="float: right;"><i>Valuation as of: <p th:text="${processingDate}" /></i></lable>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>Portfolios</strong>
+                        </div>
+                        <div class="panel-body" >
+                            <div class="table-responsive">
+                                <table id="portolios-table" class="table" data-expand-first="true">
+                                    <thead>
+                                        <tr>
+                                            <th>Family Member</th>
+                                            <!--<th ng-hide="true">ID</th>-->
+                                            <th>Portfolio Description</th>
+                                            <!--<th ng-hide="true">Start Date</th>-->
+                                            <!--<th ng-hide="true">End Date</th>-->
+                                            <!--<th ng-hide="true">Status</th>-->
+                                            <!--<th ng-hide="true">Strategy</th>-->
+                                            <!--<th ng-hide="true">Benchmark Type</th>-->
+                                            <!--<th ng-hide="true">Benchmark</th>-->
+                                            <th class="text-right">Value</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="portfolio in portfolios">
+                                            <td>{{portfolio.relationship}}</td>
+                                            <!--<td ng-hide="true">{{portfolio.portfolioId}}</td>-->
+                                            <td>{{portfolio.portfolioDescription}}</td>
+                                            <!--<td ng-hide="true">{{portfolio.portfolioStartDate}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioEndDate}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioActiveStatus}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioCurrentStrategy}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioBenchmarkType  | benchmarkType}}</td>-->
+                                            <!--<td ng-hide="true">{{portfolio.portfolioBenchmark}}</td>-->
+                                            <td class="text-right">{{portfolio.portfolioValue | currency:"&#8377;":0}}</td>
+                                            <td><button ng-click="showDetails($index)" class="btn btn-primary">Show Details</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" ng-hide="hideTabs">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>Portfolio Details</strong>
+                        </div>
+                        <div class="panel-body">
+                            <div>
+                                <table width="100%">
+                                    <tr>
+                                        <td><strong>Family Member:</strong></td>
+                                        <td>{{relationship}}</td>
+                                        <td><strong>Portfolio Description:</strong></td>
+                                        <td>{{portfolioDescription}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Portfolio Start Date:</strong></td>
+                                        <td>{{portfolioStartDate}}</td>
+                                        <td><strong>Portfolio Status:</strong></td>
+                                        <td>{{portfolioActiveStatus}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Portfolio Strategy:</strong></td>
+                                        <td>{{portfolioCurrentStrategy}}</td>
+                                        <td><strong>Portfolio Benchmark Type:</strong></td>
+                                        <td>{{portfolioBenchmarkType}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Portfolio Benchmark:</strong></td>
+                                        <td>{{portfolioBenchmark}}</td>
+                                        <td><strong>Portfolio Value:</strong></td>
+                                        <td>{{portfolioValue}}</td>
+                                    </tr>
+                                </table>
+                                <br />
+                            </div>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-pills">
+                                <li class="active"><a href="#cashflow-pills" data-toggle="tab">Cashflow</a></li>
+                                <li><a href="#holdings-pills" data-toggle="tab">Holdings</a></li>
+                                <li><a href="#historical-holdings-pills" data-toggle="tab">Historical Holdings</a></li>
+                                <li><a href="#distribution-pills" data-toggle="tab">Distribution</a></li>
+                                <li><a href="#performance-pills" data-toggle="tab">Performance</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="cashflow-pills">
+                                    <br /><br />
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <strong>Portfolio Cash Flow</strong>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="table-responsive">
+                                                        <table id="cashflow-table" class="table" data-expand-first="true">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Portfolio Id</th>
+                                                                    <th>Date</th>
+                                                                    <th>Cash In/Cash Out</th>
+                                                                    <th class="text-right">Amount</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="cashflow in cashflows | orderBy:'portfolioCashflowKey.cashflowDate':true">
+                                                                    <td>{{cashflow.portfolioCashflowKey.portfolioId}}</td>
+                                                                    <td>{{cashflow.portfolioCashflowKey.cashflowDate}}</td>
+                                                                    <td>
+                                                                        <div ng-if="cashflow.cashflowAmount &lt; 0 ">Cash In</div>
+                                                                        <div ng-if="cashflow.cashflowAmount &gt; 0 ">Cash Out</div>
+                                                                    </td>
+                                                                    <td class="text-right">{{cashflow.cashflowAmount | currency:"&#8377;":0}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="holdings-pills">
+                                    <br /><br />
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <strong>Portfolio Holdings</strong>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <input id="search" style="float: right;" type="text" placeholder="Search a security" ng-model="searchSecurityText" />
+                                                    Securities Per Page:<input type="number" min="1" max="100" maxlength="3" size="3" ng-model="pageSize" />
+                                                    <label>* Sortable fields</label>
+                                                    <div class="table-responsive">
+                                                        <table id="holdings-table" class="table table-striped" data-expand-first="true">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th ng-click="sortDataHolding('securityAssetClassId')">Asset Class* <i ng-class="getSortClassHolding('securityAssetClassId')" /></th>
+                                                                    <th ng-click="sortDataHolding('securityAssetSubClassId')">Sub Class* <i ng-class="getSortClassHolding('securityAssetSubClassId')" /></th>
+                                                                    <th ng-hide="true">Sector-Industry</th>
+                                                                    <th ng-click="sortDataHolding('securityName')">Security Name* <i ng-class="getSortClassHolding('securityName')" /></th>
+                                                                    <th>Buy Date</th>
+                                                                    <th>Quantity</th>
+                                                                    <th ng-hide="true">Buy Rate</th>
+                                                                    <th ng-hide="true">Borkerage</th>
+                                                                    <th ng-hide="true">Tax</th>
+                                                                    <th ng-click="sortDataHolding('securityTotalCost')">Total Cost* <i ng-class="getSortClassHolding('securityTotalCost')" /></th>
+                                                                    <th ng-hide="true">Cost Rate</th>
+                                                                    <th>CMP</th>
+                                                                    <th ng-click="sortDataHolding('securityMarketValue')" class="text-right">Market Value* <i ng-class="getSortClassHolding('securityMarketValue')" /></th>
+                                                                    <th ng-click="sortDataHolding('securityHoldingPeriod')" class="text-right">Holding Period* <br />(Yrs) <i ng-class="getSortClassHolding('securityHoldingPeriod')" /></th>
+                                                                    <th ng-click="sortDataHolding('securityUnrealizedNetProfit')" class="text-right">Unrealized Profit* <i ng-class="getSortClassHolding('securityUnrealizedNetProfit')" /></th>
+                                                                    <th ng-click="sortDataHolding('securityAbsoluteReturn')" class="text-right">Absolute Returns* <i ng-class="getSortClassHolding('securityAbsoluteReturn')" /></th>
+                                                                    <th ng-click="sortDataHolding('securityAnnualizedReturn')" class="text-right">Annualized Returns* <i ng-class="getSortClassHolding('securityAnnualizedReturn')" /></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr dir-paginate="holding in holdings | filter:searchSecurity | orderBy:sortColumnHolding:reverseSortHolding | itemsPerPage: pageSize" pagination-id="holdings" current-page="currentPage">
+                                                                    <td>{{holding.securityAssetClassId}}</td>
+                                                                    <td>{{holding.securityAssetSubClassId}}</td>
+                                                                    <td ng-hide="true">{{holding.securitySectorName + "--" + holding.securityIndustryName}}</td>
+                                                                    <td>{{holding.securityName}}</td>
+                                                                    <td>{{holding.portfolioHoldingsKey.securityBuyDate}}</td>
+                                                                    <td class="text-right">{{holding.securityQuantity | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{holding.securityBuyRate | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{holding.securityBrokerage | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{holding.securityTax | number:2}}</td>
+                                                                    <td class="text-right">{{holding.securityTotalCost | number:0}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{holding.securityCostRate | number:2}}</td>
+                                                                    <td class="text-right">{{holding.securityCmp | number:2}}</td>
+                                                                    <td class="text-right">{{holding.securityMarketValue | currency:"&#8377;":0}}</td>
+                                                                    <td class="text-right">{{holding.securityHoldingPeriod | number:2}}</td>
+                                                                    <td class="text-right">{{holding.securityUnrealizedNetProfit | currency:"&#8377;":0}}</td>
+                                                                    <td class="text-right">{{holding.securityAbsoluteReturn | percentageReturns:2}}</td>
+                                                                    <td class="text-right">{{holding.securityAnnualizedReturn | formatAnnualizedReturns:2}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div ng-controller="OtherController" class="other-controller small">
+                                                        <div class="text-center">
+                                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" pagination-id="holdings"  th:href="pagination.tpl.html"></dir-pagination-controls>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="historical-holdings-pills">
+                                    <br /><br />
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <strong>Portfolio Historical Holdings</strong>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <input id="searchhistory" style="float: right;" type="text" placeholder="Search a security" ng-model="searchHistoricalSecurityText" />
+                                                    Securities Per Page:<input type="number" min="1" max="100" maxlength="3" size="3" ng-model="pageSize" />
+                                                    <label>* Sortable fields</label>
+                                                    <div class="table-responsive">
+                                                        <table id="historical-holdings-table" class="table table-striped" data-expand-first="true">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Asset Class</th>
+                                                                    <th>Sub Class</th>
+                                                                    <th ng-hide="true">Sector-Industry</th>
+                                                                    <th>Security Name</th>
+                                                                    <th>Buy Date</th>
+                                                                    <th>Quantity</th>
+                                                                    <th ng-hide="true">Buy Rate</th>
+                                                                    <th ng-hide="true">Borkerage</th>
+                                                                    <th ng-hide="true">Tax</th>
+                                                                    <th>Total Cost</th>
+                                                                    <th ng-hide="true">Cost Rate</th>
+                                                                    <th ng-click="sortDataHistoricalHolding('portfolioHistoricalHoldingsKey.securitySellDate')">Sell Date* <i ng-class="getSortClassHistoricalHolding('portfolioHistoricalHoldingsKey.securitySellDate')" /></th>
+                                                                    <th ng-hide="true">Sell Rate</th>
+                                                                    <th ng-hide="true">Sell Borkerage</th>
+                                                                    <th ng-hide="true">Sell Tax</th>
+                                                                    <th class="text-right">Net Sell</th>
+                                                                    <th ng-hide="true">Net Sell Rate</th>
+                                                                    <th ng-click="sortDataHistoricalHolding('securityHoldingPeriod')" class="text-right">Holding Period* <br />(Yrs) <i ng-class="getSortClassHistoricalHolding('securityHoldingPeriod')" /></th>
+                                                                    <th ng-click="sortDataHistoricalHolding('securityRealizedNetProfit')" class="text-right">Realized Profit* <i ng-class="getSortClassHistoricalHolding('securityRealizedNetProfit')" /></th>
+                                                                    <th ng-click="sortDataHistoricalHolding('securityAbsoluteReturn')" class="text-right">Absolute Returns* <i ng-class="getSortClassHistoricalHolding('securityAbsoluteReturn')" /></th>
+                                                                    <th ng-click="sortDataHistoricalHolding('securityAnnualizedReturn')" class="text-right">Annualized Returns* <i ng-class="getSortClassHistoricalHolding('securityAnnualizedReturn')" /></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr dir-paginate="historicalHolding in historicalHoldings | filter:searchHistoricalSecurity | orderBy:sortColumnHistoricalHolding:reverseSortHistoricalHolding | itemsPerPage: pageSize" pagination-id="historicalHoldings" current-page="currentPage">
+                                                                    <td>{{historicalHolding.securityAssetClassId}}</td>
+                                                                    <td>{{historicalHolding.securityAssetSubClassId}}</td>
+                                                                    <td ng-hide="true">{{historicalHolding.securitySectorName + "--" + historicalHolding.securityIndustryName}}</td>
+                                                                    <td>{{historicalHolding.securityName}}</td>
+                                                                    <td>{{historicalHolding.portfolioHistoricalHoldingsKey.securityBuyDate}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityQuantity | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{historicalHolding.securityBuyRate | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{holdhistoricalHoldinging.securityBrokerage | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{historicalHolding.securityTax | number:2}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityTotalCost | currency:"&#8377;":0}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{historicalHolding.securityCostRate | number:2}}</td>
+                                                                    <td>{{historicalHolding.portfolioHistoricalHoldingsKey.securitySellDate}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{historicalHolding.securitySellRate | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{holdhistoricalHoldinging.securityBrokerageSell | number:2}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{historicalHolding.securityTaxSell | number:2}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityNetSell | currency:"&#8377;":0}}</td>
+                                                                    <td ng-hide="true" class="text-right">{{historicalHolding.securityNetSellRate | number:2}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityHoldingPeriod | number:2}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityRealizedNetProfit | currency:"&#8377;":0}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityAbsoluteReturn | percentageReturns:2}}</td>
+                                                                    <td class="text-right">{{historicalHolding.securityAnnualizedReturn | formatAnnualizedReturns:2}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div ng-controller="OtherController" class="other-controller small">
+                                                        <div class="text-center">
+                                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" pagination-id="historicalHoldings" th:href="pagination.tpl.html"></dir-pagination-controls>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="distribution-pills">
+                                    <br /><br />
+                                    <div class="row">
+                                        <div class="col-lg-4" >
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Asset Class wise Distribution
+                                                </div>
+                                                <div class="panel-body">
+                                                    <canvas id="AssetClassHolding" class="chart chart-doughnut"
+                                                            chart-data="assetClassData" chart-labels="assetClass">
+                                                    </canvas>
+                                                    <br /><br />
+                                                    <div>
+                                                        <ul>
+                                                            <li ng-repeat="(key, holding) in holdings | orderBy:'securityAssetClassId' | groupBy: 'securityAssetClassId'">
+                                                                <strong>{{key}}:</strong>  {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4" >
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Asset Sub-Class wise Distribution
+                                                </div>
+                                                <div class="panel-body">
+                                                    <canvas id="AssetSubClassHolding" class="chart chart-doughnut"
+                                                            chart-data="assetSubClassData" chart-labels="assetSubClass">
+                                                    </canvas>
+                                                    <br /><br />
+                                                    <!--<div class="chart chart-md" id="donut-example"></div>-->
+                                                    <div>
+                                                        <ul>
+                                                            <li ng-repeat="(key, holding) in holdings | orderBy:['securityAssetClassId','securityAssetSubClassId'] | groupBy: 'securityAssetSubClassId'">
+                                                                <strong>{{holding[0].securityAssetClassId}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4" >
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Sector-Industry wise Distribution
+                                                </div>
+                                                <div class="panel-body">
+                                                    <!--<div class="chart chart-md" id="donut-example1"></div>-->
+                                                    <!--<script src="../js/data.js" th:src="@{/js/data.js}"></script>-->
+                                                    <canvas id="SectorHolding" class="chart chart-doughnut"
+                                                            chart-data="sectorIndustryData" chart-labels="sectorIndustry">
+                                                    </canvas>
+                                                    <br /><br />
+                                                    <div>
+                                                        <ul>
+                                                            <li ng-repeat="(key, holding) in holdings | orderBy:['securitySectorName','securityIndustryName'] | groupBy: 'securityIndustryName'">
+                                                                <strong>{{holding[0].securitySectorName}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="performance-pills">
+                                    <br /><br />
+                                    <h4>XIRR Returns since inception</h4>
+                                    {{xiirReturns.returnsSinceInception+1 | percentageReturns:2}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

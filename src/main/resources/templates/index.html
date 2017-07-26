@@ -4,18 +4,10 @@
 <body>
     <!-- googleAnalytics -->
     <script src="../static/js/googleAnalytics.js" th:src="@{/js/googleAnalytics.js}"></script>
-    <!-- googleAnalytics -->
+
     <!-- navigation -->
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="../templates/index.html" th:href="@{/}"><strong>TWealthbook</strong> </a>
-        </div>
-        <ul class="nav navbar-top-links navbar-right">
-            <a href="/login">Login to proceed...   </a>
-        </ul>
-        <div class="navbar-default sidebar" role="navigation"></div>
-    </nav>
-    <!-- navigation -->
+    <nav th:include="publicnavigation :: public-navigation" />
+
     <!-- page-wrapper -->
     <div id="page-wrapper">
         <div class="row">
@@ -24,7 +16,6 @@
             </div>
         </div>
     </div>
-    <!-- page-wrapper -->
 
 </body>
 </html>

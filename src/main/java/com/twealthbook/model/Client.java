@@ -24,8 +24,8 @@ public class Client implements Serializable{
     private String clientAadharCardNo;
 
     @Id
-    @TableGenerator(name="SequenceNextHiValue", table = "Sequence_Next_Hi_Value", pkColumnName = "id", pkColumnValue = "client_id", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = "SequenceNextHiValue")
+    @TableGenerator(name="SequenceNextHighValue", table = "sequence_next_high_value", pkColumnName = "id", pkColumnValue = "client_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "SequenceNextHighValue")
     @Column(name = "client_id")
     public Long getClientId() {
         return clientId;
