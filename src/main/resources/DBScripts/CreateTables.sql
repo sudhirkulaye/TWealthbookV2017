@@ -5,7 +5,7 @@ SELECT table_name, table_rows, TABLE_COMMENT FROM information_schema.tables
 WHERE TABLE_SCHEMA = 'twealthbookdev'  ORDER BY table_comment;
 
 SELECT a.TABLE_NAME, a.COLUMN_NAME, a.COLUMN_TYPE, a.COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS a
-WHERE TABLE_SCHEMA='twealthbookdev' order by table_name, a.ORDINAL_POSITION;
+WHERE TABLE_SCHEMA='twealthbookdev' and a.table_name = 'COMPANY_DAILY_DATA_B' order by table_name, a.ORDINAL_POSITION;
 
 drop table if exists portfolio_returns;
 drop table if exists portfolio_returns_calculation_support;

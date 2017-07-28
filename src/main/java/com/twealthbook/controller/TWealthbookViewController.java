@@ -1,36 +1,30 @@
 package com.twealthbook.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.twealthbook.model.CompanyDailyDataB;
 import com.twealthbook.model.SetupDates;
+import com.twealthbook.repository.CompanyDailyDataBRepository;
 import com.twealthbook.repository.SetupDatesRepository;
 import com.twealthbook.service.TWealthbookApiService;
-import com.twealthbook.thirdpartydata.DailyDataFromB;
+import com.twealthbook.thirdpartydata.DailyDataB;
+import com.twealthbook.thirdpartydata.Ticker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.core.env.Environment;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -43,6 +37,8 @@ public class TWealthbookViewController {
     TWealthbookApiService tWealthbookApiService;
     @Autowired
     SetupDatesRepository setupDatesRepository;
+    @Autowired
+    CompanyDailyDataBRepository companyDailyDataBRepository;
 
     @Autowired
     public TWealthbookViewController(Environment environment){
@@ -114,16 +110,16 @@ public class TWealthbookViewController {
 //    }
 
 
-    @RequestMapping(value = "/admin/uploaddailydatafromb",method=RequestMethod.GET)
+    @RequestMapping(value = "/admin/uploaddailydatab",method=RequestMethod.GET)
     public  String uploadDailyDataFromB(){
-       return "/admin/uploaddailydatafromb";
+       return "/admin/uploaddailydatab";
     }
 
     @RequestMapping(value=("/admin/uploadstatus"),headers=("content-type=multipart/*"),method=RequestMethod.POST)
     public String uploadStatus (Model model, @RequestParam("file") MultipartFile file){
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a file to upload");
-            return "redirect:/admin/uploaddailydatafromb";
+            return "redirect:/admin/uploaddailydatab";
         }
         try {
 
@@ -132,8 +128,17 @@ public class TWealthbookViewController {
 
             ObjectMapper jsonMapper = new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            DailyDataFromB dailyDataFromBn = jsonMapper.readValue(jsonAsString, DailyDataFromB.class);
-            assertNotNull(dailyDataFromBn);
+            DailyDataB dailyDataB = jsonMapper.readValue(jsonAsString, DailyDataB.class);
+            assertNotNull(dailyDataB);
+
+            List<CompanyDailyDataB> companyDailyDataBList = new ArrayList<>();
+            for(Ticker ticker : dailyDataB.getTickers()){
+                CompanyDailyDataB companyDailyDataB = new CompanyDailyDataB(ticker);
+                companyDailyDataBList.add(companyDailyDataB);
+//                companyDailyDataBRepository.save(companyDailyDataB);
+            }
+            companyDailyDataBList.sort(Comparator.comparing(CompanyDailyDataB::getCompanyDailyMarketCap).reversed());
+            companyDailyDataBRepository.save(companyDailyDataBList);
 
             model.addAttribute("message",
                     "You successfully uploaded '" + file.getOriginalFilename() + "'");
@@ -141,7 +146,7 @@ public class TWealthbookViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "/admin/uploaddailydatafromb";
+        return "/admin/uploaddailydatab";
     }
 
     @RequestMapping(value = "/user/dashboard", method = RequestMethod.GET)

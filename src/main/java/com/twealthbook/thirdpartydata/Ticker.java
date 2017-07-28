@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ticker implements Serializable {
-//    private List<String> holdings;
+
     private String est_eps_last_qtr;
     private String disp_name;
     private String last_price;
@@ -16,7 +17,7 @@ public class Ticker implements Serializable {
     private String best_eps_lst_qtr;
     private String buyprice_pershare;
     @JsonProperty("UTIME")
-    private String UTIME;
+    private long UTIME;
     private String total_value;
     private String sec_type;
     private String torder;
@@ -36,7 +37,7 @@ public class Ticker implements Serializable {
     private String cost;
     private String percent_chge_1_year;
     private String dividend_indicated_gross_yield;
-    private String shares;
+    private int shares;
     private String eps_surprise_last_qtr;
     private String estimated_pe_cur_yr;
     private String volume_30d;
@@ -61,14 +62,6 @@ public class Ticker implements Serializable {
     private String estimated_eps_nxt_qtr;
 
     public Ticker(){}
-
-//    public List<String> getHoldings() {
-//        return holdings;
-//    }
-//
-//    public void setHoldings(List<String> holdings) {
-//        this.holdings = holdings;
-//    }
 
     public String getEst_eps_last_qtr() {
         return est_eps_last_qtr;
@@ -126,11 +119,11 @@ public class Ticker implements Serializable {
         this.buyprice_pershare = buyprice_pershare;
     }
 
-    public String getUTIME() {
+    public long getUTIME() {
         return UTIME;
     }
 
-    public void setUTIME(String UTIME) {
+    public void setUTIME(long UTIME) {
         this.UTIME = UTIME;
     }
 
@@ -286,11 +279,10 @@ public class Ticker implements Serializable {
         this.dividend_indicated_gross_yield = dividend_indicated_gross_yield;
     }
 
-    public String getShares() {
+    public int getShares() {
         return shares;
     }
-
-    public void setShares(String shares) {
+    public void setShares(int shares) {
         this.shares = shares;
     }
 
