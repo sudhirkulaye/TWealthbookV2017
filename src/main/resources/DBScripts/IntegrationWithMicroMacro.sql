@@ -17,6 +17,7 @@ CREATE TABLE asset_classification (
   asset_subclass_description varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Description of Asset - Asset Subclass',
   PRIMARY KEY (asset_class_id,asset_subclass_id)
 ) COMMENT='Securities - Setup - Asset Classification';
+
 select * from asset_classification order by asset_class_id, asset_subclass_id;
 -- @C:\MyDocuments\16TWealthbook\ProductinDatabase\asset_classification.sql;
 
@@ -27,6 +28,7 @@ CREATE TABLE sector (
   sector_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Short Name for display purpose',
   PRIMARY KEY (sector_id)
 ) COMMENT='Securities - Setup - Sector Master as per MSCI Sector-Industry Classification 2015';
+
 SELECT * from sector order by sector_id;
 -- @C:\MyDocuments\16TWealthbook\ProductinDatabase\sector.sql;
 
@@ -40,6 +42,7 @@ CREATE TABLE industry (
   industry_name_display varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Short Name for display purpose',
   PRIMARY KEY (sector_id,industry_id)
 ) COMMENT='Securities - Setup - Sector-Industry Mapping as per MSCI Sector-Industry Classification 2015';
+
 -- insert into industry select * from micromacronumbers.sector_industry_mapping a order by sector_id, industry_id;
 select * from industry order by sector_id, industry_id;
 
@@ -87,13 +90,84 @@ CREATE TABLE company_universe (
   is_nse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE500',
   company_asset_class_id int(11) DEFAULT '0' COMMENT 'Asset Class as per Asset Classification',
   company_asset_subclass_id int(11) DEFAULT '0' COMMENT 'Asset Sub Class as per Asset Classification ',
+  company_market_cap_g decimal(20,0) DEFAULT NULL COMMENT 'Company Latest Market Cap',
+  company_market_cap_rank_g int(5) DEFAULT NULL COMMENT 'Company Latest Market Cap Rank',
+  company_market_cap_b decimal(20,0) DEFAULT NULL,
+  company_market_cap_rank_b int(5) DEFAULT NULL,
+  company_pe decimal(10,2) DEFAULT NULL COMMENT 'Company Latest PE ratio',
+  company_delisted int(1) DEFAULT '0' COMMENT 'Flag for delisting due to merger or acquisition. 0 Not Delisted 1 Delisted',
+  company_ticker_new varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (company_ticker)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Securities - Company universe composed of NIFTY50, NIFTY JR, NIFTY100/BSE100, NIFTY200/BSE200, NIFTY500/BSE500 and other small stocks tracked by brokerage houses';
+  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
+  company_ticker_mc varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Money Control Code for the stock',
+  company_ticker_b varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Bloomberg code for the stock',
+  company_nse_code varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'NSE Code',
+  company_bse_code varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'BSE Code',
+  company_isin_code varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ISIN Code ',
+  company_short_name varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Short Name for Display Purpose',
+  company_name_mc varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full Name on Money Control',
+  company_name_b varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full Name on Bloomberg',
+  company_sub_industry_name_mc varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Sub Industry Name taken from Moneycontrol',
+  company_sector_name_b varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector Name taken from Bloomberg',
+  company_industry_name_b varchar(90) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry Name taken from Bloomberg',
+  company_sub_industry_name_b varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name taken from Bloomberg',
+  company_sector_name_display varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector Name for Display as per Sector_Master',
+  company_industry_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry Name for Display as per Sector-Industry Mapping',
+  company_sub_industry_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name for Display as per Sector-Industry-SubIndustry Mapping',
+  is_sensex int(1) DEFAULT '0' COMMENT '1 = If Stock is in SENSEX ',
+  is_nifty50 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NIFTY50',
+  is_niftyjr int(1) DEFAULT '0' COMMENT '1 = If Stock is in NIFTY JR',
+  is_bse100 int(1) DEFAULT '0' COMMENT '1 = If Stock is in BSE100',
+  is_nse100 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE100',
+  is_bse200 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE200',
+  is_nse200 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE200',
+  is_bse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in BSE500',
+  is_nse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE500',
+  company_asset_class_id int(11) DEFAULT '0' COMMENT 'Asset Class as per Asset Classification',
+  company_asset_subclass_id int(11) DEFAULT '0' COMMENT 'Asset Sub Class as per Asset Classification ',
+  company_market_cap decimal(20,0) DEFAULT NULL COMMENT 'Company Latest Market Cap',
+  company_market_cap_rank int(5) DEFAULT NULL COMMENT 'Company Latest Market Cap Rank',
+  company_pe decimal(10,2) DEFAULT NULL COMMENT 'Company Latest PE ratio',
+  company_delisted int(1) DEFAULT '0' COMMENT 'Flag for delisting due to merger or acquisition. 0 Not Delisted 1 Delisted',
+  company_ticker_new varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (company_ticker)
+) COMMENT='Securities - Company universe composed of NIFTY50, NIFTY JR, NIFTY100/BSE100, NIFTY200/BSE200, NIFTY500/BSE500 and other small stocks tracked by brokerage houses';
+
+  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
+  company_ticker_mc varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Money Control Code for the stock',
+  company_ticker_b varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Bloomberg code for the stock',
+  company_nse_code varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'NSE Code',
+  company_bse_code varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'BSE Code',
+  company_isin_code varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ISIN Code ',
+  company_short_name varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Short Name for Display Purpose',
+  company_name_mc varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full Name on Money Control',
+  company_name_b varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full Name on Bloomberg',
+  company_sub_industry_name_mc varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Sub Industry Name taken from Moneycontrol',
+  company_sector_name_b varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector Name taken from Bloomberg',
+  company_industry_name_b varchar(90) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry Name taken from Bloomberg',
+  company_sub_industry_name_b varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name taken from Bloomberg',
+  company_sector_name_display varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector Name for Display as per Sector_Master',
+  company_industry_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry Name for Display as per Sector-Industry Mapping',
+  company_sub_industry_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name for Display as per Sector-Industry-SubIndustry Mapping',
+  is_sensex int(1) DEFAULT '0' COMMENT '1 = If Stock is in SENSEX ',
+  is_nifty50 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NIFTY50',
+  is_niftyjr int(1) DEFAULT '0' COMMENT '1 = If Stock is in NIFTY JR',
+  is_bse100 int(1) DEFAULT '0' COMMENT '1 = If Stock is in BSE100',
+  is_nse100 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE100',
+  is_bse200 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE200',
+  is_nse200 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE200',
+  is_bse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in BSE500',
+  is_nse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE500',
+  company_asset_class_id int(11) DEFAULT '0' COMMENT 'Asset Class as per Asset Classification',
+  company_asset_subclass_id int(11) DEFAULT '0' COMMENT 'Asset Sub Class as per Asset Classification ',
   company_market_cap decimal(20,0) DEFAULT NULL COMMENT 'Company Latest Market Cap',
   company_market_cap_rank int(5) DEFAULT NULL COMMENT 'Company Latest Market Cap Rank',
   company_pe decimal(10,2) DEFAULT NULL COMMENT 'Company Latest PE ratio',
   PRIMARY KEY (company_ticker)
 ) COMMENT='Securities - Company universe composed of NIFTY50, NIFTY JR, NIFTY100/BSE100, NIFTY200/BSE200, NIFTY500/BSE500 and other small stocks tracked by brokerage houses';
 
-select * from company_universe a where a.company_delisted = 0
+select * from company_universe a where a.company_delisted = 0 and a.company_sub_industry_name_mc in ('INDEX', 'ETF')
 order by company_asset_subclass_id, is_sensex desc, is_nifty50 desc, is_nse100 desc, is_bse100 desc, is_nse200 desc, is_bse200 desc, is_nse500 desc, company_ticker; 
 
 select * from company_universe a where company_asset_subclass_id in (406040);
@@ -120,7 +194,7 @@ CREATE TABLE company_corp_action (
   company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
   corp_action_date date NOT NULL COMMENT 'PK Date associated with Corporate Action',
   corp_action_type varchar(15) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Corporate Actions like STOCK_SPLIT, BONUS',
-  corp_action_multiplier decimal(6,3) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Action Information',
+  corp_action_multiplier decimal(6,3) DEFAULT NULL COMMENT 'Action Information',
   corp_action_desc varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Action Description',
   PRIMARY KEY (company_ticker,corp_action_date,corp_action_type)
 ) COMMENT='Securities - Corporate Action History';
@@ -137,53 +211,55 @@ CREATE TABLE index_valuation (
   index_value decimal(10,2) DEFAULT NULL COMMENT 'Index value',
   index_turnover decimal(20,2) DEFAULT NULL COMMENT 'Index turnover in Rs',
   index_implied_earnings decimal(10,3) DEFAULT NULL COMMENT 'Index implied earnings Index Value/index PE',
-  PRIMARY KEY (index_ticker, index_valuation_date)
+  PRIMARY KEY (index_ticker,index_valuation_date)
 ) COMMENT='Valutation - Index Valuation Data';
 select * from index_valuation;
 
 drop table company_daily_data_b;
 CREATE TABLE company_daily_data_b (
-  company_ticker_b varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Bloomberg code for the stock; mapped to ticker',  	
+  company_ticker_b varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Bloomberg code for the stock; mapped to ticker',
   company_daily_date date NOT NULL COMMENT 'PK Date; mapped to UTIME',
-  company_name_b varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Full Name on Bloomberg; mapped to disp_name', 
-  company_daily_closing_price decimal(20,3) DEFAULT '0' COMMENT 'Last Close Price of the day; mapped to last_price',  
-  company_daily_previous_day_closing_price decimal(20,3) DEFAULT '0' COMMENT 'Previous trading day closing price; mapped to ',
-  company_daily_volume decimal(20,2) DEFAULT '0' COMMENT 'Day Volume; mapped to volume',
-  company_daily_volume_30d decimal(20,2) DEFAULT '0' COMMENT '30 Day Avg Volume; mapped to volume_30d',
+  company_name_b varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Full Name on Bloomberg; mapped to disp_name',
+  company_daily_closing_price decimal(20,3) DEFAULT '0.000' COMMENT 'Last Close Price of the day; mapped to last_price',
+  company_daily_previous_day_closing_price decimal(20,3) DEFAULT '0.000' COMMENT 'Previous trading day closing price; mapped to ',
+  company_daily_volume decimal(20,2) DEFAULT '0.00' COMMENT 'Day Volume; mapped to volume',
+  company_daily_volume_30d decimal(20,2) DEFAULT '0.00' COMMENT '30 Day Avg Volume; mapped to volume_30d',
   company_daily_market_cap decimal(20,0) DEFAULT '0' COMMENT 'Market Cap in Rs; mapped to market_cap',
   company_daily_shares_outstanding decimal(20,0) DEFAULT '0' COMMENT 'Shares Outstanding; mapped to (company_daily_market_cap/company_daily_closing_price)',
-  company_daily_eps decimal(10,3) DEFAULT '0' COMMENT 'EPS; mapped to eps',
-  company_daily_best_eps_lst_qtr decimal(10,3) DEFAULT '0' COMMENT 'Best EPS last Quarter; mapped to best_eps_lst_qtr', 
-  company_daily_est_eps_last_qtr decimal(10,3) DEFAULT '0' COMMENT 'Estimated EPS last Quarter; mapped to est_eps_last_qtr',
-  company_daily_eps_surprise_last_qtr decimal(10,3) DEFAULT '0' COMMENT 'EPS surprise last Quarter; mapped to eps_surprise_last_qtr',
-  company_daily_estimated_eps_yr decimal(10,3) DEFAULT '0' COMMENT 'Estimated EPS for Year; mapped to estimated_eps_yr', -- 
-  company_daily_estimated_eps_nxt_qtr decimal(10,3) DEFAULT '0' COMMENT 'Estimated EPS next Quarter; mapped to estimated_eps_nxt_qtr',
-  company_daily_current_pe decimal(10,3) DEFAULT '0' COMMENT 'PE Ratio; mapped to current_pe', 
-  company_daily_estimated_pe_cur_yr decimal(10,3) DEFAULT '0' COMMENT 'PE Ratio; mapped to estimated_pe_cur_yr', 
-  company_daily_price_book decimal(10,3) DEFAULT '0' COMMENT 'PE Ratio; mapped to price_book',
-  company_daily_price_to_sales decimal(10,3) DEFAULT '0' COMMENT 'Price to Sales; mapped to ',
-  company_daily_dividend_yield decimal(10,3) DEFAULT '0' COMMENT 'Dividend Yield; mapped to dividend_indicated_gross_yield', 
+  company_daily_eps decimal(10,3) DEFAULT '0.000' COMMENT 'EPS; mapped to eps',
+  company_daily_best_eps_lst_qtr decimal(10,3) DEFAULT '0.000' COMMENT 'Best EPS last Quarter; mapped to best_eps_lst_qtr',
+  company_daily_est_eps_last_qtr decimal(10,3) DEFAULT '0.000' COMMENT 'Estimated EPS last Quarter; mapped to est_eps_last_qtr',
+  company_daily_eps_surprise_last_qtr decimal(10,3) DEFAULT '0.000' COMMENT 'EPS surprise last Quarter; mapped to eps_surprise_last_qtr',
+  company_daily_estimated_eps_yr decimal(10,3) DEFAULT '0.000' COMMENT 'Estimated EPS for Year; mapped to estimated_eps_yr',
+  company_daily_estimated_eps_nxt_qtr decimal(10,3) DEFAULT '0.000' COMMENT 'Estimated EPS next Quarter; mapped to estimated_eps_nxt_qtr',
+  company_daily_current_pe decimal(10,3) DEFAULT '0.000' COMMENT 'PE Ratio; mapped to current_pe',
+  company_daily_estimated_pe_cur_yr decimal(10,3) DEFAULT '0.000' COMMENT 'PE Ratio; mapped to estimated_pe_cur_yr',
+  company_daily_price_book decimal(10,3) DEFAULT '0.000' COMMENT 'PE Ratio; mapped to price_book',
+  company_daily_price_to_sales decimal(10,3) DEFAULT '0.000' COMMENT 'Price to Sales; mapped to ',
+  company_daily_dividend_yield decimal(10,3) DEFAULT '0.000' COMMENT 'Dividend Yield; mapped to dividend_indicated_gross_yield',
   company_sector_name_b varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector; mapped to company_sector',
   company_industry_name_b varchar(90) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry; mapped to company_industry',
-  company_sub_industry_name_b varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name taken from Bloomberg; mapped to ', 
+  company_sub_industry_name_b varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name taken from Bloomberg; mapped to ',
   company_daily_DS199 varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector; mapped to DS199',
   company_daily_DS201 varchar(90) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry; mapped to DS201',
-  company_daily_52week_low decimal(10,3) DEFAULT NULL DEFAULT '0' COMMENT '52 week low; mapped to range_52wk_low',
-  company_daily_52week_high decimal(10,3) DEFAULT NULL DEFAULT '0' COMMENT '52 week High; mapped to range_52wk_high', 
-  company_daily_price_chge_1D decimal(10,2) DEFAULT NULL DEFAULT '0' COMMENT '52 week High; mapped to price_chge_1D',
-  company_daily_pct_chge_1D decimal(10,3) DEFAULT NULL DEFAULT '0' COMMENT '52 week High; mapped to pct_chge_1D',
-  company_daily_total_return_1year decimal(10,3) DEFAULT NULL DEFAULT '0' COMMENT 'Total Return 1 Year; mapped to pct_return_52wk',
-  company_daily_total_return_YTD decimal(10,3) DEFAULT NULL DEFAULT '0' COMMENT 'Total Return YTD; mapped to ',
+  company_daily_52week_low decimal(10,3) DEFAULT '0.000' COMMENT '52 week low; mapped to range_52wk_low',
+  company_daily_52week_high decimal(10,3) DEFAULT '0.000' COMMENT '52 week High; mapped to range_52wk_high',
+  company_daily_price_chge_1D decimal(10,2) DEFAULT '0.00' COMMENT '52 week High; mapped to price_chge_1D',
+  company_daily_pct_chge_1D decimal(10,3) DEFAULT '0.000' COMMENT '52 week High; mapped to pct_chge_1D',
+  company_daily_total_return_1year decimal(10,3) DEFAULT '0.000' COMMENT 'Total Return 1 Year; mapped to pct_return_52wk',
+  company_daily_total_return_YTD decimal(10,3) DEFAULT '0.000' COMMENT 'Total Return YTD; mapped to ',
   company_daily_market_cap_rank int(5) DEFAULT '0' COMMENT 'Rank by Market Cap; mapped to ',
-  company_daily_last_earning_date date DEFAULT NULL DEFAULT '2000-01-01' COMMENT 'Last Earnings Date; mapped to last_earning_date',
-  company_daily_next_earning_date date DEFAULT NULL DEFAULT '2000-01-01' COMMENT 'Next Earnings Date; mapped to next_earning_date',
-  company_daily_latest_anncmt_period varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL DEFAULT '2000:Q1' COMMENT 'Latest announcement period; mapped to latest_anncmt_period',
+  company_daily_last_earning_date date DEFAULT '2000-01-01' COMMENT 'Last Earnings Date; mapped to last_earning_date',
+  company_daily_next_earning_date date DEFAULT '2000-01-01' COMMENT 'Next Earnings Date; mapped to next_earning_date',
+  company_daily_latest_anncmt_period varchar(10) COLLATE utf8_unicode_ci DEFAULT '2000:Q1' COMMENT 'Latest announcement period; mapped to latest_anncmt_period',
   company_daily_shares int(3) DEFAULT '0' COMMENT 'If not 10 then it could be split or bonus event; mapped to shares',
   PRIMARY KEY (company_ticker_b,company_daily_date),
   KEY idx_company_daily_data_b_company_ticker_b (company_ticker_b),
   KEY idx_company_daily_data_b_company_daily_date (company_daily_date)
-) COMMENT='Data obtained from Bloomberg Portfolio';
+) COMMENT='Securities - Daily Data obtained from Bloomberg Portfolio';
 
+insert into company_daily_data_b
+select a.bloomberg_ticker, a.date, '', a.last_price, a.last_day_closing_price, a.volume, 0, a.market_cap, a.shares_outstanding, a.EPS, 0,0,0,0,0, a.PE, 0, 0, a.price_to_sales, a.dividend_yield, a.sector_name_Bloomberg, a.industry_name_Bloomberg, a.sub_industry_name_Bloomberg, '','', a.52week_low, a.52week_high, 0,0, a.total_return_1year, a.total_return_YTD, a.market_cap_rank, '2000-01-01', '2000-01-01', '', 0 from micromacronumbers.daily_upload_bloomberg a where a.date <= '2017-07-18'; 
 
 drop table company_daily_data_g;
 CREATE TABLE company_daily_data_g (
@@ -197,71 +273,80 @@ CREATE TABLE company_daily_data_g (
   company_daily_open_price decimal(10,3) DEFAULT NULL COMMENT 'Open Price',
   company_daily_high_price decimal(10,3) DEFAULT NULL COMMENT 'High Price',
   company_daily_low_price decimal(10,3) DEFAULT NULL COMMENT 'Low Price',
-  company_daily_volume_no decimal(20,2) DEFAULT '0' COMMENT 'Volume in numbers',
-  company_daily_rupee_volume decimal(20,2) DEFAULT '0',
+  company_daily_volume_no decimal(20,2) DEFAULT '0.00' COMMENT 'Volume in numbers',
+  company_daily_rupee_volume decimal(20,2) DEFAULT '0.00',
   company_daily_market_cap_no decimal(20,0) DEFAULT '0' COMMENT 'Market Cap in Numbers',
   company_daily_market_cap_rank int(5) DEFAULT '0' COMMENT 'Rank by Market Cap',
   PRIMARY KEY (company_daily_date,company_ticker),
   KEY idx_company_daily_data_g_company_ticker (company_ticker),
   KEY idx_company_daily_data_g_company_daily_date (company_daily_date)
-) COMMENT='Data obtained from google finance';
+) COMMENT='Securities - Daily data obtained from google finance';
 
 insert into company_daily_data_g 
 select * from micromacronumbers.daily_upload_google a where a.company_ticker in (select company_ticker from company_universe);
 
+drop table mutual_fund;
+CREATE TABLE mutual_fund (
+  mf_date date DEFAULT '2000-01-01' COMMENT 'PK Mutual Fund Date',
+  mf_scheme_code INT(10) NOT NULL COMMENT 'PK Mutual Fund Scheme Code Unique',
+  mf_isin_div_payout_or_isin_growth varchar(50) COLLATE utf8_unicode_ci DEFAULT 'XX' COMMENT 'ISIN Dividend Payout or Growth Code',
+  mf_isin_div_reinvestment varchar(50) COLLATE utf8_unicode_ci DEFAULT 'XX' COMMENT 'ISIN Dividend Reinvestment Code',
+  mf_scheme_name varchar(1000) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Mutual Fund Scheme Name',
+  mf_nav DECIMAL(20,4) NOT NULL COMMENT 'Mutual Fund NAV',
+  mf_repurchase_price DECIMAL(20,4) DEFAULT '0' COMMENT 'Mutual Fund repurchase price',
+  mf_sale_price DECIMAL(20,4) DEFAULT '0' COMMENT 'Mutual Fund repurchase price',
+  PRIMARY KEY (mf_date,mf_scheme_code,mf_isin_div_payout_or_isin_growth,mf_isin_div_reinvestment),
+  KEY idx_mutual_fund_mf_scheme_code (mf_scheme_code),
+  KEY idx_mutual_fund_mf_isin_div_payout_or_isin_growth (mf_isin_div_payout_or_isin_growth)
+) COMMENT='Securities - Daily data obtained from AMFI India';
+select * from mutual_fund;
+
+
 select * from company_daily_data_g where company_daily_date = '2017-07-27' order by company_daily_market_cap_rank;
-
-CREATE TABLE corporate_action (
-  security_id varchar(70) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Security Id Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
-  action_date date NOT NULL COMMENT 'PK Date associated with Corporate Action',
-  action varchar(15) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Corporate Actions like STOCK_SPLIT, BONUS',
-  adjustment_factor varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Adjustment Factor',
-  action_desc varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Action Description',
-  action_processess int DEFAULT 0  COMMENT '0 -> Action not processed 1 -> Action processed',
-  PRIMARY KEY (security_id, action_date,action)
-) COMMENT='Corporate Actions';
-
-CREATE TABLE company_market_price_movement (
-  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK, Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
-  last_price float DEFAULT '0' COMMENT 'Current Market Price',
-  daily_change float DEFAULT '0' COMMENT 'Daily Change',
-  weekly_change float DEFAULT '0' COMMENT 'Weekly Change',
-  biweekly_change float DEFAULT '0' COMMENT 'Biweekly Change',
-  monthly_change float DEFAULT '0' COMMENT 'Monthly change',
-  quarterly_change float DEFAULT '0' COMMENT 'Quarterly change',
-  semianual_change float DEFAULT '0' COMMENT 'Semianual change',
-  annual_change float DEFAULT '0' COMMENT 'Annual change',
-  current_fin_year_change float DEFAULT '0' COMMENT 'Change from begining of FIN Year',
-  3Year_change float DEFAULT '0' COMMENT '3 Year Change',
-  change_since_3yr_low float DEFAULT '0' COMMENT 'Change since 3yr low',
-  change_since_1yr_low float DEFAULT NULL COMMENT 'Change since 1yr low',
-  change_since_3yr_high float DEFAULT NULL COMMENT 'Change since 3yr hing',
-  change_since_1yr_high float DEFAULT NULL COMMENT 'Change since 1yr high',
-  avg_daily_traded_turnover double DEFAULT NULL COMMENT 'Avg. daily traded turnover in Cr',
-  avg_daily_volume double DEFAULT NULL COMMENT 'Avg. daily volume',
+drop table company_price_movement;
+CREATE TABLE company_price_movement (
+  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
+  company_ticker_b varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Bloomberg code for the stock; mapped to ticker',
+  price_move_last_price decimal(20,3) DEFAULT '0.000' COMMENT 'Closing Market Price',
+  price_move_daily decimal(20,3) DEFAULT '0.000' COMMENT 'Daily Change',
+  price_move_weekly decimal(20,3) DEFAULT '0.000' COMMENT 'Weekly Change',
+  price_move_biweekly decimal(20,3) DEFAULT '0.000' COMMENT 'Biweekly Change',
+  price_move_monthly decimal(20,3) DEFAULT '0.000' COMMENT 'Monthly change',
+  price_move_quarterly decimal(20,3) DEFAULT '0.000' COMMENT 'Quarterly change',
+  price_move_semianual decimal(20,3) DEFAULT '0.000' COMMENT 'Semianual change',
+  price_move_annual decimal(20,3) DEFAULT '0.000' COMMENT 'Annual change',
+  price_move_current_fin_year decimal(20,3) DEFAULT '0.000' COMMENT 'Change from begining of FIN Year',
+  price_move_3Year decimal(20,3) DEFAULT '0.000' COMMENT '3 Year Change',
+  price_move_since_3yr_low decimal(20,3) DEFAULT '0.000' COMMENT 'Change since 3yr low',
+  price_move_since_1yr_low decimal(20,3) DEFAULT NULL COMMENT 'Change since 1yr low',
+  price_move_since_3yr_high decimal(20,3) DEFAULT NULL COMMENT 'Change since 3yr hing',
+  price_move_since_1yr_high decimal(20,3) DEFAULT NULL COMMENT 'Change since 1yr high',
+  avg_daily_traded_turnover decimal(20,2) DEFAULT NULL COMMENT 'Avg. daily traded turnover in Cr',
+  avg_daily_volume decimal(20,2) DEFAULT NULL COMMENT 'Avg. daily volume',
   PRIMARY KEY (company_ticker)
-) COMMENT='Price Movement  	Processing	Dialy';
+) COMMENT='Security Analysis - Price Movement';
 
 CREATE TABLE company_marketcap_rank_movement (
-  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK, Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
-  market_cap_google double DEFAULT NULL COMMENT 'Market Cap as per google',
-  market_cap_bloomberg double DEFAULT NULL COMMENT 'Market Cap as per Bloomberg',
-  rank_today int(4) DEFAULT NULL COMMENT 'Market Cap Rank Today',
-  monthly_change int(4) DEFAULT NULL COMMENT 'Monthly Change in Market Cap Rank',
-  quarterly_change int(4) DEFAULT NULL COMMENT 'Quarterly Change in Market Cap Rank',
-  change_begining_fin_year int(4) DEFAULT NULL COMMENT 'Change in Market Cap Rank Begining of FIN Year',
-  semiannual_change int(4) DEFAULT NULL COMMENT 'Semiannual Change in Market Cap Rank',
-  annual_change int(4) DEFAULT NULL COMMENT 'Annual Change in Market Cap Rank',
-  3Year_change int(4) DEFAULT NULL,
-  bl_rank_today int(4) DEFAULT NULL COMMENT 'As per Bloomberg, Market Cap Rank Today',
-  bl_monthly_change int(4) DEFAULT NULL COMMENT 'Monthly Change in Market Cap Rank, as per Bloomberg',
-  bl_quarterly_change int(4) DEFAULT NULL COMMENT 'Quarterly Change in Market Cap Rank, as per Bloomberg',
-  bl_change_begining_fin_year int(4) DEFAULT NULL COMMENT 'As per Bloomberg, Change in Market Cap Rank Begining of FIN Year',
-  bl_semiannual_change int(4) DEFAULT NULL COMMENT 'Semiannual Change in Market Cap Rank, as per Bloomberg',
-  bl_annual_change int(4) DEFAULT NULL COMMENT 'Annual Change in Market Cap Rank, as per Bloomberg',
-  bl_3Year_change int(4) DEFAULT NULL,
+  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
+  company_ticker_b varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Bloomberg code for the stock; mapped to ticker',
+  market_cap_g decimal(20,0) DEFAULT NULL COMMENT 'Market Cap as per google',
+  rank_today_g int(4) DEFAULT NULL COMMENT 'Market Cap Rank Today as per google',
+  rank_move_monthly_g int(4) DEFAULT NULL COMMENT 'Monthly Change in Market Cap Rank as per google',
+  rank_move_quarterly_g int(4) DEFAULT NULL COMMENT 'Quarterly Change in Market Cap Rank as per google',
+  rank_move_fin_year_g int(4) DEFAULT NULL COMMENT 'Change in Market Cap Rank Begining of FIN Year as per google',
+  rank_move_semiannual_g int(4) DEFAULT NULL COMMENT 'Semiannual Change in Market Cap Rank as per google',
+  rank_move_annual_g int(4) DEFAULT NULL COMMENT 'Annual Change in Market Cap Rank as per google',
+  rank_move_3Year_g int(4) DEFAULT NULL COMMENT '3 Year Change in Market Cap Rank as per google',
+  market_cap_b decimal(20,0) DEFAULT NULL COMMENT 'Market Cap as per Bloomberg',
+  rank_today_b int(4) DEFAULT NULL COMMENT 'As per Bloomberg, Market Cap Rank Today as per Bloomberg',
+  rank_move_monthly_b int(4) DEFAULT NULL COMMENT 'Monthly Change in Market Cap Rank as per Bloomberg',
+  rank_move_quarterly_b int(4) DEFAULT NULL COMMENT 'Quarterly Change in Market Cap Rank as per Bloomberg',
+  rank_move_fin_year_b int(4) DEFAULT NULL COMMENT 'Change in Market Cap Rank Begining of FIN Year as per Bloomberg',
+  rank_move_semiannual_b int(4) DEFAULT NULL COMMENT 'Semiannual Change in Market Cap Rank as per Bloomberg',
+  rank_move_annual_b int(4) DEFAULT NULL COMMENT 'Annual Change in Market Cap Rank as per Bloomberg',
+  rank_move_3Year_b int(4) DEFAULT NULL COMMENT '3 Year Change in Market Cap Rank as per Bloomberg',
   PRIMARY KEY (company_ticker)
-) COMMENT='Market Cap Movement  	Processing	Dialy';
+) COMMENT='Security Analysis - Market Cap Rank Movement';
 
 CREATE TABLE company_results_analysis (
   company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK, Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',

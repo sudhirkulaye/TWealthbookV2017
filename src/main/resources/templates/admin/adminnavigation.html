@@ -1,0 +1,63 @@
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" th:fragment="common-navigation" >
+    <!--
+        Refererence https://stackoverflow.com/questions/21733951/bootstrap-3-navbar-toggle-collapses-but-button-does-not-appear
+        Navigation to wrok as a fragment made following changes in bootsrap.min.css and bootstrap.css
+        Added border: 1px solid #e7e7e7; in .navbar-toggle
+        Also added border: 1px solid #e7e7e7; in .icon-bar
+    -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/user/dashboard"><strong>TWealthbook</strong> </a>
+    </div>
+
+    <!-- /.navbar-top-links -->
+    <ul class="nav navbar-top-links navbar-right">
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                <i class="fa fa-user fa-fw" ></i> <span th:text="${welcomeMessage}"></span>  <i class="fa fa-caret-down"></i>
+            </a>
+            <!-- /.dropdown-user -->
+            <ul class="dropdown-menu dropdown-user">
+                <li>
+                    <a href="#" ><i class="fa fa-user fa-fw"></i> Profile</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <!-- /.navbar-static-side -->
+    <div class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" userId="side-menu">
+                <li>
+                    <a href="uploaddailydatag.html" th:href="uploaddailydatag"><i class="fa fa-dashboard fa-fw"></i> Upload Daily Data G</a>
+                </li>
+                <li>
+                    <a href="uploaddailydatab.html" th:href="uploaddailydatab"><i class="fa fa-money fa-fw"></i> Upload Daily Data B </a>
+                </li>
+                <li>
+                    <a href="uploaddailydatamf.html" th:href="uploaddailydatamf"><i class="fa fa-briefcase fa-fw"></i> Upload Daily Data MF</a>
+                </li>
+                <li>
+                    <a href="processdailydata.html" th:href="processdailydata"><i class="fa fa-credit-card-alt fa-fw"></i> Process Daily Data</a>
+                </li>
+                <li>
+                    <a href="updateportfolios.html" th:href="updateportfolios"><i class="fa fa-money fa-fw"></i> Update Portfolios</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.sidebar-collapse -->
+    </div>
+</nav>

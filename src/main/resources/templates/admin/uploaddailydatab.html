@@ -9,6 +9,7 @@
     <!-- wrapper -->
     <div id="wrapper" ng-controler="">
         <!-- Navigation -->
+        <nav th:include="admin/adminnavigation :: common-navigation" />
 
         <!--page-wrapper-->
         <div id="page-wrapper">
@@ -26,7 +27,7 @@
                         <div th:if="${message}">
                             <h4 th:text="${message}"/>
                         </div>
-                        <form method="POST" action="/admin/uploadstatus" enctype="multipart/form-data" >
+                        <form method="POST" action="/admin/uploaddailydatabstatus" enctype="multipart/form-data" >
                             <input class="form-control" type="file" name="file" /><br/><br/>
                             <input class="btn btn-lg btn-success btn-block" type="submit" value="Submit" />
                         </form>

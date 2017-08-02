@@ -191,8 +191,8 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr dir-paginate="holding in holdings | filter:searchSecurity | orderBy:sortColumnHolding:reverseSortHolding | itemsPerPage: pageSize" pagination-id="holdings" current-page="currentPage">
-                                                                    <td>{{holding.securityAssetClassId}}</td>
-                                                                    <td>{{holding.securityAssetSubClassId}}</td>
+                                                                    <td>{{holding.securityAssetClassId | securityAssetClass}}</td>
+                                                                    <td>{{holding.securityAssetSubClassId | securityAssetClass}}</td>
                                                                     <td ng-hide="true">{{holding.securitySectorName + "--" + holding.securityIndustryName}}</td>
                                                                     <td>{{holding.securityName}}</td>
                                                                     <td>{{holding.portfolioHoldingsKey.securityBuyDate}}</td>
@@ -263,8 +263,8 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr dir-paginate="historicalHolding in historicalHoldings | filter:searchHistoricalSecurity | orderBy:sortColumnHistoricalHolding:reverseSortHistoricalHolding | itemsPerPage: pageSize" pagination-id="historicalHoldings" current-page="currentPage">
-                                                                    <td>{{historicalHolding.securityAssetClassId}}</td>
-                                                                    <td>{{historicalHolding.securityAssetSubClassId}}</td>
+                                                                    <td>{{historicalHolding.securityAssetClassId | securityAssetClass}}</td>
+                                                                    <td>{{historicalHolding.securityAssetSubClassId | securityAssetClass}}</td>
                                                                     <td ng-hide="true">{{historicalHolding.securitySectorName + "--" + historicalHolding.securityIndustryName}}</td>
                                                                     <td>{{historicalHolding.securityName}}</td>
                                                                     <td>{{historicalHolding.portfolioHistoricalHoldingsKey.securityBuyDate}}</td>
@@ -314,7 +314,7 @@
                                                     <div>
                                                         <ul>
                                                             <li ng-repeat="(key, holding) in holdings | orderBy:'securityAssetClassId' | groupBy: 'securityAssetClassId'">
-                                                                <strong>{{key}}:</strong>  {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                                <strong>{{key | securityAssetClass}}:</strong>  {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -335,7 +335,7 @@
                                                     <div>
                                                         <ul>
                                                             <li ng-repeat="(key, holding) in holdings | orderBy:['securityAssetClassId','securityAssetSubClassId'] | groupBy: 'securityAssetSubClassId'">
-                                                                <strong>{{holding[0].securityAssetClassId}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
+                                                                <strong>{{holding[0].securityAssetClassId | securityAssetClass}}-{{key | securityAssetClass}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -345,7 +345,7 @@
                                         <div class="col-lg-4" >
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
-                                                    <i class="fa fa-pie-chart fa-fw"></i> Sector-Industry wise Distribution
+                                                    <i class="fa fa-pie-chart fa-fw"></i> Equity Class Sector-Industry Distribution
                                                 </div>
                                                 <div class="panel-body">
                                                     <!--<div class="chart chart-md" id="donut-example1"></div>-->
@@ -356,7 +356,7 @@
                                                     <br /><br />
                                                     <div>
                                                         <ul>
-                                                            <li ng-repeat="(key, holding) in holdings | orderBy:['securitySectorName','securityIndustryName'] | groupBy: 'securityIndustryName'">
+                                                            <li ng-repeat="(key, holding) in holdings | filter:{ securityAssetClassId: '40'} | orderBy:['securitySectorName','securityIndustryName'] | groupBy: 'securityIndustryName'">
                                                                 <strong>{{holding[0].securitySectorName}}-{{key}}:</strong> {{getMarketValue(holding) | currency:"&#8377;":0}}, {{getMarketValue(holding) | percent:portfolioValueNumber | number:2}}%
                                                             </li>
                                                         </ul>

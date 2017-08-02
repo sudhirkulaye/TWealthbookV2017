@@ -50,7 +50,7 @@ public class CompanyDailyDataB implements Serializable{
     private int companyDailyShares;
 
     public CompanyDailyDataB(){
-        new CompanyDailyDataBKey();
+        this.companyDailyDataBKey = new CompanyDailyDataBKey();
     }
 
     public CompanyDailyDataB(Ticker ticker){

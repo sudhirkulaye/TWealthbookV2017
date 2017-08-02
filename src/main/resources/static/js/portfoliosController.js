@@ -130,23 +130,24 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         $scope.assetClass = [];
         $scope.assetClassData = [];
         $locale.NUMBER_FORMATS.GROUP_SEP = '';
-        for(var assetClass in map){
-           $scope.assetClass.push(assetClass);
-           $scope.assetClassData.push($filter('number')($scope.getMarketValue(map[assetClass]),0));
+        for(var assetClassKey in map){
+           $scope.assetClass.push($filter('securityAssetClass')(parseInt(assetClassKey)));
+           $scope.assetClassData.push($filter('number')($scope.getMarketValue(map[assetClassKey]),0));
         }
         sortedHoldings = [];
         map = {};
-        sortedHoldings = $filter('orderBy')($scope.holdings,['securityAssetClass','securityAssetSubClass']);
-        map = $filter('groupBy')(sortedHoldings, 'securityAssetSubClass');
+        sortedHoldings = $filter('orderBy')($scope.holdings,['securityAssetClassId','securityAssetSubClassId']);
+        map = $filter('groupBy')(sortedHoldings, 'securityAssetSubClassId');
         $scope.assetSubClass = [];
         $scope.assetSubClassData = [];
-        for(var assetSubClass in map){
-           $scope.assetSubClass.push(map[assetSubClass][0].securityAssetClass + "-"+ assetSubClass);
-           $scope.assetSubClassData.push($filter('number')($scope.getMarketValue(map[assetSubClass]),0));
+        for(var assetSubClassKey in map){
+           $scope.assetSubClass.push($filter('securityAssetClass')(map[assetSubClassKey][0].securityAssetClassId) + "-"+ $filter('securityAssetClass')(assetSubClassKey));
+           $scope.assetSubClassData.push($filter('number')($scope.getMarketValue(map[assetSubClassKey]),0));
         }
         sortedHoldings = [];
         map = {};
         sortedHoldings = $filter('orderBy')($scope.holdings,['securitySectorName','securityIndustryName']);
+        sortedHoldings = $filter('filter')(sortedHoldings, { securityAssetClassId: "40" });
         map = $filter('groupBy')(sortedHoldings, 'securityIndustryName');
         $scope.sectorIndustry = [];
         $scope.sectorIndustryData = [];
@@ -293,80 +294,75 @@ portfolioModule.filter('percentageReturns', ['$filter', function ($filter) {
 }])
 
 portfolioModule.filter("securityAssetClass", function () {
-    return function (securityAssetClass) {
-        switch (portfolioActiveStatus) {
+    return function (securityAssetClassId) {
+        securityAssetClassId = parseInt(securityAssetClassId);
+        switch (securityAssetClassId) {
             case 10: return "Cash";
-            case 20: return "Fixed Income";
-            case 30: return "Fixed Inc and Equity";
+            case 20: return "Fixed Inc";
+            case 30: return "Fixed Inc & Equity";
             case 40: return "Equity";
             case 50: return "Commodity";
             case 60: return "Real Estate";
             case 70: return "Alternative Investments";
-        }
-    }
-})
+            case 101010: return "Without Interest";
+            case 101020: return "Bank Account";
+            case 201010: return "Short Term FD(<6M)";
+            case 201020: return "Short Term Debt MF";
+            case 202010: return "Mid Term FD(6M-3Y)"
+            case 202020: return "Mid Term Debt MF";
+            case 203010: return "Long Term FD(>3Yrs)";
+            case 203020: return "Long Term PPF-NSE";
+            case 203030: return "Long Term Bonds/Pref Stocks";
+            case 203040: return "Long Term Debt MF";
+            case 203050: return "Long Term Insurance";
+            case 301010: return "Debt Oriented Hybrid MF";
+            case 301020: return "Equity Oriented Hybrid MF";
+            case 301030: return "ULIP-Pension Funds";
+            case 401010: return "Diversified LargeCap - ETF Nifty";
+            case 401020: return "Diversified LargeCap - ETF Bank";
+            case 401030: return "Diversified LargeCap - ETF Junior";
+            case 401040: return "Diversified LargeCap - ETF Other";
+            case 401050: return "Diversified LargeCap - MF Value";
+            case 401060: return "Diversified LargeCap - MF Growth";
+            case 401070: return "Diversified LargeCap - MF";
+            case 401080: return "Diversified LargeCap - MF ELSS";
+            case 402010: return "Diversified MidCap - ETF";
+            case 402020: return "Diversified MidCap - MF Value";
+            case 402030: return "Diversified MidCap - MF Growth";
+            case 402040: return "Diversified MidCap - MF";
+            case 403010: return "Diversified MultiCap - ETF";
+            case 403020: return "Diversified MultiCap - MF Value";
+            case 403030: return "Diversified MultiCap - MF Growth";
+            case 403040: return "Diversified MultiCap - MF";
+            case 404010: return "Diversified SmallCap - ETF";
+            case 404020: return "Diversified SmallCap - MF Value";
+            case 404030: return "Diversified SmallCap - MF Growth";
+            case 404040: return "Diversified SmallCap - MF";
+            case 405010: return "Foreign Developed Market - Diversified LargeCap";
+            case 405020: return "Foreign Developed Market - Diversified SmallCap";
+            case 405030: return "Foreign Emerging  Market - Diversified LargeCap";
+            case 405040: return "Foreign Emerging  Market - Diversified SmallCap";
+            case 406010: return "Individual - Large Cap";
+            case 406020: return "Individual - Mid Cap";
+            case 406030: return "Individual - Small Cap";
+            case 406040: return "Individual - Micro Cap";
+            case 501010: return "Diversified Commodity MF";
+            case 502010: return "Individual - Gold";
+            case 502020: return "Individual - Silver";
+            case 502030: return "Individual - Other Commodity";
+            case 601010: return "Direct - Residential Rental";
+            case 601020: return "Direct - Commercial Rental";
+            case 601030: return "Direct - Agricultural Land";
+            case 601040: return "Direct - Non-Agricultural Land";
+            case 602010: return "Indirect - REIT MF";
+            case 701010: return "Hedge Fund or PMS";
+            case 701020: return "Trading Portfolio, Managed Futures";
+            case 701030: return "Private Equity";
+            case 701040: return "Venture Capital";
+            case 701050: return "Distressed Securities";
+            case 701060: return "Artifacts Or Coins";
+            case 701070: return "Any other Investment";
 
-portfolioModule.filter("securityAssetSubClass", function () {
-    return function (securityAssetSubClass) {
-        switch (securityAssetSubClass) {
-            case 101010: return "Cash";
-            case 101020: return "Cash";
-            case 201010: return "Fixed Income - Short Term";
-            case 201020: return "Fixed Income - Short Term";
-            case 202010: return "Fixed Income - Mid Term";
-            case 202020: return "Fixed Income - Mid Term";
-            case 203010: return "Fixed Income - Long Term";
-            case 201020: return "Fixed Income - Long Term";
-            case 201030: return "Fixed Income - Long Term";
-            case 201040: return "Fixed Income - Long Term";
-            case 201050: return "Fixed Income - Long Term";
-            case 301010: return "Fixed Income And Equity";
-            case 301020: return "Fixed Income And Equity";
-            case 301030: return "Fixed Income And Equity";
-            case 401010: return "Equity - Diversified - Large Cap";
-            case 401020: return "Equity - Diversified - Large Cap";
-            case 401030: return "Equity - Diversified - Large Cap";
-            case 401040: return "Equity - Diversified - Large Cap";
-            case 401050: return "Equity - Diversified - Large Cap";
-            case 401060: return "Equity - Diversified - Large Cap";
-            case 401070: return "Equity - Diversified - Large Cap";
-            case 401080: return "Equity - Diversified - Large Cap";
-            case 402010: return "Equity - Diversified - Mid Cap";
-            case 402020: return "Equity - Diversified - Mid Cap";
-            case 402030: return "Equity - Diversified - Mid Cap";
-            case 402040: return "Equity - Diversified - Mid Cap";
-            case 403010: return "Equity - Diversified - Multi Cap";
-            case 403020: return "Equity - Diversified - Multi Cap";
-            case 403030: return "Equity - Diversified - Multi Cap";
-            case 403040: return "Equity - Diversified - Multi Cap";
-            case 404010: return "Equity - Diversified - Small Cap";
-            case 404020: return "Equity - Diversified - Small Cap";
-            case 404030: return "Equity - Diversified - Small Cap";
-            case 404040: return "Equity - Diversified - Small Cap";
-            case 405010: return "Foreign Equity - Developed Market";
-            case 405020: return "Foreign Equity - Developed Market";
-            case 405030: return "Foreign Equity - Emerging Market";
-            case 405040: return "Foreign Equity - Emerging Market";
-            case 406010: return "Individual Equity";
-            case 406020: return "Individual Equity";
-            case 406030: return "Individual Equity";
-            case 406040: return "Individual Equity";
-            case 501010: return "Diversified Commodity";
-            case 502010: return "Individual Commodity";
-            case 502020: return "Individual Commodity";
-            case 502030: return "Individual Commodity";
-            case 601010: return "Real Estate Direct";
-            case 601020: return "Real Estate Direct";
-            case 601030: return "Real Estate Direct";
-            case 601040: return "Real Estate Direct";
-            case 602010: return "Real Estate Indirect";
-            case 701010: return "Alternative Investments";
-            case 701020: return "Alternative Investments";
-            case 701030: return "Alternative Investments";
-            case 701040: return "Alternative Investments";
-            case 701050: return "Alternative Investments";
-            case 701060: return "Alternative Investments";
-            case 701070: return "Alternative Investments";
         }
     }
 })

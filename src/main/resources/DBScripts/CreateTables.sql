@@ -309,7 +309,7 @@ PRIMARY KEY (client_id, portfolio_id, allocation_date, allocation_asset_class, a
 delete from portfolio_asset_allocation;
 insert into portfolio_asset_allocation 
 select * from equityanalysis.portfolio_asset_allocation a 
-where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019) and date > '2017-07-10';
 select * from portfolio_asset_allocation order by client_id, portfolio_id, allocation_date, allocation_asset_class, allocation_asset_sub_class;
 
 
@@ -332,7 +332,7 @@ drop table portfolio_returns;
 CREATE TABLE portfolio_returns (
   client_id int(11) NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
-  year int(4) NOT NULL COMMENT 'returns for year',
+  returns_year int(4) NOT NULL COMMENT 'returns for year',
   returns_calendar_year decimal(20,4) DEFAULT NULL COMMENT 'Returns for calendar year',
   returns_fin_year decimal(20,4) DEFAULT NULL COMMENT 'Returns for FIN year',
   returns_mar_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'Returns for Jan to Mar',
