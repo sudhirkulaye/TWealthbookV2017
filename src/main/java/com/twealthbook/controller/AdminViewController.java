@@ -59,9 +59,9 @@ public class AdminViewController {
     @RequestMapping(value = "/admin/uploaddailydatag",method=RequestMethod.GET)
     public  String uploadDailyDataFromG(@AuthenticationPrincipal UserDetails userDetails){
         if (apiService.isAdmin(userDetails)) {
-            return "/admin/uploaddailydatag";
+            return "admin/uploaddailydatag";
         } else {
-            return "/access-denied";
+            return "access-denied";
         }
     }
 
@@ -69,11 +69,11 @@ public class AdminViewController {
     public String uploadDailyDataGStatus (Model model, @RequestParam("file") MultipartFile file, @RequestParam("date") String date){
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a file to upload");
-            return "redirect:/admin/uploaddailydatag";
+            return "redirect:admin/uploaddailydatag";
         }
         if (date.isEmpty()) {
             model.addAttribute("message", "Please enter valid date");
-            return "redirect:/admin/uploaddailydatag";
+            return "redirect:admin/uploaddailydatag";
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         java.sql.Date companyDailyDate = null;
@@ -141,15 +141,15 @@ public class AdminViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "/admin/uploaddailydatag";
+        return "admin/uploaddailydatag";
     }
 
     @RequestMapping(value = "/admin/uploaddailydatab",method= RequestMethod.GET)
     public  String uploadDailyDataFromB(@AuthenticationPrincipal UserDetails userDetails){
         if (apiService.isAdmin(userDetails)) {
-            return "/admin/uploaddailydatab";
+            return "admin/uploaddailydatab";
         } else {
-            return "/access-denied";
+            return "access-denied";
         }
     }
 
@@ -157,7 +157,7 @@ public class AdminViewController {
     public String uploadDailyDataBStatus (Model model, @RequestParam("file") MultipartFile file){
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a file to upload");
-            return "redirect:/admin/uploaddailydatab";
+            return "redirect:admin/uploaddailydatab";
         }
         try {
             byte[] bytes = file.getBytes();
@@ -183,15 +183,15 @@ public class AdminViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "/admin/uploaddailydatab";
+        return "admin/uploaddailydatab";
     }
 
     @RequestMapping(value = "/admin/uploaddailydatamf",method= RequestMethod.GET)
     public  String uploadDailyDataFromMF(@AuthenticationPrincipal UserDetails userDetails){
         if (apiService.isAdmin(userDetails)) {
-            return "/admin/uploaddailydatamf";
+            return "admin/uploaddailydatamf";
         } else {
-            return "/access-denied";
+            return "access-denied";
         }
     }
 
@@ -199,7 +199,7 @@ public class AdminViewController {
     public String uploadDailyDataMFStatus (Model model, @RequestParam("file") MultipartFile file){
         if (file.isEmpty()) {
             model.addAttribute("message", "Please select a file to upload");
-            return "redirect:/admin/uploaddailydatamf";
+            return "redirect:admin/uploaddailydatamf";
         }
 
         try {
@@ -238,15 +238,15 @@ public class AdminViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "/admin/uploaddailydatamf";
+        return "admin/uploaddailydatamf";
     }
 
     @RequestMapping(value = "/admin/processdailydata",method= RequestMethod.GET)
     public  String processDailyData(@AuthenticationPrincipal UserDetails userDetails){
         if (apiService.isAdmin(userDetails)) {
-            return "/admin/processdailydata";
+            return "admin/processdailydata";
         } else {
-            return "/access-denied";
+            return "access-denied";
         }
     }
 
@@ -260,19 +260,19 @@ public class AdminViewController {
             } else {
                 model.addAttribute("message", "Failed to process daily data successfully. Check DB logs.");
             }
-            return "/admin/processdailydata";
+            return "admin/processdailydata";
         } else {
             model.addAttribute("message", "Please confirm Yes/No to process daily data");
-            return "redirect:/admin/processdailydata";
+            return "redirect:admin/processdailydata";
         }
     }
 
     @RequestMapping(value = "/admin/updateportfolios",method= RequestMethod.GET)
     public  String updatePortfolios(@AuthenticationPrincipal UserDetails userDetails){
         if (apiService.isAdmin(userDetails)) {
-            return "/admin/updateportfolios";
+            return "admin/updateportfolios";
         } else {
-            return "/access-denied";
+            return "access-denied";
         }
     }
 
@@ -288,10 +288,10 @@ public class AdminViewController {
             } else {
                 model.addAttribute("message", "Failed to update portfolio data. Check DB logs.");
             }
-            return "/admin/updateportfolios";
+            return "admin/updateportfolios";
         } else {
             model.addAttribute("message", "Please confirm Yes to process daily data");
-            return "redirect:/admin/updateportfolios";
+            return "redirect:admin/updateportfolios";
         }
     }
 

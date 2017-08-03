@@ -45,21 +45,21 @@ public class PublicViewController {
     public String assetClasses(Model model){
         model.addAttribute("processingDate", apiService.getProcessingDate());
         model.addAttribute("title", "TWealthbook Asset Classes");
-        return "/public/info/assetclasses";
+        return "public/info/assetclasses";
     }
 
     @RequestMapping(value = "/public/info/assetsubclasses")
     public String assetSubClasses(Model model){
         model.addAttribute("processingDate", apiService.getProcessingDate());
         model.addAttribute("title", "TWealthbook Asset Sub Classes");
-        return "/public/info/assetsubclasses";
+        return "public/info/assetsubclasses";
     }
 
     @RequestMapping(value = "/public/info/index/indexconstituents")
     public String indexConstituents(Model model){
         model.addAttribute("processingDate", apiService.getProcessingDate());
         model.addAttribute("title", "Indices and Constituents");
-        return "/public/info/index/indexconstituents";
+        return "public/info/index/indexconstituents";
     }
 
 }

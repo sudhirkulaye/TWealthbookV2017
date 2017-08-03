@@ -3,6 +3,8 @@ package com.twealthbook.controller;
 import com.twealthbook.model.SetupDates;
 import com.twealthbook.repository.SetupDatesRepository;
 import com.twealthbook.service.ApiService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.core.env.Environment;
@@ -26,17 +28,20 @@ public class UserViewController {
     @Autowired
     SetupDatesRepository setupDatesRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserViewController.class);
+
     @Autowired
     public UserViewController(Environment environment){
     }
 
     @RequestMapping("/default")
     public String defaultAfterLogin(HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-        //if (request.isUserInRole("ADMIN")) {
+
+        logger.debug(String.format("New Login As: /%s", userDetails.getUsername()));
         if (apiService.isAdmin(userDetails)){
-            return "redirect:/admin/uploaddailydatag";
+            return "redirect:admin/uploaddailydatag";
         }
-        return "redirect:/user/dashboard/";
+        return "redirect:user/portfolios/";
     }
 
     @RequestMapping(value = "/user/dashboard", method = RequestMethod.GET)
@@ -45,7 +50,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook Dashboard");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/dashboard";
+        return "user/dashboard";
     }
 
     @RequestMapping(value = "/user/wealth")
@@ -54,7 +59,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook 360° Wealth");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/wealth";
+        return "user/wealth";
     }
 
     @RequestMapping(value = "/user/incomesavingsexpenses")
@@ -63,7 +68,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook Income,Savings & Expenses");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/incomesavingsexpenses";
+        return "user/incomesavingsexpenses";
     }
 
     @RequestMapping(value = "/user/portfolios", method = RequestMethod.GET)
@@ -72,7 +77,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook Portfolios");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/portfolios";
+        return "user/portfolios";
     }
 
 
@@ -82,7 +87,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook Loans");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/loans";
+        return "user/loans";
     }
 
     @RequestMapping(value = "/user/insurances")
@@ -91,7 +96,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook Insurance");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/insurances";
+        return "user/insurances";
     }
 
     @RequestMapping(value = "/user/timeline")
@@ -100,7 +105,7 @@ public class UserViewController {
         model.addAttribute("title", "TWealthbook Timeline");
         String welcomeMessage = "Welcome "+ apiService.getLoggedInUser(userDetails).getUserLastName() + " family";
         model.addAttribute("welcomeMessage", welcomeMessage);
-        return "/user/timeline";
+        return "user/timeline";
     }
 
 
