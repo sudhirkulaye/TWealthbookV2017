@@ -1,6 +1,8 @@
 package com.twealthbook.model;
 
 
+import com.twealthbook.service.ApiService;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -14,8 +16,8 @@ public class PortfolioViewModel implements Serializable {
     private Date portfolioEndDate;
     private int portfolioActiveStatus;
     private String portfolioCurrentStrategy;
-    private int portfolioBenchmarkType;
-    private String portfolioBenchmark;
+    private int portfolioBenchmarkId;
+    private String portfolioBenchmarkDescription;
     private BigDecimal portfolioValue;
 
     public PortfolioViewModel(){}
@@ -28,8 +30,8 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioEndDate = portfolio.getPortfolioEndDate();
         this.portfolioActiveStatus = portfolio.getPortfolioActiveStatus();
         this.portfolioCurrentStrategy = portfolio.getPortfolioCurrentStrategy();
-        this.portfolioBenchmarkType = portfolio.getPortfolioBenchmarkType();
-        this.portfolioBenchmark = portfolio.getPortfolioBenchmark();
+        this.portfolioBenchmarkId = portfolio.getPortfolioBenchmarkId();
+        this.portfolioBenchmarkDescription = ApiService.getBenchmarkDescription(this.portfolioBenchmarkId);
         this.portfolioValue = portfolio.getPortfolioValue();
     }
 
@@ -97,20 +99,18 @@ public class PortfolioViewModel implements Serializable {
         this.portfolioCurrentStrategy = portfolioCurrentStrategy;
     }
 
-    public int getPortfolioBenchmarkType() {
-        return portfolioBenchmarkType;
+    public int getPortfolioBenchmarkId() {
+        return portfolioBenchmarkId;
+    }
+    public void setPortfolioBenchmarkId(int portfolioBenchmarkId) {
+        this.portfolioBenchmarkId = portfolioBenchmarkId;
     }
 
-    public void setPortfolioBenchmarkType(int portfolioBenchmarkType) {
-        this.portfolioBenchmarkType = portfolioBenchmarkType;
+    public String getPortfolioBenchmarkDescription() {
+        return portfolioBenchmarkDescription;
     }
-
-    public String getPortfolioBenchmark() {
-        return portfolioBenchmark;
-    }
-
-    public void setPortfolioBenchmark(String portfolioBenchmark) {
-        this.portfolioBenchmark = portfolioBenchmark;
+    public void setPortfolioBenchmarkDescription(String portfolioBenchmarkDescription) {
+        this.portfolioBenchmarkDescription = portfolioBenchmarkDescription;
     }
 
     public BigDecimal getPortfolioValue() {
@@ -119,4 +119,5 @@ public class PortfolioViewModel implements Serializable {
     public void setPortfolioValue(BigDecimal portfolioValue) {
         this.portfolioValue = portfolioValue;
     }
+
 }

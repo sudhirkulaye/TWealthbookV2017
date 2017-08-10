@@ -2,6 +2,8 @@ package com.twealthbook.service;
 
 import com.twealthbook.model.*;
 import com.twealthbook.repository.*;
+import org.jsondoc.core.annotation.Api;
+import org.jsondoc.core.annotation.ApiAuthBasicUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,49 +26,101 @@ public class ApiService {
 
     public static final int ADMIN_ROLE_ID = 1;
     @Autowired
-    private UserRepository userRepository;
+    private static UserRepository userRepository;
+    @Autowired
+    public static SetupDatesRepository setupDatesRepository;
+    @Autowired
+    public static BenchmarkRepository benchmarkRepository;
 
     @Autowired
-    private FamilyMemberRepository familyMemberRepository;
-
+    private static FamilyMemberRepository familyMemberRepository;
     @Autowired
-    private ClientRepository clientRepository;
-
+    private static ClientRepository clientRepository;
     @Autowired
-    private PortfolioRepository portfolioRepository;
-
+    private static PortfolioRepository portfolioRepository;
     @Autowired
-    private PortfolioCashflowRepository portfolioCashflowRepository;
-
+    private static PortfolioCashflowRepository portfolioCashflowRepository;
     @Autowired
-    private PortfolioHoldingsRepository portfolioHoldingsRepository;
-
+    private static PortfolioHoldingsRepository portfolioHoldingsRepository;
     @Autowired
-    private PortfolioHistoricalHoldingsRepository portfolioHistoricalHoldingsRepository;
-
+    private static PortfolioHistoricalHoldingsRepository portfolioHistoricalHoldingsRepository;
     @Autowired
-    public SetupDatesRepository setupDatesRepository;
+    private static PortfolioTwrrSummaryRepository portfolioTwrrSummaryRepository;
+    @Autowired
+    private static PortfolioIrrSummaryRepository portfolioIrrSummaryRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ApiService.class);
+    private static SetupDates setupDates;
 
-    private SetupDates setupDates;
+    @Autowired
+    public void setSetupDatesRepository(SetupDatesRepository setupDatesRepository){
+        ApiService.setupDatesRepository = setupDatesRepository;
+    }
+
+    @Autowired
+    public  void setUserRepository(UserRepository userRepository){
+        ApiService.userRepository = userRepository;
+    }
+
+    @Autowired
+    public  void setBenchmarkRepository(BenchmarkRepository benchmarkRepository){
+        ApiService.benchmarkRepository = benchmarkRepository;
+    }
+
+    @Autowired
+    public void setFamilyMemberRepository(FamilyMemberRepository familyMemberRepository){
+        ApiService.familyMemberRepository = familyMemberRepository;
+    }
+
+    @Autowired
+    public void setClientRepository(ClientRepository clientRepository){
+        ApiService.clientRepository = clientRepository;
+    }
+
+    @Autowired
+    public  void setPortfolioRepository(PortfolioRepository portfolioRepository){
+        ApiService.portfolioRepository = portfolioRepository;
+    }
+
+    @Autowired
+    public void setPortfolioCashflowRepository(PortfolioCashflowRepository  portfolioCashflowRepository){
+        ApiService.portfolioCashflowRepository = portfolioCashflowRepository;
+    }
+
+    @Autowired
+    public void setPortfolioHoldingsRepository(PortfolioHoldingsRepository portfolioHoldingsRepository){
+        ApiService.portfolioHoldingsRepository = portfolioHoldingsRepository;
+    }
+
+    @Autowired
+    public void setPortfolioHistoricalHoldingsRepository(PortfolioHistoricalHoldingsRepository portfolioHistoricalHoldingsRepository){
+        ApiService.portfolioHistoricalHoldingsRepository = portfolioHistoricalHoldingsRepository;
+    }
+
+    @Autowired
+    public void setPortfolioTwrrSummaryRepository(PortfolioTwrrSummaryRepository portfolioTwrrSummaryRepository){
+        ApiService.portfolioTwrrSummaryRepository = portfolioTwrrSummaryRepository;
+    }
+
+    @Autowired
+    public void setPortfolioIrrSummaryRepository(PortfolioIrrSummaryRepository portfolioIrrSummaryRepository){
+        ApiService.portfolioIrrSummaryRepository = portfolioIrrSummaryRepository;
+    }
 
     /**
      * Return single record in SetupDates
      * @return SeupDates
      */
-    public SetupDates getSetupDates(){
-        if (setupDates == null) {
-            List<SetupDates> setupDatesList = setupDatesRepository.findAll();
-            //TODO check only one object in the list
-            for(SetupDates setupDatesListObject : setupDatesList) {
-                setupDates = setupDatesListObject;
-            }
+    public static SetupDates getSetupDates(){
+        List<SetupDates> setupDatesList = setupDatesRepository.findAll();
+        //TODO check only one object in the list
+        for(SetupDates setupDatesListObject : setupDatesList) {
+            setupDates = setupDatesListObject;
         }
         return  setupDates;
     }
 
-    public java.sql.Date getProcessingDate(){
+    public static java.sql.Date getProcessingDate(){
         return getSetupDates().getDateToday();
     }
 
@@ -75,7 +129,7 @@ public class ApiService {
      * @param roles
      * @return
      */
-    private  boolean isHavingAdminRole(Set<Role> roles){
+    private static  boolean isHavingAdminRole(Set<Role> roles){
         for (Role role : roles){
             if (role.getRoleId() == ADMIN_ROLE_ID) {
                 return true;
@@ -84,9 +138,9 @@ public class ApiService {
         return  false;
     }
 
-    public boolean isAdmin(@AuthenticationPrincipal UserDetails userDetails){
+    public static boolean isAdmin(@AuthenticationPrincipal UserDetails userDetails){
         boolean isAdmin = false;
-        Set<Role> roles = this.getLoggedInUser(userDetails).getRoles();
+        Set<Role> roles = getLoggedInUser(userDetails).getRoles();
         return isHavingAdminRole(roles);
     }
 
@@ -96,7 +150,7 @@ public class ApiService {
      * @return
      * @throws UsernameNotFoundException
      */
-    public User getLoggedInUser(UserDetails userDetails) throws  UsernameNotFoundException {
+    public static User getLoggedInUser(UserDetails userDetails) throws  UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByUserLoginId(userDetails.getUsername());
 
         optionalUser
@@ -106,38 +160,7 @@ public class ApiService {
 
     }
 
-    /**
-     * If logged-in user is assigned a ADMIN role then return information of all end users
-     * @param userDetails
-     * @return
-     * @throws InsufficientAuthenticationException
-     */
-    protected Iterable<User> getAllUsers (@AuthenticationPrincipal final UserDetails userDetails)
-            throws UsernameNotFoundException, InsufficientAuthenticationException {
-        User user = getLoggedInUser(userDetails);
-        boolean isAdminUser = isHavingAdminRole(user.getRoles());
-        if (isAdminUser)
-            return userRepository.findAll();
-        else
-            throw  new InsufficientAuthenticationException("User is not authorized");
-    }
 
-    /**
-     * If logged-in user is assigned a ADMIN role then return information of all clients
-     * @param userDetails
-     * @return
-     * @throws UsernameNotFoundException
-     * @throws InsufficientAuthenticationException
-     */
-    protected Iterable<Client> getAllClients (@AuthenticationPrincipal final UserDetails userDetails)
-            throws UsernameNotFoundException, InsufficientAuthenticationException {
-        User user = getLoggedInUser(userDetails);
-        boolean isAdminUser = isHavingAdminRole(user.getRoles());
-        if (isAdminUser)
-            return clientRepository.findAll();
-        else
-            throw new InsufficientAuthenticationException("User is not authorized");
-    }
 
     /**
      * Creates a new Client if logged-in user ia assigned a ADMIN role.
@@ -182,43 +205,13 @@ public class ApiService {
     }
 
     /**
-     * Returns User Information of a Logged-in user
-     * @param userDetails
-     * @return
-     * @throws UsernameNotFoundException
-     */
-    public User getLoggedinUserInfo(@AuthenticationPrincipal final UserDetails userDetails)
-            throws UsernameNotFoundException{
-        return getLoggedInUser(userDetails);
-    }
-
-    /**
-     * Returns a map of all Clients combined as a Family Members of logged-in user.
-     * Key of mapped object is Relationship with logged-in user.
-     * @param userDetails
-     * @return
-     * @throws UsernameNotFoundException
-     */
-    public HashMap<String, Client> getFamilyMembersAsClientsOfALoggedInUser(
-            @AuthenticationPrincipal final UserDetails userDetails)
-            throws UsernameNotFoundException{
-        User user = getLoggedInUser(userDetails);
-        HashMap clients = new HashMap();
-        for (FamilyMember  familyMember : user.getFamilyMembers()){
-            Client client = clientRepository.findByClientId(familyMember.getClientId());
-            clients.put(familyMember.getFamilyRelationship()+ ":"+ client.getClientFirstName(), client);
-        }
-        return clients;
-    }
-
-    /**
      * Returns a map of all Portfolios of all Clients combined as a Family Members of logged-in user.
      * Key of mapped object is Relationship with logged-in user.
      * @param userDetails
      * @return
      * @throws UsernameNotFoundException
      */
-    public List<PortfolioViewModel> getPortfoliosOfClientsOfALoggedInUser(
+    public static List<PortfolioViewModel> getPortfoliosOfClientsOfALoggedInUser(
             @AuthenticationPrincipal final UserDetails userDetails)
             throws UsernameNotFoundException{
         User user = getLoggedInUser(userDetails);
@@ -237,7 +230,7 @@ public class ApiService {
     }
 
 
-    public List<PortfolioCashflow> getPortfolioCashflow
+    public static List<PortfolioCashflow> getPortfolioCashflow
             (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
             throws UsernameNotFoundException{
         FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
@@ -248,7 +241,7 @@ public class ApiService {
                 findAllByportfolioCashflowKeyClientIdAndPortfolioCashflowKeyPortfolioId(clientId, portfolioId);
     }
 
-    public List<PortfolioHoldings> getPortfolioHoldings
+    public static List<PortfolioHoldings> getPortfolioHoldings
             (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
             throws UsernameNotFoundException{
         FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
@@ -259,7 +252,7 @@ public class ApiService {
                 findAllByPortfolioHoldingsKeyClientIdAndPortfolioHoldingsKeyPortfolioId(clientId, portfolioId);
     }
 
-    public List<PortfolioHistoricalHoldings> getPortfolioHistoricalHoldings
+    public static List<PortfolioHistoricalHoldings> getPortfolioHistoricalHoldings
             (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
             throws UsernameNotFoundException{
         FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
@@ -271,47 +264,77 @@ public class ApiService {
                         (clientId, portfolioId);
     }
 
-    public XIRRReturns getPortfolioXIRRReturns
+//    public static PortfolioIrrSummary getPortfolioInternalRateOfReturns
+//            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+//            throws UsernameNotFoundException{
+//        /**
+//         *  getPortfolioCashflow will check link between family member.
+//         *  So no need to check additionally if "Clinet is not a family memebr of user"
+//          */
+//        List<PortfolioCashflow> portfolioCashflows = getPortfolioCashflow(userDetails,clientId,portfolioId);
+//
+//        PortfolioIrrSummary portfolioIrrSummary = new PortfolioIrrSummary();
+//        double[] payments = new double[portfolioCashflows.size()+1];
+//        Date[] days = new Date[portfolioCashflows.size()+1];
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        XIRRCalculation xirrCalculation = new XIRRCalculation();
+//
+//        for (int i = 0; i < portfolioCashflows.size(); i++) {
+//            PortfolioCashflow portfolioCashflow = portfolioCashflows.get(i);
+//            java.sql.Date date = portfolioCashflow.getPortfolioCashflowKey().getCashflowDate();
+//            try {
+//                days[i] = simpleDateFormat.parse(date.toString());
+//                payments[i] = portfolioCashflow.getCashflowAmount().doubleValue();
+//            } catch (ParseException e) {
+//                logger.error(String.format("Error in parsing date for /getportfolioxirrreturns/%s/%s", clientId, portfolioId));
+//                e.printStackTrace();
+//                return null;
+//            }
+//        }
+//        try {
+//            if (setupDates == null) getSetupDates();
+//            days[portfolioCashflows.size()] = simpleDateFormat.parse(setupDates.getDateToday().toString());
+//            Portfolio.PortfolioKey portfoliokey = new Portfolio.PortfolioKey();
+//            portfoliokey.setClientId(clientId);
+//            portfoliokey.setPortfolioId(portfolioId);
+//            payments[portfolioCashflows.size()] = portfolioRepository.findOne(portfoliokey).getPortfolioValue().doubleValue();
+//        } catch (ParseException e) {
+//            logger.error(String.format("Error in parsing dateToday for /getportfolioxirrreturns/%s/%s", clientId, portfolioId));
+//            e.printStackTrace();
+//            return  null;
+//        }
+//
+//        BigDecimal returnsSinceIncpetion = new BigDecimal(XIRRCalculation.Newtons_method(0.1,payments,days));
+//        System.out.println("returnsSinceIncpetion: "+ returnsSinceIncpetion);
+//        portfolioIrrSummary.setReturnsIrrSinceInception(returnsSinceIncpetion);
+//        return portfolioIrrSummary;
+//
+//    }
+
+    public static String getBenchmarkDescription(int benchmarkId){
+        return  benchmarkRepository.findOneByBenchmarkId(benchmarkId).getBenchmarkDescription();
+    }
+
+    public static PortfolioIrrSummary getPortfolioInternalRateOfReturns
             (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
             throws UsernameNotFoundException{
-
-        List<PortfolioCashflow> portfolioCashflows = getPortfolioCashflow(userDetails,clientId,portfolioId);
-
-        XIRRReturns xirrReturns = new XIRRReturns();
-        double[] payments = new double[portfolioCashflows.size()+1];
-        Date[] days = new Date[portfolioCashflows.size()+1];
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        XIRRCalculation xirrCalculation = new XIRRCalculation();
-
-        for (int i = 0; i < portfolioCashflows.size(); i++) {
-            PortfolioCashflow portfolioCashflow = portfolioCashflows.get(i);
-            java.sql.Date date = portfolioCashflow.getPortfolioCashflowKey().getCashflowDate();
-            try {
-                days[i] = simpleDateFormat.parse(date.toString());
-                payments[i] = portfolioCashflow.getCashflowAmount().doubleValue();
-            } catch (ParseException e) {
-                logger.error(String.format("Error in parsing date for /getportfolioxirrreturns/%s/%s", clientId, portfolioId));
-                e.printStackTrace();
-                return null;
-            }
+        FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
+        if (!familyMember.getUserLoginId().equals(userDetails.getUsername())) {
+            throw new UsernameNotFoundException("Clinet is not a family memebr of user");
         }
-        try {
-            if (setupDates == null) getSetupDates();
-            days[portfolioCashflows.size()] = simpleDateFormat.parse(setupDates.getDateToday().toString());
-            Portfolio.PortfolioKey portfoliokey = new Portfolio.PortfolioKey();
-            portfoliokey.setClientId(clientId);
-            portfoliokey.setPortfolioId(portfolioId);
-            payments[portfolioCashflows.size()] = portfolioRepository.findOne(portfoliokey).getPortfolioValue().doubleValue();
-        } catch (ParseException e) {
-            logger.error(String.format("Error in parsing dateToday for /getportfolioxirrreturns/%s/%s", clientId, portfolioId));
-            e.printStackTrace();
-            return  null;
+        return portfolioIrrSummaryRepository.findOneByPortfolioIrrSummaryKeyClientIdAndPortfolioIrrSummaryKeyPortfolioIdAndPortfolioIrrSummaryKeyBenchmarkId
+                (clientId,portfolioId,0);
+
+    }
+
+    public static PortfolioTwrrSummary getPortfolioTimeWeightedRateOfReturns
+            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+            throws UsernameNotFoundException {
+        FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
+        if (!familyMember.getUserLoginId().equals(userDetails.getUsername())) {
+            throw new UsernameNotFoundException("Clinet is not a family memebr of user");
         }
-
-        BigDecimal returnsSinceIncpetion = new BigDecimal(XIRRCalculation.Newtons_method(0.1,payments,days));
-        System.out.println("returnsSinceIncpetion: "+ returnsSinceIncpetion);
-        xirrReturns.setReturnsSinceInception(returnsSinceIncpetion);
-        return  xirrReturns;
-
+        return portfolioTwrrSummaryRepository.findOneByPortfolioTwrrSummaryKeyClientIdAndPortfolioTwrrSummaryKeyPortfolioIdAndPortfolioTwrrSummaryKeyBenchmarkId
+                (clientId,portfolioId,0);
     }
 }

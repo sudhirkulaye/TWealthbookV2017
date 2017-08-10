@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @EnableCaching
 public class PublicViewController {
 
-    @Autowired
-    ApiService apiService;
-
     @RequestMapping(value = "/access-denied")
     public String accessDenied(Model model){
         return "/access-denied";
@@ -23,14 +20,14 @@ public class PublicViewController {
 
     @RequestMapping(value = "/")
     public String index(Model model){
-        model.addAttribute("processingDate", apiService.getProcessingDate());
+        model.addAttribute("processingDate", ApiService.getProcessingDate());
         model.addAttribute("title", "TWealthbook Home");
         return "index";
     }
 
     @RequestMapping(value = "/userlogin", method = RequestMethod.GET)
     public String  login(Model model, String error, String logout){
-        model.addAttribute("processingDate", apiService.getProcessingDate());
+        model.addAttribute("processingDate", ApiService.getProcessingDate());
         model.addAttribute("title", "TWealthbook Login");
         if (error != null)
             model.addAttribute("error", "Your username and password is invalid.");
@@ -43,21 +40,21 @@ public class PublicViewController {
 
     @RequestMapping(value = "/public/info/assetclasses")
     public String assetClasses(Model model){
-        model.addAttribute("processingDate", apiService.getProcessingDate());
+        model.addAttribute("processingDate", ApiService.getProcessingDate());
         model.addAttribute("title", "TWealthbook Asset Classes");
         return "public/info/assetclasses";
     }
 
     @RequestMapping(value = "/public/info/assetsubclasses")
     public String assetSubClasses(Model model){
-        model.addAttribute("processingDate", apiService.getProcessingDate());
+        model.addAttribute("processingDate", ApiService.getProcessingDate());
         model.addAttribute("title", "TWealthbook Asset Sub Classes");
         return "public/info/assetsubclasses";
     }
 
     @RequestMapping(value = "/public/info/index/indexconstituents")
     public String indexConstituents(Model model){
-        model.addAttribute("processingDate", apiService.getProcessingDate());
+        model.addAttribute("processingDate", ApiService.getProcessingDate());
         model.addAttribute("title", "Indices and Constituents");
         return "public/info/index/indexconstituents";
     }

@@ -312,70 +312,110 @@ select * from equityanalysis.portfolio_asset_allocation a
 where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019) and date > '2017-07-10';
 select * from portfolio_asset_allocation order by client_id, portfolio_id, allocation_date, allocation_asset_class, allocation_asset_sub_class;
 
+CREATE TABLE benchmark (
+  benchmark_id INT(3) NOT NULL COMMENT 'PK Benchmark ID',
+  benchmark_name VARCHAR(50) NULL COMMENT 'Benchmark Name',
+  benchmark_description VARCHAR(100) NULL COMMENT 'benchmark Description',
+  PRIMARY KEY (benchmark_id))
+COMMENT = 'Portfolio Benchmarks - Custom Benchmarks';
 
+select * from benchmark a order by benchmark_id; 
+
+drop table benchmark_constituent;
+CREATE TABLE benchmark_constituent (
+  benchmark_id INT(3) NOT NULL COMMENT 'PK Benchmark ID',
+  constituent_id VARCHAR(30) NOT NULL COMMENT 'Constituent i.e. company_ticker from company_universe OR returns represented by FD',
+  constituent_percent int(3) NULL COMMENT 'Constituent percent',
+  constituent_fixed_returns int(1) DEFAULT 0 COMMENT '0 - Index 1, non zero means Constant (for FDs)',
+  PRIMARY KEY (benchmark_id, constituent_id))
+COMMENT = 'Portfolio Benchmarks - Constituents of Custom Benchmark ';
+
+select * from benchmark_constituent a order by benchmark_id, constituent_id; 
+
+drop table portfolio_returns_calculation_support;
 CREATE TABLE portfolio_returns_calculation_support (
   client_id int NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
   calculation_date date NOT NULL COMMENT 'Date either cashflow date or end month',
   calculation_cashflow DECIMAL(20,3) COMMENT 'Cashflow amount Cash-in is negative, Cash-out is positive',
   calculation_market_value DECIMAL(20,3) COMMENT 'Market Value of the portfolio',
-PRIMARY KEY (client_id, portfolio_id, calculation_date)
-) COMMENT='Portfolio returns calculation support data';
+  PRIMARY KEY (client_id, portfolio_id, calculation_date)
+) COMMENT='Portfolio - TWRR (Time Weighted Rate of Returns) Calculation support data';
+
+CREATE TABLE portfolio_benchmark_returns_calculation_support (
+  client_id int NOT NULL COMMENT 'Client ID for reference unique',
+  portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
+  calculation_date date NOT NULL COMMENT 'Date either cashflow date or end month',
+  calculation_cashflow DECIMAL(20,3) COMMENT 'Cashflow amount Cash-in is negative, Cash-out is positive',
+  benchmark_id INT(3) NOT NULL COMMENT 'PK Benchmark ID',
+  constituent_id VARCHAR(30) NOT NULL COMMENT 'Constituent i.e. company_ticker from company_universe OR returns represented by FD',
+  constituent_percent int(3) NULL COMMENT 'Constituent percent',
+  constituent_unit_value DECIMAL(20,3) NULL COMMENT 'Constituent unit value',
+  constituent_units DECIMAL(20,3) NULL COMMENT 'Constituent units',
+  constituent_total_units DECIMAL(20,3) COMMENT 'constituent Total Units',
+  constituent_total_value DECIMAL(20,3) COMMENT 'constituent Total Value',
+  PRIMARY KEY (client_id, portfolio_id, benchmark_id, constituent_id, calculation_date)
+) COMMENT='Portfolio - TWRR (Time Weighted Rate of Returns) Calculation support data';
 
 
-delete from portfolio_returns_calculation_support;
-insert into portfolio_returns_calculation_support
-select a.customer_code, a.portfolio_no, a.date, a.cashflow, a.market_value from equityanalysis.portfolio_returns_calculation_support a
-where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+select * from portfolio_twrr_calculation_support; 
+  
+drop table portfolio_twrr_monthly;
+CREATE TABLE portfolio_twrr_monthly (
+  client_id int(11) NOT NULL COMMENT 'PK Client Id',
+  portfolio_id int(3) NOT NULL COMMENT 'PK Portfolio Id',
+  returns_year int(4) NOT NULL COMMENT 'PK Year of returns',
+  returns_calendar_year decimal(20,4) DEFAULT NULL COMMENT 'TWRR for calendar year',
+  returns_fin_year decimal(20,4) DEFAULT NULL COMMENT 'TWRR for FIN year',
+  returns_mar_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jan to Mar',
+  returns_jun_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Apr to Jun',
+  returns_sep_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jul to Sep',
+  returns_dec_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Oct to Dec',
+  returns_jan decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jan',
+  returns_feb decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Feb',
+  returns_mar decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Mar',
+  returns_apr decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Apr',
+  returns_may decimal(20,4) DEFAULT NULL COMMENT 'TWRR for May',
+  returns_jun decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jun',
+  returns_jul decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jul',
+  returns_aug decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Aug',
+  returns_sep decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Sep',
+  returns_oct decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Oct',
+  returns_nov decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Nov',
+  returns_dec decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Dec',
+  PRIMARY KEY (client_id,portfolio_id,returns_year)
+) COMMENT='Portfolio - TWRR (Time Weighted Rate of Returns) monthwise ';
 
-drop table portfolio_returns;
-CREATE TABLE portfolio_returns (
+drop table portfolio_irr_summary;
+CREATE TABLE portfolio_irr_summary (
   client_id int(11) NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
-  returns_year int(4) NOT NULL COMMENT 'returns for year',
-  returns_calendar_year decimal(20,4) DEFAULT NULL COMMENT 'Returns for calendar year',
-  returns_fin_year decimal(20,4) DEFAULT NULL COMMENT 'Returns for FIN year',
-  returns_mar_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'Returns for Jan to Mar',
-  returns_jun_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'Returns for Apr to Jun',
-  returns_sep_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'Returns for Jul to Sep',
-  returns_dec_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'Returns for Oct to Dec',
-  returns_jan decimal(20,4) DEFAULT NULL COMMENT 'Returns for Jan',
-  returns_feb decimal(20,4) DEFAULT NULL COMMENT 'Returns for Feb',
-  returns_mar decimal(20,4) DEFAULT NULL COMMENT 'Returns for Mar',
-  returns_apr decimal(20,4) DEFAULT NULL COMMENT 'Returns for Apr',
-  returns_may decimal(20,4) DEFAULT NULL COMMENT 'Returns for May',
-  returns_jun decimal(20,4) DEFAULT NULL COMMENT 'Returns for Jun',
-  returns_jul decimal(20,4) DEFAULT NULL COMMENT 'Returns for Jul',
-  returns_aug decimal(20,4) DEFAULT NULL COMMENT 'Returns for Aug',
-  returns_sep decimal(20,4) DEFAULT NULL COMMENT 'Returns for Sep',
-  returns_oct decimal(20,4) DEFAULT NULL COMMENT 'Returns for Oct',
-  returns_nov decimal(20,4) DEFAULT NULL COMMENT 'Returns for Nov',
-  returns_dec decimal(20,4) DEFAULT NULL COMMENT 'Returns for Dec',
-  PRIMARY KEY (client_id,portfolio_id,year)
-) COMMENT='Portfolio returns';
+  benchmark_id int(3) DEFAULT 0 COMMENT 'Benchmark ID for comparision, 0 for portfolio',
+  returns_date date COMMENT 'Returns as of',
+  returns_irr_since_current_month decimal(20,4) DEFAULT NULL COMMENT 'IRR Returns from current month',
+  returns_irr_since_current_quarter decimal(20,4) DEFAULT NULL COMMENT 'IRR Returns from current quarter',
+  returns_irr_since_fin_year decimal(20,4) DEFAULT NULL COMMENT 'IRR Returns since current fin year',
+  returns_irr_ytd decimal(20,4) DEFAULT NULL COMMENT 'IRR Returns since Jan 1st',
+  returns_irr_one_year decimal(20,4) DEFAULT NULL COMMENT 'IRR Returns since one year',
+  returns_irr_since_inception decimal(20,4) DEFAULT NULL COMMENT 'IRR Returns since inception',
+  PRIMARY KEY (client_id,portfolio_id, benchmark_id)
+) COMMENT='Portfolio - IRR (Internal Rate of Returns) or Money Weighted Rate or Returns Summary';
 
-delete from portfolio_returns;
-insert into portfolio_returns 
-select * from equityanalysis.portfolio_returns a 
-where a.customer_code in (1,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1014,1015,1016,1017,1018,1019);
+select * from portfolio_irr_summary; 
 
-CREATE TABLE portfolio_return_summary (
+drop table portfolio_twrr_summary;
+CREATE TABLE portfolio_twrr_summary (
   client_id int(11) NOT NULL COMMENT 'Client ID for reference unique',
   portfolio_id int(3) NOT NULL COMMENT 'Portfolio No unique',
-  returns_TWRR_since_inception decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns since inception',
-  returns_TWRR_since_current_month decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns from current month',
-  returns_TWRR_since_current_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns from current quarter',
-  returns_TWRR_last_full_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns of last full quarter',
-  returns_TWRR_last_full_two_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns of last full 2 quarters',
-  returns_TWRR_last_full_three_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns of last full 3 quarters',
-  returns_TWRR_last_full_four_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns of last full 4 quarters',
-  returns_XIRR_since_inception decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns since inception',
-  returns_XIRR_since_current_month decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns from current month',
-  returns_XIRR_since_current_quarter decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns from current quarter',
-  returns_XIRR_last_full_quarter decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns of last full quarter',
-  returns_XIRR_last_full_two_quarter decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns of last full 2 quarters',
-  returns_XIRR_last_full_three_quarter decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns of last full 3 quarters',
-  returns_XIRR_last_full_four_quarter decimal(20,4) DEFAULT NULL COMMENT 'XIRR Returns of last full 4 quarters',
-  PRIMARY KEY (client_id,portfolio_id)
-) COMMENT='Portfolio returns summary';
+  benchmark_id int(3) DEFAULT 0 COMMENT 'Benchmark ID for comparision, 0 for portfolio',
+  returns_date date COMMENT 'Returns as of',
+  returns_twrr_since_current_month decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns from current month',
+  returns_twrr_since_current_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns from current quarter',
+  returns_twrr_since_fin_year decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns since current fin year',
+  returns_twrr_ytd decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns since Jan 1st',
+  returns_twrr_one_year decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns since one year',
+  returns_twrr_since_inception decimal(20,4) DEFAULT NULL COMMENT 'TWRR Returns since inception',
+  PRIMARY KEY (client_id,portfolio_id, benchmark_id)
+) COMMENT='Portfolio - TWRR (Time Weighted Rate of Returns) Summary';
 
+select * from portfolio_twrr_summary;

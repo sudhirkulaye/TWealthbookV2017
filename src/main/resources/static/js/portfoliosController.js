@@ -16,7 +16,8 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
 	$scope.cashflowArray = [];
 	$scope.holdingsArray = [];
 	$scope.historicalHoldingsArray = [];
-	$scope.xiirReturnsArray = [];
+	$scope.irrArray = [];
+	$scope.twrrArray = [];
 
     $scope.currentPage = 1;
     $scope.pageSize = 10;
@@ -35,12 +36,14 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     $scope.cashflowArray = new Array($scope.portfolios.length, 1);
                     $scope.holdingsArray = new Array($scope.portfolios.length, 1);
                     $scope.historicalHoldingsArray = new Array($scope.portfolios.length, 1);
-                    $scope.xiirReturnsArray = new Array($scope.portfolios.length, 1);
+                    $scope.irrArray = new Array($scope.portfolios.length, 1);
+                    $scope.twrrArray = new Array($scope.portfolios.length, 1);
                     for (var i=0; i<$scope.portfolios.length; i++){
                         $scope.cashflowArray[i] = [];
                         $scope.holdingsArray[i] = [];
                         $scope.historicalHoldingsArray[i] = [];
-                        $scope.xiirReturnsArray[i] = [];
+                        $scope.irrArray[i] = [];
+                        $scope.twrrArray[i] = [];
                     }
                 } else {
                     $scope.portfolios = [];
@@ -68,8 +71,8 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         $scope.portfolioStartDate = $scope.portfolios[index].portfolioStartDate;
         $scope.portfolioActiveStatus = $filter('portfolioActiveStatus')($scope.portfolios[index].portfolioActiveStatus);
         $scope.portfolioCurrentStrategy = $scope.portfolios[index].portfolioCurrentStrategy;
-        $scope.portfolioBenchmarkType = $filter('benchmarkType')($scope.portfolios[index].portfolioBenchmarkType);
-        $scope.portfolioBenchmark = $scope.portfolios[index].portfolioBenchmark;
+        //$scope.portfolioBenchmarkType = $filter('benchmarkType')($scope.portfolios[index].portfolioBenchmarkType);
+        $scope.portfolioBenchmarkDescription = $scope.portfolios[index].portfolioBenchmarkDescription;
         $scope.portfolioValue = $filter('currency')($scope.portfolios[index].portfolioValue, "₹", 0);
         $scope.portfolioValueNumber = $scope.portfolios[index].portfolioValue;
     }
@@ -80,7 +83,8 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         getPortfolioCashflow(index);
         getPortfolioHoldings(index);
         getPortfolioHistoricalHoldings(index);
-        getPortfolioXIRRReturns(index);
+        getPortfolioInternalRateOfReturns(index);
+        getPortfolioTimeWeightedRateOfReturns(index);
     }
 
     function getPortfolioCashflow(index){
@@ -178,22 +182,40 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
         }
     }
 
-    function getPortfolioXIRRReturns(index){
-        if ($scope.xiirReturnsArray[index][0] != undefined) {
-            $scope.xiirReturns = $scope.xiirReturnsArray[index][0];
+    function getPortfolioInternalRateOfReturns(index){
+        if ($scope.irrArray[index][0] != undefined) {
+            $scope.irr = $scope.irrArray[index][0];
         } else {
-            url = "/getportfolioxirrreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
+            url = "/getportfoliointernalrateofreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
             $http.get(urlBase + url).
                 then(function(response){
                     if (response != undefined) {
-                        $scope.xiirReturnsArray[index][0] = response.data;
-                        $scope.xiirReturns = response.data;
+                        $scope.irrArray[index][0] = response.data;
+                        $scope.irr = response.data;
                     } else {
-                        $scope.xiirReturnsArray[index] = [];
-                        $scope.xiirReturns = [];
+                        $scope.irrArray[index] = [];
+                        $scope.irr = [];
                     }
                 });
         }
+    }
+
+    function getPortfolioTimeWeightedRateOfReturns(index){
+         if ($scope.twrrArray[index][0] != undefined) {
+                    $scope.twrr = $scope.twrrArray[index][0];
+         } else {
+            url = "/getportfoliotimeweightedrateofreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
+            $http.get(urlBase + url).
+                then(function(response){
+                    if (response != undefined) {
+                        $scope.twrrArray[index][0] = response.data;
+                        $scope.twrr = response.data;
+                    } else {
+                        $scope.twrrArray[index] = [];
+                        $scope.twrr = [];
+                    }
+                });
+         }
     }
 
     $scope.searchSecurity = function (holding) {
@@ -256,17 +278,6 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
     }
 });
 
-
-
-portfolioModule.filter("benchmarkType", function () {
-    return function (benchmarkType) {
-        switch (benchmarkType) {
-            case 1: return "Standard";
-            case 2: return "Customized"
-        }
-    }
-})
-
 portfolioModule.filter("portfolioActiveStatus", function () {
     return function (portfolioActiveStatus) {
         switch (portfolioActiveStatus) {
@@ -289,6 +300,8 @@ return function (returns, decimals) {
 
 portfolioModule.filter('percentageReturns', ['$filter', function ($filter) {
   return function (returns, decimals) {
+    //console.log(returns);
+    if (returns == 0 || returns == undefined)  return "0%";
     return $filter('number')((returns-1) * 100, decimals) + '%';
   };
 }])

@@ -28,8 +28,7 @@ public class Portfolio implements Serializable{
                                                 // Real Estate : Investment in Real Estate
                                                 // Commodity : Gold, Silver etc.
                                                 // Private Equity : Own Business or investment in private business
-    private int portfolioBenchmarkType; //1-Standard Index 2-Customized combination of Indices
-    private String portfolioBenchmark;
+    private int portfolioBenchmarkId;
     private BigDecimal portfolioValue;
 
     @EmbeddedId
@@ -80,20 +79,12 @@ public class Portfolio implements Serializable{
         this.portfolioCurrentStrategy = portfolioCurrentStrategy;
     }
 
-    @Column(name = "portfolio_benchmark_type")
-    public int getPortfolioBenchmarkType() {
-        return portfolioBenchmarkType;
+    @Column(name = "portfolio_benchmark_id")
+    public int getPortfolioBenchmarkId() {
+        return portfolioBenchmarkId;
     }
-    public void setPortfolioBenchmarkType(int portfolioBenchmarkType) {
-        this.portfolioBenchmarkType = portfolioBenchmarkType;
-    }
-
-    @Column(name = "portfolio_benchmark")
-    public String getPortfolioBenchmark() {
-        return portfolioBenchmark;
-    }
-    public void setPortfolioBenchmark(String portfolioBenchmark) {
-        this.portfolioBenchmark = portfolioBenchmark;
+    public void setPortfolioBenchmarkId(int portfolioBenchmarkId) {
+        this.portfolioBenchmarkId = portfolioBenchmarkId;
     }
 
     @Column(name = "portfolio_value")

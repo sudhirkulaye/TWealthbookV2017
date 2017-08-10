@@ -98,40 +98,6 @@ CREATE TABLE company_universe (
   company_delisted int(1) DEFAULT '0' COMMENT 'Flag for delisting due to merger or acquisition. 0 Not Delisted 1 Delisted',
   company_ticker_new varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (company_ticker)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Securities - Company universe composed of NIFTY50, NIFTY JR, NIFTY100/BSE100, NIFTY200/BSE200, NIFTY500/BSE500 and other small stocks tracked by brokerage houses';
-  company_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Usually NSE Code, BSE Code in case there is ''&'' in NSE Code or stock is only listed on BSE',
-  company_ticker_mc varchar(50) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Money Control Code for the stock',
-  company_ticker_b varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Bloomberg code for the stock',
-  company_nse_code varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'NSE Code',
-  company_bse_code varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'BSE Code',
-  company_isin_code varchar(20) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ISIN Code ',
-  company_short_name varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Short Name for Display Purpose',
-  company_name_mc varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full Name on Money Control',
-  company_name_b varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full Name on Bloomberg',
-  company_sub_industry_name_mc varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Sub Industry Name taken from Moneycontrol',
-  company_sector_name_b varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector Name taken from Bloomberg',
-  company_industry_name_b varchar(90) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry Name taken from Bloomberg',
-  company_sub_industry_name_b varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name taken from Bloomberg',
-  company_sector_name_display varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sector Name for Display as per Sector_Master',
-  company_industry_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Industry Name for Display as per Sector-Industry Mapping',
-  company_sub_industry_name_display varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Sub Industry Name for Display as per Sector-Industry-SubIndustry Mapping',
-  is_sensex int(1) DEFAULT '0' COMMENT '1 = If Stock is in SENSEX ',
-  is_nifty50 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NIFTY50',
-  is_niftyjr int(1) DEFAULT '0' COMMENT '1 = If Stock is in NIFTY JR',
-  is_bse100 int(1) DEFAULT '0' COMMENT '1 = If Stock is in BSE100',
-  is_nse100 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE100',
-  is_bse200 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE200',
-  is_nse200 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE200',
-  is_bse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in BSE500',
-  is_nse500 int(1) DEFAULT '0' COMMENT '1 = If Stock is in NSE500',
-  company_asset_class_id int(11) DEFAULT '0' COMMENT 'Asset Class as per Asset Classification',
-  company_asset_subclass_id int(11) DEFAULT '0' COMMENT 'Asset Sub Class as per Asset Classification ',
-  company_market_cap decimal(20,0) DEFAULT NULL COMMENT 'Company Latest Market Cap',
-  company_market_cap_rank int(5) DEFAULT NULL COMMENT 'Company Latest Market Cap Rank',
-  company_pe decimal(10,2) DEFAULT NULL COMMENT 'Company Latest PE ratio',
-  company_delisted int(1) DEFAULT '0' COMMENT 'Flag for delisting due to merger or acquisition. 0 Not Delisted 1 Delisted',
-  company_ticker_new varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (company_ticker)
 ) COMMENT='Securities - Company universe composed of NIFTY50, NIFTY JR, NIFTY100/BSE100, NIFTY200/BSE200, NIFTY500/BSE500 and other small stocks tracked by brokerage houses';
 
 select * from company_universe a where a.company_delisted = 0 and a.company_sub_industry_name_mc in ('INDEX', 'ETF')
@@ -180,7 +146,17 @@ CREATE TABLE index_valuation (
   index_implied_earnings decimal(10,3) DEFAULT NULL COMMENT 'Index implied earnings Index Value/index PE',
   PRIMARY KEY (index_ticker,index_valuation_date)
 ) COMMENT='Valutation - Index Valuation Data';
-select * from index_valuation;
+select * from index_valuation a where a.index_valuation_date >= '2017-07-26'; (select max(index_valuation_date) from index_valuation); 
+
+create table fixed_income_index (
+  index_ticker varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PK Index code',
+  index_date date NOT NULL COMMENT 'PK Index date',
+  index_value decimal(10,2) DEFAULT NULL COMMENT 'Index value',
+  PRIMARY KEY (index_ticker,index_date)
+) COMMENT='Fixed Income - Index Data';
+
+select * from fixed_income_index order by index_date desc; 
+
 
 drop table company_daily_data_b;
 CREATE TABLE company_daily_data_b (

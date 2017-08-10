@@ -42,8 +42,7 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 @Controller
 public class AdminViewController {
     public static final String AP_PROCESS_DAILY_DATA = "ap_process_daily_data";
-    @Autowired
-    ApiService apiService;
+
     @Autowired
     CompanyDailyDataBRepository companyDailyDataBRepository;
     @Autowired
@@ -58,7 +57,7 @@ public class AdminViewController {
 
     @RequestMapping(value = "/admin/uploaddailydatag",method=RequestMethod.GET)
     public  String uploadDailyDataFromG(@AuthenticationPrincipal UserDetails userDetails){
-        if (apiService.isAdmin(userDetails)) {
+        if (ApiService.isAdmin(userDetails)) {
             return "admin/uploaddailydatag";
         } else {
             return "access-denied";
@@ -146,7 +145,7 @@ public class AdminViewController {
 
     @RequestMapping(value = "/admin/uploaddailydatab",method= RequestMethod.GET)
     public  String uploadDailyDataFromB(@AuthenticationPrincipal UserDetails userDetails){
-        if (apiService.isAdmin(userDetails)) {
+        if (ApiService.isAdmin(userDetails)) {
             return "admin/uploaddailydatab";
         } else {
             return "access-denied";
@@ -188,7 +187,7 @@ public class AdminViewController {
 
     @RequestMapping(value = "/admin/uploaddailydatamf",method= RequestMethod.GET)
     public  String uploadDailyDataFromMF(@AuthenticationPrincipal UserDetails userDetails){
-        if (apiService.isAdmin(userDetails)) {
+        if (ApiService.isAdmin(userDetails)) {
             return "admin/uploaddailydatamf";
         } else {
             return "access-denied";
@@ -243,7 +242,7 @@ public class AdminViewController {
 
     @RequestMapping(value = "/admin/processdailydata",method= RequestMethod.GET)
     public  String processDailyData(@AuthenticationPrincipal UserDetails userDetails){
-        if (apiService.isAdmin(userDetails)) {
+        if (ApiService.isAdmin(userDetails)) {
             return "admin/processdailydata";
         } else {
             return "access-denied";
@@ -269,7 +268,7 @@ public class AdminViewController {
 
     @RequestMapping(value = "/admin/updateportfolios",method= RequestMethod.GET)
     public  String updatePortfolios(@AuthenticationPrincipal UserDetails userDetails){
-        if (apiService.isAdmin(userDetails)) {
+        if (ApiService.isAdmin(userDetails)) {
             return "admin/updateportfolios";
         } else {
             return "access-denied";
