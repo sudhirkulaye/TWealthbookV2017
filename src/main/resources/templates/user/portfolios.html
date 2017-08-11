@@ -403,12 +403,12 @@
                                                         </thead>
                                                         <tbody>
                                                         <tr>
-                                                            <td>{{0 | percentageReturns:2}}</td>
-                                                            <td>{{0 | percentageReturns:2}}</td>
-                                                            <td>{{0 | percentageReturns:2}}</td>
-                                                            <td>{{0 | percentageReturns:2}}</td>
-                                                            <td>{{0 | percentageReturns:2}}</td>
-                                                            <td>{{0 | percentageReturns:2}}</td>
+                                                            <td>{{benchmarkIrr.returnsIrrSinceCurrentMonth | percentageReturns:2}}</td>
+                                                            <td>{{benchmarkIrr.returnsIrrSinceCurrentQuarter | percentageReturns:2}}</td>
+                                                            <td>{{benchmarkIrr.returnsIrrSinceFinYear | percentageReturns:2}}</td>
+                                                            <td>{{benchmarkIrr.returnsIrrYtd | percentageReturns:2}}</td>
+                                                            <td>{{benchmarkIrr.returnsIrrOneYear | percentageReturns:2}}</td>
+                                                            <td>{{benchmarkIrr.returnsIrrSinceInception | percentageReturns:2}}</td>
                                                         </tr>
                                                         </tbody>
                                                     </table>
@@ -419,26 +419,33 @@
                                 </div>
                                 <div class="tab-pane fade" id="twrr-pills">
                                     <br /><br />
-                                    <div class="col-lg-6">
-                                        <h4>Time Weighted Rate of Returns </h4>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <i class="fa fa-percent fa-fw"></i> Portfolio Returns
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped" data-expand-first="true">
-                                                        <thead>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h4>Time Weighted Rate of Returns </h4>
+                                            (Note: *Absolute returns, time weighted returns for the period less than one year are usually presented in absolute terms)
+                                            <br /><br />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-percent fa-fw"></i> Portfolio Returns
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped" data-expand-first="true">
+                                                            <thead>
                                                             <tr>
-                                                                <th>Current Month</th>
-                                                                <th>Current Quarter</th>
-                                                                <th>Current FIN Year</th>
-                                                                <th>YTD</th>
+                                                                <th>Current Month*</th>
+                                                                <th>Current Quarter*</th>
+                                                                <th>Current FIN Year*</th>
+                                                                <th>YTD*</th>
                                                                 <th>One Year</th>
                                                                 <th>Since Inception</th>
                                                             </tr>
-                                                        </thead>
-                                                        <tbody>
+                                                            </thead>
+                                                            <tbody>
                                                             <tr>
                                                                 <td>{{twrr.returnsTwrrSinceCurrentMonth | percentageReturns:2}}</td>
                                                                 <td>{{twrr.returnsTwrrSinceCurrentQuarter | percentageReturns:2}}</td>
@@ -447,8 +454,42 @@
                                                                 <td>{{twrr.returnsTwrrOneYear | percentageReturns:2}}</td>
                                                                 <td>{{twrr.returnsTwrrSinceInception | percentageReturns:2}}</td>
                                                             </tr>
-                                                        </tbody>
-                                                    </table>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="fa fa-percent fa-fw"></i> Benchmark Returns - {{portfolioBenchmarkDescription}}
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped" data-expand-first="true">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Current Month*</th>
+                                                                <th>Current Quarter*</th>
+                                                                <th>Current FIN Year*</th>
+                                                                <th>YTD*</th>
+                                                                <th>One Year</th>
+                                                                <th>Since Inception</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td>{{benchmarkTwrr.returnsTwrrSinceCurrentMonth | percentageReturns:2}}</td>
+                                                                <td>{{benchmarkTwrr.returnsTwrrSinceCurrentQuarter | percentageReturns:2}}</td>
+                                                                <td>{{benchmarkTwrr.returnsTwrrSinceFinYear | percentageReturns:2}}</td>
+                                                                <td>{{benchmarkTwrr.returnsTwrrYtd | percentageReturns:2}}</td>
+                                                                <td>{{benchmarkTwrr.returnsTwrrOneYear | percentageReturns:2}}</td>
+                                                                <td>{{benchmarkTwrr.returnsTwrrSinceInception | percentageReturns:2}}</td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

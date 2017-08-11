@@ -85,7 +85,18 @@ public class RestApiController {
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ApiService.getPortfolioInternalRateOfReturns(userDetails, clientId, portfolioId);
+        return ApiService.getPortfolioInternalRateOfReturns(userDetails, clientId, portfolioId, 0);
+    }
+
+    @RequestMapping(value = "/getportfoliobenchmarkinternalrateofreturns/{clientId}/{portfolioId}/{benchmarkId}", method = RequestMethod.GET)
+    @ApiMethod(description = "Get portfolio's Benchmark IRR")
+    public PortfolioIrrSummary getPortfolioBenchmarkInternalRateOfReturns(@PathVariable Long clientId, @PathVariable int portfolioId, @PathVariable int benchmarkId){
+
+        logger.debug(String.format("/getportfoliobenchmarkinternalrateofreturns/%s/%s/%s", clientId, portfolioId, benchmarkId));
+        UserDetails userDetails =
+                (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ApiService.getPortfolioInternalRateOfReturns(userDetails, clientId, portfolioId,benchmarkId);
     }
 
     @RequestMapping(value = "/getportfoliotimeweightedrateofreturns/{clientId}/{portfolioId}", method = RequestMethod.GET)
@@ -96,7 +107,18 @@ public class RestApiController {
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        return ApiService.getPortfolioTimeWeightedRateOfReturns(userDetails, clientId, portfolioId);
+        return ApiService.getPortfolioTimeWeightedRateOfReturns(userDetails, clientId, portfolioId,0);
+    }
+
+    @RequestMapping(value = "/getportfoliobenchmarktimeweightedrateofreturns/{clientId}/{portfolioId}/{benchmarkId}", method = RequestMethod.GET)
+    @ApiMethod(description = "Get portfolio's IRR")
+    public PortfolioTwrrSummary getPortfolioBenchmarkTimeWeightedRateOfReturns(@PathVariable Long clientId, @PathVariable int portfolioId, @PathVariable int benchmarkId){
+
+        logger.debug(String.format("/getportfoliobenchmarktimeweightedrateofreturns/%s/%s/%s", clientId, portfolioId,benchmarkId));
+        UserDetails userDetails =
+                (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ApiService.getPortfolioTimeWeightedRateOfReturns(userDetails, clientId, portfolioId,benchmarkId);
     }
 
 }

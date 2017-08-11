@@ -316,25 +316,32 @@ public class ApiService {
     }
 
     public static PortfolioIrrSummary getPortfolioInternalRateOfReturns
-            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId, int benchmarkId )
             throws UsernameNotFoundException{
         FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
         if (!familyMember.getUserLoginId().equals(userDetails.getUsername())) {
             throw new UsernameNotFoundException("Clinet is not a family memebr of user");
         }
         return portfolioIrrSummaryRepository.findOneByPortfolioIrrSummaryKeyClientIdAndPortfolioIrrSummaryKeyPortfolioIdAndPortfolioIrrSummaryKeyBenchmarkId
-                (clientId,portfolioId,0);
+                (clientId,portfolioId,benchmarkId);
 
     }
 
     public static PortfolioTwrrSummary getPortfolioTimeWeightedRateOfReturns
-            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId)
+            (@AuthenticationPrincipal final UserDetails userDetails, Long clientId, int portfolioId,int benchmarkId)
             throws UsernameNotFoundException {
         FamilyMember familyMember = familyMemberRepository.findOneByClientId(clientId);
         if (!familyMember.getUserLoginId().equals(userDetails.getUsername())) {
             throw new UsernameNotFoundException("Clinet is not a family memebr of user");
         }
-        return portfolioTwrrSummaryRepository.findOneByPortfolioTwrrSummaryKeyClientIdAndPortfolioTwrrSummaryKeyPortfolioIdAndPortfolioTwrrSummaryKeyBenchmarkId
-                (clientId,portfolioId,0);
+//        return portfolioTwrrSummaryRepository.findOneByPortfolioTwrrSummaryKeyClientIdAndPortfolioTwrrSummaryKeyPortfolioIdAndPortfolioTwrrSummaryKeyBenchmarkId
+//                (clientId,portfolioId,benchmarkId);
+        List<PortfolioTwrrSummary> portfolioTwrrSummaries = portfolioTwrrSummaryRepository.findAllByPortfolioTwrrSummaryKeyClientIdAndPortfolioTwrrSummaryKeyPortfolioId(clientId,portfolioId);
+        for (PortfolioTwrrSummary portfolioTwrrSummary : portfolioTwrrSummaries) {
+            if (portfolioTwrrSummary.getPortfolioTwrrSummaryKey().getBenchmarkId() == benchmarkId){
+                return portfolioTwrrSummary;
+            }
+        }
+        return new PortfolioTwrrSummary();
     }
 }

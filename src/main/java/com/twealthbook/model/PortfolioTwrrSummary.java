@@ -10,7 +10,7 @@ import java.sql.Date;
 public class PortfolioTwrrSummary implements Serializable {
 
     private PortfolioTwrrSummaryKey portfolioTwrrSummaryKey;
-    private Date returnsDate;
+    private java.sql.Date returnsDate;
     private BigDecimal returnsTwrrSinceCurrentMonth;
     private BigDecimal returnsTwrrSinceCurrentQuarter;
     private BigDecimal returnsTwrrSinceFinYear;

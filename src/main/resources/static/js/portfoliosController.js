@@ -18,6 +18,8 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
 	$scope.historicalHoldingsArray = [];
 	$scope.irrArray = [];
 	$scope.twrrArray = [];
+	$scope.benchmarkIrrArray = [];
+    $scope.benchmarkTwrrArray = [];
 
     $scope.currentPage = 1;
     $scope.pageSize = 10;
@@ -38,12 +40,16 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     $scope.historicalHoldingsArray = new Array($scope.portfolios.length, 1);
                     $scope.irrArray = new Array($scope.portfolios.length, 1);
                     $scope.twrrArray = new Array($scope.portfolios.length, 1);
+                    $scope.benchmarkIrrArray = new Array($scope.portfolios.length, 1);
+                    $scope.benchmarkTwrrArray = new Array($scope.portfolios.length, 1);
                     for (var i=0; i<$scope.portfolios.length; i++){
                         $scope.cashflowArray[i] = [];
                         $scope.holdingsArray[i] = [];
                         $scope.historicalHoldingsArray[i] = [];
                         $scope.irrArray[i] = [];
                         $scope.twrrArray[i] = [];
+                        $scope.benchmarkIrrArray[i] = [];
+                        $scope.benchmarkTwrrArray[i] = [];
                     }
                 } else {
                     $scope.portfolios = [];
@@ -185,6 +191,7 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
     function getPortfolioInternalRateOfReturns(index){
         if ($scope.irrArray[index][0] != undefined) {
             $scope.irr = $scope.irrArray[index][0];
+            $scope.benchmarkIrr = $scope.benchmarkIrrArray[index][0];
         } else {
             url = "/getportfoliointernalrateofreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
             $http.get(urlBase + url).
@@ -197,12 +204,24 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                         $scope.irr = [];
                     }
                 });
+            url = "/getportfoliobenchmarkinternalrateofreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"]+"/"+$scope.portfolios[index]["portfolioBenchmarkId"];
+                        $http.get(urlBase + url).
+                            then(function(response){
+                                if (response != undefined) {
+                                    $scope.benchmarkIrrArray[index][0] = response.data;
+                                    $scope.benchmarkIrr = response.data;
+                                } else {
+                                    $scope.benchmarkIrrArray[index] = [];
+                                    $scope.benchmarkIrr = [];
+                                }
+                            });
         }
     }
 
     function getPortfolioTimeWeightedRateOfReturns(index){
          if ($scope.twrrArray[index][0] != undefined) {
                     $scope.twrr = $scope.twrrArray[index][0];
+                    $scope.benchmarkTwrr = $scope.benchmarkTwrrArray[index][0];
          } else {
             url = "/getportfoliotimeweightedrateofreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"];
             $http.get(urlBase + url).
@@ -213,6 +232,18 @@ portfolioModule.controller('portfolioController', function ($scope, $http, $filt
                     } else {
                         $scope.twrrArray[index] = [];
                         $scope.twrr = [];
+                    }
+                });
+
+            url = "/getportfoliobenchmarktimeweightedrateofreturns/"+ $scope.portfolios[index]["clientId"]+"/"+$scope.portfolios[index]["portfolioId"]+"/"+$scope.portfolios[index]["portfolioBenchmarkId"];
+            $http.get(urlBase + url).
+                then(function(response){
+                    if (response != undefined) {
+                        $scope.benchmarkTwrrArray[index][0] = response.data;
+                        $scope.benchmarkTwrr = response.data;
+                    } else {
+                        $scope.benchmarkTwrrArray[index] = [];
+                        $scope.benchmarkTwrr = [];
                     }
                 });
          }

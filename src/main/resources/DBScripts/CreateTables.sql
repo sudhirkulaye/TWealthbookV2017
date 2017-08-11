@@ -323,12 +323,13 @@ select * from benchmark a order by benchmark_id;
 
 drop table benchmark_constituent;
 CREATE TABLE benchmark_constituent (
-  benchmark_id INT(3) NOT NULL COMMENT 'PK Benchmark ID',
-  constituent_id VARCHAR(30) NOT NULL COMMENT 'Constituent i.e. company_ticker from company_universe OR returns represented by FD',
-  constituent_percent int(3) NULL COMMENT 'Constituent percent',
-  constituent_fixed_returns int(1) DEFAULT 0 COMMENT '0 - Index 1, non zero means Constant (for FDs)',
-  PRIMARY KEY (benchmark_id, constituent_id))
-COMMENT = 'Portfolio Benchmarks - Constituents of Custom Benchmark ';
+  benchmark_id int(3) NOT NULL COMMENT 'PK Benchmark ID',
+  constituent_id varchar(30) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Constituent i.e. company_ticker from company_universe OR returns represented by FD',
+  constituent_percent decimal(4,2) DEFAULT NULL COMMENT 'Constituent percent',
+  constituent_fixed_returns int(1) DEFAULT '0' COMMENT '0 - Index 1, non zero means Constant (for FDs)',
+  PRIMARY KEY (benchmark_id,constituent_id)
+) COMMENT='Portfolio Benchmarks - Constituents of Custom Benchmark ';
+
 
 select * from benchmark_constituent a order by benchmark_id, constituent_id; 
 
@@ -419,3 +420,39 @@ CREATE TABLE portfolio_twrr_summary (
 ) COMMENT='Portfolio - TWRR (Time Weighted Rate of Returns) Summary';
 
 select * from portfolio_twrr_summary;
+
+select * from portfolio_benchmark_returns_calculation_support;
+
+drop table portfolio_benchmark_twrr_monthly;
+CREATE TABLE portfolio_benchmark_twrr_monthly (
+  client_id int(11) NOT NULL COMMENT 'PK Client Id',
+  portfolio_id int(3) NOT NULL COMMENT 'PK Portfolio Id',
+  benchmark_id int(3) DEFAULT 0 COMMENT 'Benchmark ID',
+  returns_year int(4) NOT NULL COMMENT 'PK Year of returns',
+  returns_calendar_year decimal(20,4) DEFAULT NULL COMMENT 'TWRR for calendar year',
+  returns_fin_year decimal(20,4) DEFAULT NULL COMMENT 'TWRR for FIN year',
+  returns_mar_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jan to Mar',
+  returns_jun_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Apr to Jun',
+  returns_sep_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jul to Sep',
+  returns_dec_ending_quarter decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Oct to Dec',
+  returns_jan decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jan',
+  returns_feb decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Feb',
+  returns_mar decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Mar',
+  returns_apr decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Apr',
+  returns_may decimal(20,4) DEFAULT NULL COMMENT 'TWRR for May',
+  returns_jun decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jun',
+  returns_jul decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Jul',
+  returns_aug decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Aug',
+  returns_sep decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Sep',
+  returns_oct decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Oct',
+  returns_nov decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Nov',
+  returns_dec decimal(20,4) DEFAULT NULL COMMENT 'TWRR for Dec',
+  PRIMARY KEY (client_id,portfolio_id, benchmark_id,returns_year)
+) COMMENT='Portfolio - Benchmark TWRR (Time Weighted Rate of Returns) monthwise ';
+
+SET @running_total_units = 0;
+UPDATE portfolio_benchmark_returns_calculation_support a
+SET a.constituent_total_units = (@running_total_units := @running_total_units + a.constituent_units)
+WHERE client_id = 1003
+AND portfolio_id = 1
+AND benchmark_id = 1;
