@@ -177,6 +177,9 @@ Private Equity : Own Business or investment in private business',
   CONSTRAINT c_portfolio_client_id FOREIGN KEY (client_id) REFERENCES client (client_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Portfolio';
 
+ALTER TABLE `twealthbookdev`.`portfolio` 
+DROP COLUMN `portfolio_benchmark_type`;
+
 delete from portfolio; 
 insert into portfolio 
 (select customer_code, portfolio_no, 1, portfolio_goal, portfolio_start_date, portfolio_end_date, '', 1, 'NSE:NIFTY', 0.00 from equityanalysis.portfolio_master a
