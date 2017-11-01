@@ -41,14 +41,14 @@ public class PublicViewController {
     @RequestMapping(value = "/public/info/assetclasses")
     public String assetClasses(Model model){
         model.addAttribute("processingDate", ApiService.getProcessingDate());
-        model.addAttribute("title", "TWealthbook Asset Classes");
+        model.addAttribute("title", "Asset Classes");
         return "public/info/assetclasses";
     }
 
     @RequestMapping(value = "/public/info/assetsubclasses")
     public String assetSubClasses(Model model){
         model.addAttribute("processingDate", ApiService.getProcessingDate());
-        model.addAttribute("title", "TWealthbook Asset Sub Classes");
+        model.addAttribute("title", "Asset Sub Classes");
         return "public/info/assetsubclasses";
     }
 

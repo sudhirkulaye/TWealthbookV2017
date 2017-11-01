@@ -107,9 +107,9 @@ public class AdminViewController {
                 BigDecimal companyDailyOpenPrice = line.get(6) != null && !line.get(6).isEmpty() ? new BigDecimal(line.get(6)) : new BigDecimal(0);
                 BigDecimal companyDailyHighPrice = line.get(7) != null && !line.get(7).isEmpty() ? new BigDecimal(line.get(7)) : new BigDecimal(0);
                 BigDecimal companyDailyLowPrice = line.get(8) != null && !line.get(8).isEmpty() ? new BigDecimal(line.get(8)) : new BigDecimal(0);
-                BigDecimal companyDailyVolumeNo = companyDailyVolume.multiply(new BigDecimal(1000000));
+                BigDecimal companyDailyVolumeNo = companyDailyVolume.multiply(companyDailyLastPrice);
                 BigDecimal companyDailyRupeeVolume = companyDailyVolume.multiply(companyDailyLastPrice);
-                BigDecimal companyDailyMarketCapNo = companyDailyMarketCap.multiply(new BigDecimal(1000000));;
+                BigDecimal companyDailyMarketCapNo = companyDailyMarketCap.multiply(new BigDecimal(1000000));
                 BigDecimal companyDailyMarketCapRank = new BigDecimal(0);
 
                 CompanyDailyDataG companyDailyDataG = new CompanyDailyDataG(companyTicker,

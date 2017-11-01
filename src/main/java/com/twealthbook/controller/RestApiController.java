@@ -39,7 +39,7 @@ public class RestApiController {
 
         UserDetails userDetails =
                 (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        logger.debug(String.format("/getPortfolioCashflow/ for %s",userDetails.getUsername()));
+        logger.debug(String.format("/getallportfolios/ for %s",userDetails.getUsername()));
         return ApiService.getPortfoliosOfClientsOfALoggedInUser(userDetails);
     }
 
