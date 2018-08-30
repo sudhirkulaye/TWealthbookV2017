@@ -218,7 +218,7 @@ public class AdminViewController {
                     isHeader = false;
                     continue;
                 }
-                if(line.isEmpty() || line.size() != 8){
+                if(line.isEmpty() || line.size() != 6){ //Earlier it was 8
                     continue;
                 }
 

@@ -6,8 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class GeneratePassword {
     public static void main(String[] arg){
-        System.out.println("Demo/Demo123 :"+ passwordEncoder().encode("Demo123"));
-
+        System.out.println("1028/ManMansi123 :"+ passwordEncoder().encode("ManMansi123"));
+        System.out.println("1030/SharadSai111 :"+ passwordEncoder().encode("SharadSai111"));
+        System.out.println("1033/Amol231180 :"+ passwordEncoder().encode("Amol231180"));
 
         /*
         Demo/Demo123 :$2a$10$C9Ez4CWi8s3DJ2c618gZfOHA064CDWNzHhLHQptfaH8.rIRlzNiHe
@@ -27,6 +28,9 @@ public class GeneratePassword {
         1022/Tuna1980 :$2a$10$prUa6b7WsfhN33u8khVx8.qrLNympG0bbmuqXbGHUpvPKcHOdTB.O
         1023/Paresh111 :$2a$10$N0VLkKh9vm5uh8QsABFM.OEgTCKSGfIJp2HK1bgn.Ff/OdjVmH8p6
         1026/SJP111 :$2a$10$uscbfv0eT8cMcHmdy6cf4OQM8lsSLUBCPW2JUkYvQXGJIQDZXiGU6
+        1028/ManMansi123 :$2a$10$.6cP9zzH3RgncPO3AX7E1uHoUhCzLo3AYXNekgXGlw28x9Wf7BZmW
+        1030/SharadSai111 :$2a$10$lZWRm6fh1dPdSbZ77ypZzOpXOBwD/7R02uVPE62.aLz21LmVTmsMe
+        1033/Amol231180 :$2a$10$UWYP.HPsGfVutk27fuHbLunHwEoa69dNmoBPQ4cxmnS0dpXmoO2.i
          */
 
     }

@@ -30,7 +30,8 @@ public class MutualFund implements Serializable{
         Integer code;
         String isin;
         try {
-            date = new java.sql.Date(format.parse(stingList.get(7)).getTime());
+            //date = new java.sql.Date(format.parse(stingList.get(7)).getTime());
+            date = new java.sql.Date(format.parse(stingList.get(5)).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -45,13 +46,13 @@ public class MutualFund implements Serializable{
             logger.debug(String.format("/MutualFund(List)/%s/, %s", code, isin));
             this.nav = new BigDecimal(0);
         }
-        try {
-            this.repurchasePrice = stingList.get(5)!=null && !stingList.get(5).isEmpty() ? new BigDecimal(stingList.get(5)) : new BigDecimal(0);
-            this.salePrice = stingList.get(6)!=null && !stingList.get(6).isEmpty() ? new BigDecimal(stingList.get(6)) : new BigDecimal(0);
-        } catch (NumberFormatException e) {
-            this.repurchasePrice = this.nav;
-            this.salePrice = this.nav;
-        }
+//        try {
+//            this.repurchasePrice = stingList.get(5)!=null && !stingList.get(5).isEmpty() ? new BigDecimal(stingList.get(5)) : new BigDecimal(0);
+//            this.salePrice = stingList.get(6)!=null && !stingList.get(6).isEmpty() ? new BigDecimal(stingList.get(6)) : new BigDecimal(0);
+//        } catch (NumberFormatException e) {
+//            this.repurchasePrice = this.nav;
+//            this.salePrice = this.nav;
+//        }
 
     }
 
